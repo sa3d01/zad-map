@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\ResendPhoneVerificationRequest;
-use App\Http\Requests\Api\VerifyPhoneRequest;
+use App\Http\Requests\Api\Auth\ResendPhoneVerificationRequest;
+use App\Http\Requests\Api\Auth\VerifyPhoneRequest;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\PhoneVerificationCode;
 use App\Models\User;

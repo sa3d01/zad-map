@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\LoginRequest;
+use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request):object
     {
         $credentials = $request->only('phone', 'password');
         $user = User::where(['phone' => $request['phone']])->first();
@@ -32,19 +31,16 @@ class LoginController extends Controller
         return response()->json(['status' => 400, 'message' => "كلمة المرور غير صحيحة."], 400);
     }
 
-    public function logout(Request $request)
+    public function logout(): object
     {
         $user = auth('api')->user();
-        if ($user) {
-            $user->update([
-                'device' => [
-                    'id' => null,
-                    'os' => null,
-                ]
-            ]);
-            auth()->logout();
-            return response()->json(['message' => "Logged out successfully."]);
-        }
-        return response()->json(['message' => "!."]);
+        $user->update([
+            'device' => [
+                'id' => null,
+                'os' => null,
+            ]
+        ]);
+        auth('api')->logout();
+        return response()->json(['message' => "Logged out successfully."]);
     }
 }

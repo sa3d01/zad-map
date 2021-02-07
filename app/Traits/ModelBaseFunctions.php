@@ -19,8 +19,20 @@ trait ModelBaseFunctions
         return $filename;
     }
 
+    function deleteFileFromServer($filePath)
+    {
+        if ($filePath != null) {
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+    }
+
     protected function setImageAttribute()
     {
+        if ($this->attributes['image']!=null){
+            $this->deleteFileFromServer(asset($this->images_link) . '/' . $this->attributes['image']);
+        }
         $image = request('image');
         $filename = null;
         if (is_file($image)) {

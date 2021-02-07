@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Auth;
 
+use App\Http\Requests\Api\ApiMasterRequest;
 use App\Utils\PreparePhone;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;

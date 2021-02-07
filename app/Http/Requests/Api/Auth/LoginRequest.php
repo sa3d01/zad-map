@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Auth;
 
+use App\Http\Requests\Api\ApiMasterRequest;
 use App\Utils\PreparePhone;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\JsonResponse;
 
-class UserRegisterationRequest extends ApiMasterRequest
+class LoginRequest extends ApiMasterRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -40,20 +40,17 @@ class UserRegisterationRequest extends ApiMasterRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:110',
-            'email' => 'email|max:90|unique:users',
-            'phone' => 'required|string|max:90|unique:users',
-            'password' => 'required|string|min:6|max:15',
-            'city_id' => 'required|numeric|exists:drop_downs,id',
-            'district_id' => 'required|numeric|exists:drop_downs,id',
+            'phone' => 'required|string|max:90|exists:users',
+            'password' => 'required|string|min:6|max:20',
             'device.id' => 'required',
             'device.os' => 'required|in:android,ios',
         ];
     }
+
     public function messages()
     {
         return [
-            'phone.unique' => 'هذا الهاتف مسجل من قبل',
+            'phone.exists' => 'هذا الهاتف غير مسجل من قبل',
         ];
     }
 }

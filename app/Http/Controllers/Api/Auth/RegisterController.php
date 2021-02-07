@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\UserRegisterationRequest;
+use App\Http\Requests\Api\Auth\UserRegisterationRequest;
 use App\Models\User;
 use App\Traits\UserPhoneVerificationTrait;
 use Spatie\Permission\Models\Role;

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Middleware\JwtTokenIsValid;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,24 @@ Route::group([
         Route::post('resend-phone-verification', 'VerifyController@resendPhoneVerification');
         Route::post('verify-phone', 'VerifyController@verifyPhone');
         Route::post('login', 'LoginController@login');
-        Route::post('logout', 'LoginController@logout')->middleware('auth:api');
+        // ForgotPassword
+        Route::group(['prefix' => 'password'], function () {
+            Route::post('forgot', 'ResetPasswordController@forgotPassword');
+            Route::post('resend', 'ResetPasswordController@resend');
+            Route::post('code', 'ResetPasswordController@checkCode');
+            Route::post('set', 'ResetPasswordController@setNewPassword');
+        });
+        // AuthedUser
+        Route::group([
+            'middleware' => JwtTokenIsValid::class,
+        ], function () {
+            Route::post('logout', 'LoginController@logout');
+            Route::group(['prefix' => 'settings'], function () {
+                Route::put('/', 'SettingController@updateProfile');
+                Route::put('password', 'SettingController@updatePassword');
+                Route::post('upload-image', 'SettingController@uploadImageAvatar');
+            });
+        });
     });
+
 });
