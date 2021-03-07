@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'zadMap'),
+    'name' => env('APP_NAME', 'zad-map'),
 
     /*
     |--------------------------------------------------------------------------
@@ -119,7 +119,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key' => 'base64:FZmsZuTtrLhv2ciqEEdGh+PioiTPLAJ+YT5Cgm94Ukw=',
 
     'cipher' => 'AES-256-CBC',
 
