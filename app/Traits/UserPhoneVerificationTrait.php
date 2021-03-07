@@ -14,7 +14,7 @@ trait UserPhoneVerificationTrait
         $data = [
             'user_id' => $user->id,
             'phone' => $user->phone,
-            'code' => rand(1111, 9999),
+            'code' => 2021,//rand(1111, 9999),
             'expires_at' => Carbon::now()->addMinutes(Setting::value('verify_period')),
         ];
         PhoneVerificationCode::create($data);

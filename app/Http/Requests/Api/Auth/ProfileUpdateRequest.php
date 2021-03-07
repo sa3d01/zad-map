@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Api\Auth;
 
 use App\Http\Requests\Api\ApiMasterRequest;
-use App\Utils\PreparePhone;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ProfileUpdateRequest extends ApiMasterRequest
 {
@@ -17,19 +15,7 @@ class ProfileUpdateRequest extends ApiMasterRequest
     {
         return true;
     }
-    protected function prepareForValidation()
-    {
-        if ($this->has('phone')) {
-            $phone = new PreparePhone($this->phone);
-            if (!$phone->isValid()) {
-                throw new HttpResponseException(response()->json([
-                    'status' =>400,
-                    'message' => $phone->errorMsg()
-                ], 400));
-            }
-            $this->merge(['phone' => $phone->getNormalized()]);
-        }
-    }
+
     /**
      * Get the validation rules that apply to the request.
      *

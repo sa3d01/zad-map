@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordReset extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'phone',
+        'token',
+        'expires_at',
+        'reset_at',
+    ];
 }
