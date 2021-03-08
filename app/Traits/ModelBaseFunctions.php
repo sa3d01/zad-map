@@ -30,9 +30,9 @@ trait ModelBaseFunctions
 
     protected function setImageAttribute()
     {
-        if ($this->attributes['image']!=null){
-            $this->deleteFileFromServer(asset($this->images_link) . '/' . $this->attributes['image']);
-        }
+//        if ($this->attributes['image']!=null){
+//            $this->deleteFileFromServer(asset($this->images_link) . '/' . $this->attributes['image']);
+//        }
         $image = request('image');
         $filename = null;
         if (is_file($image)) {
