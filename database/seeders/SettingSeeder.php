@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Page;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
@@ -14,11 +15,23 @@ class SettingSeeder extends Seeder
      */
     public function run()
     {
-        Setting::create([
-            'terms->user' => 'الشروط والأحكام للمستخدم',
-            'terms->provider' => 'الشروط والأحكام لمقدم الخدمه',
-            'terms->delivery' => 'الشروط والأحكام للموصل',
-            'verify_period'=>10
+        Page::create([
+            'type'=>'terms',
+            'for'=>'user',
+            'title'=>'الشروط والأحكام',
+            'note'=>'الشروط والأحكام للمستخدم',
+        ]);
+        Page::create([
+            'type'=>'terms',
+            'for'=>'provider',
+            'title'=>'الشروط والأحكام',
+            'note'=>'الشروط والأحكام لمقدم الخدمه',
+        ]);
+        Page::create([
+            'type'=>'terms',
+            'for'=>'delivery',
+            'title'=>'الشروط والأحكام',
+            'note'=>'الشروط والأحكام للموصل',
         ]);
     }
 }

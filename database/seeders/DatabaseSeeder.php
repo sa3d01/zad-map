@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             CitySeeder::class,
             DistrictSeeder::class,
+            SliderSeeder::class,
         ]);
     }
 }

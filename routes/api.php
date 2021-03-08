@@ -22,6 +22,8 @@ Route::group([
     Route::group(['namespace' => 'General', 'prefix' => 'general'], function () {
         Route::get('cities', 'DropDownController@cities');
         Route::get('cities/{cityId}/districts', 'DropDownController@districts');
+        Route::get('pages/{user_type}/{type}', 'PageController@getPage');
+        Route::get('slider', 'SliderController@index');
     });
     // AUTH
     Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function () {

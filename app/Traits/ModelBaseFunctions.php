@@ -49,9 +49,9 @@ trait ModelBaseFunctions
         try {
             if ($this->attributes['image'])
                 return asset($dest) . '/' . $this->attributes['image'];
-            return asset($dest) . '/default.jpeg';
+            return asset($dest) . '/default.png';
         } catch (\Exception $e) {
-            return asset($dest) . '/default.jpeg';
+            return asset($dest) . '/default.png';
         }
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSettingsTable extends Migration
+class CreatePagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->id();
-            //minutes
-            $table->integer('verify_period')->default(3);
-            $table->integer('app_tax')->default(1);
-            $table->integer('free_products_count')->default(1);
-            $table->integer('add_product_price')->default(1);
+            //terms
+            $table->string('type')->nullable();
+            //provider
+            $table->string('for')->nullable();
+            $table->string('title')->nullable();
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ class CreateSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('pages');
     }
 }

@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->foreignId('district_id')->nullable();
             $table->string('image')->nullable();
             $table->boolean('banned')->nullable()->default(false);
+            $table->boolean('online')->nullable()->default(true);
             //id and os
             $table->json('device')->nullable();
             $table->string('last_ip')->nullable();
