@@ -45,6 +45,7 @@ class User extends Authenticatable implements JWTSubject
         'device',
         'last_login_at',
         'last_ip',
+        'marketer_id',
     ];
 
     /**
@@ -66,6 +67,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
         'device' => 'json',
+        'location' => 'json',
     ];
 
     protected $dates = [
@@ -90,5 +92,8 @@ class User extends Authenticatable implements JWTSubject
     }
     public function district(){
         return $this->belongsTo(DropDown::class,'district_id','id');
+    }
+    public function products(){
+        return $this->hasMany(Product::class);
     }
 }

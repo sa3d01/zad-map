@@ -18,21 +18,21 @@ class ResetPasswordController extends Controller
 {
     use UserPasswordResetTrait;
 
-    public function forgotPassword(ForgotPasswordRequest $request)
+    public function resend(ResendForgotPasswordRequest $request):object
     {
         $user = User::where('phone', $request['phone'])->first();
         $this->createPasswordResetCodeForUser($user);
         return response()->json(['message' => 'Password reset token has been sent to your phone.'], 200);
     }
 
-    public function resend(ResendForgotPasswordRequest $request)
+    public function forgotPassword(ForgotPasswordRequest $request):object
     {
         $user = User::where('phone', $request['phone'])->first();
         $this->createPasswordResetCodeForUser($user);
         return response()->json(['message' => 'Password reset token has been sent to your phone.'], 200);
     }
 
-    public function checkCode(CheckTokenRequest $request)
+    public function checkCode(CheckTokenRequest $request):object
     {
         $passwordResetObject = PasswordReset::where([
             'phone' => $request['phone'],
@@ -47,7 +47,7 @@ class ResetPasswordController extends Controller
         return response()->json(['message' => 'Phone and token match successfully.'], 200);
     }
 
-    public function setNewPassword(SetPasswordRequest $request)
+    public function setNewPassword(SetPasswordRequest $request):object
     {
         $passwordResetObject = PasswordReset::where([
             'phone' => $request['phone'],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\UserRegisterationRequest;
+use App\Models\DropDown;
 use App\Models\User;
 use App\Traits\UserPhoneVerificationTrait;
 use Spatie\Permission\Models\Role;
@@ -16,14 +17,22 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
         $data['last_ip'] = $request->ip();
+        $data['district_id']=$this->getDistrictId($request['district']);
         $user = User::create($data);
-        //todo : request user type
-        $role = Role::findOrCreate("USER");
+        $user->refresh();
+        $role = Role::findOrCreate($user->type);
         $user->assignRole($role);
         $this->createPhoneVerificationCodeForUser($user);
         return response()->json([
             "phone" => $request["phone"]
         ]);
-
+    }
+    private function getDistrictId($district){
+        $data=['class'=>'District','name'=>$district,'parent_id'=>request()->input('city_id')];
+        $model=DropDown::where($data)->first();
+        if (!$model){
+            $model=DropDown::create($data);
+        }
+        return $model->id;
     }
 }

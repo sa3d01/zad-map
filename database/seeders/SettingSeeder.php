@@ -33,5 +33,21 @@ class SettingSeeder extends Seeder
             'title'=>'الشروط والأحكام',
             'note'=>'الشروط والأحكام للموصل',
         ]);
+        Page::create([
+            'type'=>'about',
+            'for'=>'all',
+            'title'=>'عن التطبيق',
+            'note'=>'نص عن التطبيق',
+        ]);
+        Setting::create([
+            'mobile'=>'+9665xxxxxxxx',
+            'email'=>'info@zad-map.com',
+            'socials'=>[
+                'twitter'=>'zad@twitter.com',
+                'facebook'=>'zad@facebook.com',
+                'snap'=>'zad@snap.com',
+                'instagram'=>'zad@instagram.com',
+            ]
+        ]);
     }
 }

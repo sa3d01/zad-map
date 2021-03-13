@@ -12,20 +12,16 @@ class LoginController extends Controller
 {
     public function login(LoginRequest $request):object
     {
+        //todo: check if provider approved
         $credentials = $request->only('phone', 'password');
-        $user = User::where(['phone' => $request['phone']])->first();
+        $user = User::where(['phone' => $request['phone'],'type'=>$request['type']])->first();
+        if (!$user){
+            return response()->json(['status' => 400, 'message' => 'هذا الحساب غير موجود'], 400);
+        }
         if (!$user->phone_verified_at) {
             return response()->json(['status' => 400, 'message' => 'هذا الحساب غير مفعل'], 400);
         }
         if (auth('api')->attempt($credentials)) {
-            $user->update([
-                'device' => [
-                    'id' => $request['id'],
-                    'os' => $request['os'],
-                ],
-                'last_login_at' => Carbon::now(),
-                'last_ip' => $request->ip(),
-            ]);
             return response()->json(new UserLoginResourse($user));
         }
         return response()->json(['status' => 400, 'message' => "كلمة المرور غير صحيحة."], 400);

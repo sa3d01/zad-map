@@ -25,14 +25,19 @@ class UserRegisterationRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'type' => 'required|string|max:110',
             'name' => 'required|string|max:110',
             'email' => 'email|max:90|unique:users',
             'phone' => 'required|string|max:90|unique:users',
             'password' => 'required|string|min:6|max:15',
             'city_id' => 'required|numeric|exists:drop_downs,id',
-            'district_id' => 'required|numeric|exists:drop_downs,id',
+            'district' => 'required',
             'device.id' => 'required',
             'device.os' => 'required|in:android,ios',
+            'location.lat' => 'nullable',
+            'location.lng' => 'nullable',
+            'location.address' => 'nullable',
+            'marketer_id' => 'nullable',
         ];
     }
     public function messages()

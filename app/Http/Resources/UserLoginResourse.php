@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
-use phpDocumentor\Reflection\Types\Object_;
 
 class UserLoginResourse extends JsonResource
 {
@@ -18,10 +17,18 @@ class UserLoginResourse extends JsonResource
     public function toArray($request)
     {
         $token = auth('api')->login(User::find($this->id));
-
+        User::find($this->id)->update([
+            'device' => [
+                'id' => $request['device.id'],
+                'os' => $request['device.os'],
+            ],
+            'last_login_at' => Carbon::now(),
+            'last_ip' => $request->ip(),
+        ]);
         return [
             "user" => [
                 'id' => (int)$this->id,
+                'type' => $this->type,
                 'name' => $this->name,
                 'phone' => $this->phone ?? "",
                 'city' => [

@@ -9,10 +9,13 @@ class Setting extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'terms',
+        'mobile',
+        'email',
+        'socials',
         'verify_period',
+        'app_tax',
     ];
     protected $casts = [
-        'terms' => 'json',
+        'socials' => 'json',
     ];
 }

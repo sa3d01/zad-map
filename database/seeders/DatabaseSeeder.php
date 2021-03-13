@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             SliderSeeder::class,
             ProviderSeeder::class,
+            StorySeeder::class,
+            CategorySeeder::class,
+            ContactTypeSeeder::class,
         ]);
     }
 }

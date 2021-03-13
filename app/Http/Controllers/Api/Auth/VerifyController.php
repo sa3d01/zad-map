@@ -37,7 +37,7 @@ class VerifyController extends Controller
         $verificationCode = PhoneVerificationCode::where([
             'phone' => $request['phone'],
             'code' => $request['code'],
-        ])->first();
+        ])->latest()->first();
         if (!$verificationCode) {
             return response()->json(['message' => 'كود التفعيل غير صحيح! حاول مرة أخرى.'], 400);
         }

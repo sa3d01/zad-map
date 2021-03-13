@@ -20,10 +20,12 @@ Route::group([
 ], function () {
     // General
     Route::group(['namespace' => 'General', 'prefix' => 'general'], function () {
+        Route::get('settings', 'SettingController@getSettings');
         Route::get('cities', 'DropDownController@cities');
         Route::get('cities/{cityId}/districts', 'DropDownController@districts');
         Route::get('pages/{user_type}/{type}', 'PageController@getPage');
         Route::get('slider', 'SliderController@index');
+        Route::get('category', 'CategoryController@index');
     });
     // AUTH
     Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function () {
@@ -50,5 +52,30 @@ Route::group([
             });
         });
     });
+
+    Route::group([
+        'middleware' => JwtTokenIsValid::class,
+    ], function () {
+        //contact
+        Route::group([
+            'namespace' => 'Contact'
+        ], function () {
+            Route::get('contact-types', 'ContactController@contactTypes');
+            Route::post('contact', 'ContactController@store');
+
+        });
+        //provider
+        Route::group([
+            'namespace' => 'Provider'
+        ], function () {
+            Route::get('story-periods', 'StoryController@storyPeriods');
+            Route::post('story', 'StoryController@store');
+            Route::group(['prefix' => 'product'], function () {
+                Route::post('/upload-images', 'ProductController@uploadImages');
+                Route::post('/', 'ProductController@store');
+            });
+        });
+    });
+
 
 });
