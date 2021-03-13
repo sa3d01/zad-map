@@ -22,11 +22,12 @@ abstract class MasterController extends Controller
         return response()->json($response);
     }
 
-    public function sendError($error, $code = 400)
+    public function sendError($error,$data=[], $code = 400)
     {
         $response = [
             'status' => $code,
             'message' => $error,
+            'data' => $data,
         ];
         return response()->json($response, $code);
     }

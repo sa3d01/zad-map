@@ -18,7 +18,7 @@ class LoginController extends MasterController
             return $this->sendError('هذا الحساب غير موجود.');
         }
         if (!$user->phone_verified_at) {
-            return $this->sendError('هذا الحساب غير مفعل.');
+            return $this->sendError('هذا الحساب غير مفعل.',['phone_verified'=>false]);
         }
         if (auth('api')->attempt($credentials)) {
             return $this->sendResponse(new UserLoginResourse($user));
