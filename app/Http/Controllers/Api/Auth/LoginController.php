@@ -2,29 +2,28 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\User;
-use Carbon\Carbon;
 
-class LoginController extends Controller
+class LoginController extends MasterController
 {
-    public function login(LoginRequest $request):object
+    public function login(LoginRequest $request): object
     {
         //todo: check if provider approved
         $credentials = $request->only('phone', 'password');
-        $user = User::where(['phone' => $request['phone'],'type'=>$request['type']])->first();
-        if (!$user){
-            return response()->json(['status' => 400, 'message' => 'هذا الحساب غير موجود'], 400);
+        $user = User::where(['phone' => $request['phone'], 'type' => $request['type']])->first();
+        if (!$user) {
+            return $this->sendError('هذا الحساب غير موجود.');
         }
         if (!$user->phone_verified_at) {
-            return response()->json(['status' => 400, 'message' => 'هذا الحساب غير مفعل'], 400);
+            return $this->sendError('هذا الحساب غير مفعل.');
         }
         if (auth('api')->attempt($credentials)) {
-            return response()->json(new UserLoginResourse($user));
+            return $this->sendResponse(new UserLoginResourse($user));
         }
-        return response()->json(['status' => 400, 'message' => "كلمة المرور غير صحيحة."], 400);
+        return $this->sendError('كلمة المرور غير صحيحة.');
     }
 
     public function logout(): object
@@ -37,6 +36,6 @@ class LoginController extends Controller
             ]
         ]);
         auth('api')->logout();
-        return response()->json(['message' => "Logged out successfully."]);
+        return $this->sendResponse([], "Logged out successfully.");
     }
 }

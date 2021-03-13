@@ -3,12 +3,7 @@
 namespace App\Http\Controllers\Api\General;
 
 use App\Http\Controllers\Api\MasterController;
-use App\Http\Resources\DropDownCollection;
 use App\Models\Category;
-use App\Models\DropDown;
-use App\Models\Page;
-use App\Models\Slider;
-use Carbon\Carbon;
 
 class CategoryController extends MasterController
 {

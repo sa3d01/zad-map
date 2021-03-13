@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\UserRegisterationRequest;
 use App\Models\DropDown;
 use App\Models\User;
 use App\Traits\UserPhoneVerificationTrait;
 use Spatie\Permission\Models\Role;
 
-class RegisterController extends Controller
+class RegisterController extends MasterController
 {
     use UserPhoneVerificationTrait;
 
@@ -17,13 +17,13 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
         $data['last_ip'] = $request->ip();
-        $data['district_id']=$this->getDistrictId($request['district']);
+        $data['district_id'] = $this->getDistrictId($request['district']);
         $user = User::create($data);
         $user->refresh();
         $role = Role::findOrCreate($user->type);
         $user->assignRole($role);
         $this->createPhoneVerificationCodeForUser($user);
-        return response()->json([
+        return $this->sendResponse([
             "phone" => $request["phone"]
         ]);
     }

@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Api\Provider;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Provider\Product\storeProductRequest;
-use App\Http\Requests\Api\Provider\Story\storeStoryRequest;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\Story;
-use App\Models\StoryPeriod;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
