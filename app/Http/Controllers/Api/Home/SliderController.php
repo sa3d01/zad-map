@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\General;
+namespace App\Http\Controllers\Api\Home;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Models\Slider;

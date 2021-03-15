@@ -74,10 +74,10 @@ class User extends Authenticatable implements JWTSubject
         'deleted_at'
     ];
 
-    protected $appends = [
-        'is_completed_profile',
-        'image_url',
-    ];
+//    protected $appends = [
+//        'is_completed_profile',
+//        'image_url',
+//    ];
 
     protected function getIsCompletedProfileAttribute(): bool
     {
@@ -95,5 +95,16 @@ class User extends Authenticatable implements JWTSubject
     }
     public function products(){
         return $this->hasMany(Product::class);
+    }
+    protected function getImageAttribute()
+    {
+        $dest = $this->images_link;
+        try {
+            if ($this->attributes['image'])
+                return asset($dest) . '/' . $this->attributes['image'];
+            return asset(config('app.default_user'));
+        } catch (\Exception $e) {
+            return asset(config('app.default_user'));
+        }
     }
 }

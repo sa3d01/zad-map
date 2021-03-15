@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'zad-map'),
+    'name' => env('APP_NAME', 'zadMap'),
+    'logo' => 'media/images/logo.jpeg',
+    'default_user' => 'media/images/default.jpeg',
 
     /*
     |--------------------------------------------------------------------------

@@ -18,6 +18,12 @@ class Story extends Model
         'status',
         'approved_at',
     ];
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+    public function storyPeriod(){
+        return $this->belongsTo(StoryPeriod::class);
+    }
 
     private function upload_file($file)
     {

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             StorySeeder::class,
             CategorySeeder::class,
             ContactTypeSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

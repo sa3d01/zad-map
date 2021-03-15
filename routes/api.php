@@ -18,15 +18,6 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Api',
     'prefix' => 'v1',
 ], function () {
-    // General
-    Route::group(['namespace' => 'General', 'prefix' => 'general'], function () {
-        Route::get('settings', 'SettingController@getSettings');
-        Route::get('cities', 'DropDownController@cities');
-        Route::get('cities/{cityId}/districts', 'DropDownController@districts');
-        Route::get('pages/{user_type}/{type}', 'PageController@getPage');
-        Route::get('slider', 'SliderController@index');
-        Route::get('category', 'CategoryController@index');
-    });
     // AUTH
     Route::group(['namespace' => 'Auth', 'prefix' => 'auth'], function () {
         Route::post('register', 'RegisterController@register');
@@ -52,11 +43,32 @@ Route::group([
             });
         });
     });
-
+    // General
+    Route::group(['namespace' => 'General', 'prefix' => 'general'], function () {
+        Route::get('settings', 'SettingController@getSettings');
+        Route::get('cities', 'DropDownController@cities');
+        Route::get('cities/{cityId}/districts', 'DropDownController@districts');
+        Route::get('pages/{user_type}/{type}', 'PageController@getPage');
+    });
+    //Home
+    Route::group(['namespace' => 'Home', 'prefix' => 'home'], function () {
+        Route::get('slider', 'SliderController@index');
+        Route::get('story', 'StoryController@index');
+        Route::get('providers-map', 'ProviderController@providersMap');
+    });
+    //Category
+    Route::group(['prefix' => 'category','namespace' => 'Category'], function () {
+        Route::get('/', 'CategoryController@index');
+        Route::get('/{category_id}/provider', 'CategoryController@providers');
+        Route::get('/{category_id}/provider/{provider_id}/products', 'CategoryController@products');
+    });
+    //Profile
+    Route::get('provider/{provider_id}', 'Provider\ProviderController@show');
+    //Authed end points
     Route::group([
         'middleware' => JwtTokenIsValid::class,
     ], function () {
-        //contact
+        //Contact
         Route::group([
             'namespace' => 'Contact'
         ], function () {
