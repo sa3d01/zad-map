@@ -28,4 +28,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
         Route::post('/password/reset','ResetPasswordController@reset')->name('password.update');
     });
     Route::get('/', 'HomeController@index')->name('home');
+
+    Route::get('/profile', 'AdminController@profile')->name('profile');
+    Route::put('/profile', 'AdminController@updateProfile')->name('profile.update');
 });

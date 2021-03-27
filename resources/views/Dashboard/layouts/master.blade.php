@@ -11,11 +11,11 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ config('app.logo') }}">
     <!--Morris Chart-->
-    <link rel="stylesheet" href="assets/libs/morris-js/morris.css" />
+    <link rel="stylesheet" href="{{asset('assets/libs/morris-js/morris.css')}}" />
     <!-- App css -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
-    <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     @yield('styles')
 </head>
 <body>
@@ -39,11 +39,12 @@
             @include('Dashboard.layouts.footer')
         </div>
     </div>
-    <script src="assets/js/vendor.min.js"></script>
-    <script src="assets/libs/jquery-knob/jquery.knob.min.js"></script>
-    <script src="assets/libs/morris-js/morris.min.js"></script>
-    <script src="assets/libs/raphael/raphael.min.js"></script>
-    <script src="assets/js/pages/dashboard.init.js"></script>
-    <script src="assets/js/app.min.js"></script>
+    <script src="{{asset('assets/js/vendor.min.js')}}"></script>
+    <script src="{{asset('assets/libs/jquery-knob/jquery.knob.min.js')}}"></script>
+    <script src="{{asset('assets/libs/morris-js/morris.min.js')}}"></script>
+    <script src="{{asset('assets/libs/raphael/raphael.min.js')}}"></script>
+    <script src="{{asset('assets/js/pages/dashboard.init.js')}}"></script>
+    <script src="{{asset('assets/js/app.min.js')}}"></script>
+    @yield('script')
 </body>
 </html>

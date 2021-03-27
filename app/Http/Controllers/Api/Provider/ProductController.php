@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Provider;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Provider\Product\storeProductRequest;
-use App\Http\Resources\ProductCollection;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -56,6 +55,4 @@ class ProductController extends MasterController
         Product::create($data);
         return $this->sendResponse([]," تمت الإضافة بنجاح ..");
     }
-
-
 }

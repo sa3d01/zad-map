@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 abstract class MasterController extends Controller
@@ -21,6 +24,20 @@ abstract class MasterController extends Controller
     public function __construct()
     {
         $this->middleware('auth:admin');
+        $new_users_count=User::where('type','USER')->where('created_at','>',Carbon::now()->subDays(7))->count();
+        $all_users_count=User::where('type','USER')->count();
+
+        $new_providers_count=User::where('type','PROVIDER')->where('created_at','>',Carbon::now()->subDays(7))->count();
+        $all_providers_count=User::where('type','PROVIDER')->count();
+
+        $new_families_count=User::where('type','FAMILY')->where('created_at','>',Carbon::now()->subDays(7))->count();
+        $all_families_count=User::where('type','FAMILY')->count();
+
+        $new_deliveries_count=User::where('type','DELIVERY')->where('created_at','>',Carbon::now()->subDays(7))->count();
+        $all_deliveries_count=User::where('type','DELIVERY')->count();
+
+        $new_products_count=Product::where('created_at','>',Carbon::now()->subDays(7))->count();
+        $all_products_count=Product::count();
         view()->share(array(
             'module_name' => $this->module_name,
             'single_module_name' => $this->single_module_name,
@@ -30,6 +47,16 @@ abstract class MasterController extends Controller
             'create_fields' => $this->create_fields,
             'update_fields' => $this->update_fields,
             'json_fields' => $this->json_fields,
+            'new_users_count'=>$new_users_count,
+            'all_users_count'=>$all_users_count,
+            'new_providers_count'=>$new_providers_count,
+            'all_providers_count'=>$all_providers_count,
+            'new_families_count'=>$new_families_count,
+            'all_families_count'=>$all_families_count,
+            'new_deliveries_count'=>$new_deliveries_count,
+            'all_deliveries_count'=>$all_deliveries_count,
+            'new_products_count'=>$new_products_count,
+            'all_products_count'=>$all_products_count,
            ));
     }
 

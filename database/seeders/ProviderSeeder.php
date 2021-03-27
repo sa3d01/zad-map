@@ -15,11 +15,11 @@ class ProviderSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0;$i<3;$i++){
+        for ($i=0;$i<2;$i++){
             User::create([
                'type'=>'Provider' ,
-               'name'=>'Provider '.$i ,
-               'phone'=>'057854874'.$i,
+               'name'=>'New Provider '.$i ,
+               'phone'=>'057854871'.$i,
                 'phone_verified_at'=>Carbon::now(),
                 'password'=>'password',
                 'location->lat'=>'24.725555'.$i,
@@ -33,8 +33,8 @@ class ProviderSeeder extends Seeder
         for ($i=0;$i<4;$i++){
             User::create([
                'type'=>'FAMILY' ,
-               'name'=>'FAMILY '.$i ,
-               'phone'=>'057854875'.$i,
+               'name'=>'New FAMILY '.$i ,
+               'phone'=>'057854872'.$i,
                 'phone_verified_at'=>Carbon::now(),
                 'password'=>'password',
                 'location->lat'=>'24.725555'.$i,
@@ -45,11 +45,11 @@ class ProviderSeeder extends Seeder
                 'approved_at'=>Carbon::now()
             ]);
         }
-        for ($i=0;$i<10;$i++){
+        for ($i=0;$i<4;$i++){
             User::create([
                'type'=>'DELIVERY' ,
-               'name'=>'DELIVERY '.$i ,
-               'phone'=>'057854873'.$i,
+               'name'=>'New DELIVERY '.$i ,
+               'phone'=>'057854879'.$i,
                 'phone_verified_at'=>Carbon::now(),
                 'password'=>'password',
                 'location->lat'=>'24.725555'.$i,

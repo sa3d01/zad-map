@@ -4,7 +4,7 @@
         <a href="#" class="text-dark dropdown-toggle h5 mt-2 mb-1 d-block" data-toggle="dropdown">{{auth()->user()->name}}</a>
         <div class="dropdown-menu user-pro-dropdown">
             <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item notify-item">
+            <a href="{{route('admin.profile')}}" class="dropdown-item notify-item">
                 <i class="fe-user mr-1"></i>
                 <span>حسابى</span>
             </a>
