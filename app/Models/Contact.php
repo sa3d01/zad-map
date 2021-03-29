@@ -13,5 +13,14 @@ class Contact extends Model
         'user_id',
         'contact_type_id',
         'message',
+        'read',
     ];
+    public function user():object
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function contactType():object
+    {
+        return $this->belongsTo(ContactType::class);
+    }
 }

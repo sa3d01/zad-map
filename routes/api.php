@@ -3,17 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use \App\Http\Middleware\JwtTokenIsValid;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::group([
     'namespace' => 'App\Http\Controllers\Api',
     'prefix' => 'v1',
@@ -26,6 +15,7 @@ Route::group([
         Route::post('login', 'LoginController@login');
         // ForgotPassword
         Route::group(['prefix' => 'password'], function () {
+            Route::put('update', 'SettingController@updatePassword');
             Route::post('forgot', 'ResetPasswordController@forgotPassword');
             Route::post('resend', 'ResetPasswordController@resend');
             Route::post('code', 'ResetPasswordController@checkCode');
@@ -36,11 +26,8 @@ Route::group([
             'middleware' => JwtTokenIsValid::class,
         ], function () {
             Route::post('logout', 'LoginController@logout');
-            Route::group(['prefix' => 'settings'], function () {
-                Route::put('/', 'SettingController@updateProfile');
-                Route::put('password', 'SettingController@updatePassword');
-                Route::post('upload-image', 'SettingController@uploadImageAvatar');
-            });
+            Route::post('upload-image', 'SettingController@uploadImage');
+            Route::put('update', 'SettingController@updateProfile');
         });
     });
     // General
@@ -76,7 +63,7 @@ Route::group([
             Route::post('contact', 'ContactController@store');
 
         });
-        //provider
+        //Provider
         Route::group([
             'namespace' => 'Provider'
         ], function () {
@@ -85,6 +72,16 @@ Route::group([
             Route::group(['prefix' => 'product'], function () {
                 Route::post('/upload-images', 'ProductController@uploadImages');
                 Route::post('/', 'ProductController@store');
+            });
+        });
+        //Cart
+        Route::group([
+            'namespace' => 'Cart',
+        ], function () {
+            Route::post('product/{product_id}/cart', 'CartController@editCart');
+            Route::group(['prefix' => 'cart'], function () {
+                Route::get('/', 'CartController@index');
+                Route::put('/update-counts', 'CartController@updateCounts');
             });
         });
     });

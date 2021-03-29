@@ -22,17 +22,11 @@
         </div>
     </div><!-- end col -->
 
-    <div class="col-xl-4">
-        <div class="card-box">
-            <h4 class="header-title mt-0">الطلبات الجديدة</h4>
-            <div id="morris-bar-example" dir="ltr" style="height: 280px;" class="morris-chart"></div>
-        </div>
-    </div><!-- end col -->
 
-    <div class="col-xl-4">
+    <div class="col-xl-8">
         <div class="card-box">
-            <h4 class="header-title mt-0">Total Revenue</h4>
-            <div id="morris-line-example" dir="ltr" style="height: 280px;" class="morris-chart"></div>
+            <h4 class="header-title mt-0">إحصائيات الطلبات خلال أسبوع ماضى</h4>
+            <div id="morris-line-orders" dir="ltr" style="height: 280px;" class="morris-chart"></div>
         </div>
     </div><!-- end col -->
 </div>

@@ -5,7 +5,7 @@
         <div class="container-fluid">
             @include('Dashboard.Partials.main-cards')
             @include('Dashboard.Partials.charts')
-            @include('Dashboard.Partials.new_providers')
+{{--            @include('Dashboard.Partials.new_providers')--}}
             @include('Dashboard.Partials.new_orders')
         </div>
     </div>
@@ -32,16 +32,30 @@
                 {label:"مندوبى التوصيل", value:deliveries},
             ]
         });
-        Morris.Bar({
-            element: 'morris-bar-orders',
+
+
+        new Morris.Line({
+            element: 'morris-line-orders',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
             data: [
-                { y: '2006', a: 100},
-                { y: '2007', a: 75},
-                { y: '2008', a: 50}
+                { day: '1', delivered: 20, in_progress: 2 ,new: 25, cancelled: 12 },
+                { day: '2', delivered: 15, in_progress: 7 ,new: 24, cancelled: 21 },
+                { day: '3', delivered: 0, in_progress: 0 ,new: 0, cancelled: 1 },
+                { day: '4', delivered: 23, in_progress: 21 ,new: 20, cancelled: 2 },
+                { day: '5', delivered: 24, in_progress: 22 ,new: 21, cancelled: 12 },
+                { day: '6', delivered: 2, in_progress: 21 ,new: 20, cancelled: 0 },
+                { day: '7', delivered: 12, in_progress: 12 ,new: 2, cancelled: 0 },
             ],
-            xkey: 'y',
-            ykeys: ['a'],
-            labels: ['Series A']
+            // The name of the data record attribute that contains x-values.
+            xkey: 'day',
+            parseTime: false,
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['delivered','in_progress','new','cancelled'],
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: ['delivered','in_progress','new','cancelled'],
+            lineColors: ['#32a852','#214185','#e56119','#db110d']
         });
     </script>
 @endsection

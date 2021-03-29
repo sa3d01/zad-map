@@ -39,6 +39,12 @@ class SettingSeeder extends Seeder
             'title'=>'عن التطبيق',
             'note'=>'نص عن التطبيق',
         ]);
+        Page::create([
+            'type'=>'percent',
+            'for'=>'all',
+            'title'=>'عمولة التطبيق',
+            'note'=>'نص عن عمولة التطبيق',
+        ]);
         Setting::create([
             'mobile'=>'+9665xxxxxxxx',
             'email'=>'info@zad-map.com',

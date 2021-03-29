@@ -24,14 +24,24 @@ class ProfileUpdateRequest extends ApiMasterRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:110',
-            'email' => 'email|max:90|unique:users,email,' . \request()->user()->id,
-            'phone' => 'required|string|max:90|unique:users,phone,' . \request()->user()->id,
-            'password' => 'required|string|min:6|max:15',
-            'city_id' => 'required|numeric|exists:drop_downs,id',
-            'district_id' => 'required|numeric|exists:drop_downs,id',
+            'name' => 'nullable|string|max:110',
+            'phone' => 'nullable|string|max:90|unique:users,phone,' . \request()->user()->id,
+            'city_id' => 'nullable|numeric|exists:drop_downs,id',
+            'district_id' => 'nullable|numeric|exists:drop_downs,id',
             'device.id' => 'required',
             'device.os' => 'required|in:android,ios',
+            'location.lat' => 'nullable',
+            'location.lng' => 'nullable',
+            'location.address' => 'nullable',
+            'car.note' => 'nullable',
+            'car.delivery_price' => 'nullable',
+            'car.brand' => 'nullable',
+            'car.color' => 'nullable',
+            'car.year' => 'nullable',
+            'car.identity' => 'nullable',
+            'car.end_insurance_date' => 'nullable',
+            'bank.name' => 'nullable',
+            'bank.account_number' => 'nullable',
         ];
     }
     public function messages()
