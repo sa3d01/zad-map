@@ -96,12 +96,12 @@
             <div class="widget-chart-1">
                 <div class="widget-chart-box-1 float-left" dir="ltr">
                     <input data-plugin="knob" data-width="80" data-height="80" data-fgColor="#01011a"
-                           data-bgColor="#1a1a30" value="{{round(($new_deliveries_count/$all_deliveries_count)*100)}}"
+                           data-bgColor="#1a1a30" value="{{round(($new_orders_count/$all_orders_count)*100)}}"
                            data-skin="tron" data-angleOffset="180" data-readOnly=true
                            data-thickness=".15"/>
                 </div>
                 <div class="widget-detail-1 text-right">
-                    <h2 class="font-weight-normal pt-2 mb-1"> {{$new_deliveries_count}} </h2>
+                    <h2 class="font-weight-normal pt-2 mb-1"> {{$new_orders_count}} </h2>
                     <p class="text-muted mb-1">خلال هذا الأسبوع</p>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
@@ -38,6 +39,12 @@ abstract class MasterController extends Controller
 
         $new_products_count=Product::where('created_at','>',Carbon::now()->subDays(7))->count();
         $all_products_count=Product::count();
+
+        $new_orders_count=Order::where('created_at','>',Carbon::now()->subDays(7))->where('status','new')->count();
+        $all_orders_count=Order::count();
+
+        $seven_orders=Order::where('created_at','>',Carbon::now()->subDays(7))->orderBy('created_at','asc')->get();
+
         view()->share(array(
             'module_name' => $this->module_name,
             'single_module_name' => $this->single_module_name,
@@ -48,15 +55,18 @@ abstract class MasterController extends Controller
             'update_fields' => $this->update_fields,
             'json_fields' => $this->json_fields,
             'new_users_count'=>$new_users_count,
-            'all_users_count'=>$all_users_count,
+            'all_users_count'=>$all_users_count>0?$all_users_count:1,
             'new_providers_count'=>$new_providers_count,
-            'all_providers_count'=>$all_providers_count,
+            'all_providers_count'=>$all_providers_count>0?$all_providers_count:1,
             'new_families_count'=>$new_families_count,
-            'all_families_count'=>$all_families_count,
+            'all_families_count'=>$all_families_count>0?$all_families_count:1,
             'new_deliveries_count'=>$new_deliveries_count,
-            'all_deliveries_count'=>$all_deliveries_count,
+            'all_deliveries_count'=>$all_deliveries_count>0?$all_deliveries_count:1,
             'new_products_count'=>$new_products_count,
-            'all_products_count'=>$all_products_count,
+            'all_products_count'=>$all_products_count>0?$all_products_count:1,
+            'new_orders_count'=>$new_orders_count,
+            'all_orders_count'=>$all_orders_count>0?$all_orders_count:1,
+            'seven_orders'=>$seven_orders,
            ));
     }
 

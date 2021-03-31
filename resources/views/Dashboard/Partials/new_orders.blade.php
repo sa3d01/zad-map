@@ -16,7 +16,7 @@
                 @foreach(\App\Models\Contact::where('read',false)->get() as $contact)
                     <div class="inbox-item">
                     <a href="#">
-                        <div class="inbox-item-img"><img src="{{$contact->user->image}}" class="rounded-circle" alt="{{$contact->user->name}}"></div>
+                        <div class="inbox-item-img"><img style="height: 40px;width: 40px" src="{{$contact->user->image}}" class="rounded-circle" alt="{{$contact->user->name}}"></div>
                         <h5 class="inbox-item-author mt-0 mb-1">{{$contact->user->name}}</h5>
                         <p class="inbox-item-text">{{$contact->message}}</p>
                         <p class="inbox-item-date">{{\Carbon\Carbon::parse($contact->created_at)->diffForHumans()}}</p>
@@ -45,64 +45,24 @@
                     <thead>
                     <tr>
                         <th>#</th>
-                        <th>Project Name</th>
-                        <th>Start Date</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Assign</th>
+                        <th>المستخدم</th>
+                        <th>تاريخ الطلب</th>
+                        <th>تاريخ الإستلام</th>
+                        <th>حالة الطلب</th>
+                        <th>مزود الخدمة</th>
                     </tr>
                     </thead>
                     <tbody>
+                    @foreach($seven_orders as $last_order)
                     <tr>
-                        <td>1</td>
-                        <td>Adminto Admin v1</td>
-                        <td>01/01/2017</td>
-                        <td>26/04/2017</td>
-                        <td><span class="badge badge-danger">Released</span></td>
-                        <td>Coderthemes</td>
+                        <td>{{$last_order->id}}</td>
+                        <td>{{$last_order->user->name}}</td>
+                        <td>{{\Carbon\Carbon::parse($last_order->created_at)->format('Y-M-d')}}</td>
+                        <td>{{\Carbon\Carbon::parse($last_order->deliver_at)->format('Y-M-d')}}</td>
+                        <td><span class="badge @if($last_order->status=='rejected') badge-danger @elseif($last_order->status=='completed') badge-success @elseif($last_order->status=='new') badge-primary @elseif($last_order->status=='in_progress') badge-purple @else badge-pill @endif">{{$last_order->status}}</span></td>
+                        <td>{{$last_order->provider->name}}</td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Adminto Frontend v1</td>
-                        <td>01/01/2017</td>
-                        <td>26/04/2017</td>
-                        <td><span class="badge badge-success">Released</span></td>
-                        <td>Adminto admin</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Adminto Admin v1.1</td>
-                        <td>01/05/2017</td>
-                        <td>10/05/2017</td>
-                        <td><span class="badge badge-pink">Pending</span></td>
-                        <td>Coderthemes</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Adminto Frontend v1.1</td>
-                        <td>01/01/2017</td>
-                        <td>31/05/2017</td>
-                        <td><span class="badge badge-purple">Work in Progress</span>
-                        </td>
-                        <td>Adminto admin</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Adminto Admin v1.3</td>
-                        <td>01/01/2017</td>
-                        <td>31/05/2017</td>
-                        <td><span class="badge badge-warning">Coming soon</span></td>
-                        <td>Coderthemes</td>
-                    </tr>
-
-                    <tr>
-                        <td>6</td>
-                        <td>Adminto Admin v1.3</td>
-                        <td>01/01/2017</td>
-                        <td>31/05/2017</td>
-                        <td><span class="badge badge-primary">Coming soon</span></td>
-                        <td>Adminto admin</td>
-                    </tr>
+                    @endforeach
 
                     </tbody>
                 </table>

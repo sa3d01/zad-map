@@ -26,7 +26,12 @@
     <div class="col-xl-8">
         <div class="card-box">
             <h4 class="header-title mt-0">إحصائيات الطلبات خلال أسبوع ماضى</h4>
-            <div id="morris-line-orders" dir="ltr" style="height: 280px;" class="morris-chart"></div>
+            <div hidden id="seven-orders">
+                @foreach($seven_orders as $chart_order)
+                    <div data-order="{{$chart_order}}"></div>
+                @endforeach
+            </div>
+            <div data-orders="{{$seven_orders}}" id="morris-line-orders" dir="ltr" style="height: 280px;" class="morris-chart"></div>
         </div>
     </div><!-- end col -->
 </div>
