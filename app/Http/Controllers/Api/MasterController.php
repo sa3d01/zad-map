@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderResourse;
+use App\Models\Notification;
+use Edujugon\PushNotification\PushNotification;
 
 abstract class MasterController extends Controller
 {
@@ -30,5 +33,42 @@ abstract class MasterController extends Controller
             'data' => $data,
         ];
         return response()->json($response, $code);
+    }
+
+    function fcmPush($title,$user,$order)
+    {
+        $push = new PushNotification('fcm');
+        $msg = [
+            'notification' => array('title' => $title, 'sound' => 'default'),
+            'data' => [
+                'title' => $title,
+                'body' => $title,
+                'status' => $order->status,
+                'type' => 'order',
+                'order' => new OrderResourse($order),
+            ],
+            'priority' => 'high',
+        ];
+        $push->setMessage($msg)
+            ->setDevicesToken($user->device['id'])
+            ->send();
+    }
+    public function notify_provider($provider,$title, $order)
+    {
+        $this->fcmPush($title,$provider,$order);
+        $notification['title'] = $title;
+        $notification['note'] = $title;
+        $notification['receiver_id'] = $provider->id;
+        $notification['order_id'] = $order->id;
+        Notification::create($notification);
+    }
+    public function notify_user($user,$title, $order)
+    {
+        $this->fcmPush($title,$user,$order);
+        $notification['title'] = $title;
+        $notification['note'] = $title;
+        $notification['receiver_id'] = $user->id;
+        $notification['order_id'] = $order->id;
+        Notification::create($notification);
     }
 }

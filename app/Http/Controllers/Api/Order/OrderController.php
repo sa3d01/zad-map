@@ -29,7 +29,13 @@ class OrderController extends MasterController
         $user = auth('api')->user();
         if ($user['type'] === 'USER') {
             $orders = new OrderCollection(Order::where(['user_id' => $user->id, 'status' => $status])->latest()->get());
-        } else {
+        } elseif($user['type'] ==='DELIVERY') {
+            if ($status=='new'){
+                $orders = new OrderCollection(Order::where(['deliver_by'=>'delivery','delivery_id'=>null,'status' => $status])->latest()->get());
+            }else{
+                $orders = new OrderCollection(Order::where(['delivery_id' => $user->id, 'status' => $status])->latest()->get());
+            }
+        }else {
             $orders = new OrderCollection(Order::where(['provider_id' => $user->id, 'status' => $status])->latest()->get());
         }
         return $this->sendResponse($orders);
@@ -105,7 +111,13 @@ class OrderController extends MasterController
                     'cart_item_id' => $cart_item->id,
                 ]);
             }
-            $this->notify_provider(User::find($provider_id), $order);
+            //check deliver by
+            if ($order->deliver_by!='delivery'){
+                $title = 'لديك طلب جديد عن طريق ' . $order->user->name;
+                $this->notify_provider(User::find($provider_id),$title, $order);
+            }else{
+                $this->notify_deliveries($order);
+            }
         }
         $cart->update([
             'ordered' => 1
@@ -113,30 +125,19 @@ class OrderController extends MasterController
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة مزود الخدمة");
     }
 
-    public function notify_provider($provider, $order)
+    public function notify_deliveries($order)
     {
         $user = auth('api')->user();
-        $title = 'لديك طلب جديد عن طريق ' . $user['name'];
-        $provider->device_type == 'ios' ? $not = array('title' => $title, 'sound' => 'default') : $not = null;
-        $push = new PushNotification('fcm');
-        $msg = [
-            'notification' => array('title' => $title, 'sound' => 'default'),
-            'data' => [
-                'title' => $title,
-                'body' => $title,
-                'status' => $order->status,
-                'type' => 'order',
-                'order' => new OrderResourse($order),
-            ],
-            'priority' => 'high',
-        ];
-        $push->setMessage($msg)
-            ->setDevicesToken($provider->device['id'])
-            ->send();
-        $notification['title'] = $title;
-        $notification['note'] = $title;
-        $notification['receiver_id'] = $provider->id;
-        $notification['order_id'] = $order->id;
-        Notification::create($notification);
+        $title = 'لديك طلب توصيل جديد عن طريق ' . $user['name'];
+        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->get();
+        foreach ($deliveries as $delivery){
+            $this->fcmPush($title,$delivery,$order);
+            $notification['title'] = $title;
+            $notification['note'] = $title;
+            $notification['receiver_id'] = $delivery->id;
+            $notification['order_id'] = $order->id;
+            Notification::create($notification);
+        }
     }
+
 }

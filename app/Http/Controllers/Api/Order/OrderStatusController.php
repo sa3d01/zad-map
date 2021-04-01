@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Order;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Order\CancelOrderRequest;
 use App\Models\CancelOrder;
+use App\Models\Notification;
 use App\Models\Order;
+use App\Models\User;
 
 class OrderStatusController extends MasterController
 {
@@ -45,13 +47,55 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
-            return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
+        if (auth('api')->user()->type=='DELIVERY'){
+            if ($order->delivery_id != null || $order->deliver_by != 'delivery') {
+                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
+            }
+            $title = 'لديك طلب جديد عن طريق ' . $order->user->name;
+            $this->notify_provider($order->provider,$title, $order);
+            $order->update([
+               'delivery_id'=>auth('api')->id()
+            ]);
+            $this->notify_user($order->user,'تمت الموافقة على طلب التوصيل من قبل '.auth('api')->user()->name, $order);
+
+        }else{
+            if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
+                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
+            }
+            $order->update([
+                'status'=>'pre_paid'
+            ]);
+            $this->notify_user($order->user,'تمت الموافقة على طلبك من قبل '.auth('api')->user()->name, $order);
         }
-        $order->update([
-           'status'=>'pre_paid'
-        ]);
-        //todo:notify
         return $this->sendResponse([], 'تم قبول الطلب بنجاح');
     }
+    public function payOrder($id): object
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        if (auth('api')->user()->type=='DELIVERY'){
+            if ($order->delivery_id != null || $order->deliver_by != 'delivery') {
+                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
+            }
+            $title = 'لديك طلب جديد عن طريق ' . $order->user->name;
+            $this->notify_provider($order->provider,$title, $order);
+            $order->update([
+               'delivery_id'=>auth('api')->id()
+            ]);
+            $this->notify_user($order->user,'تمت الموافقة على طلب التوصيل من قبل '.auth('api')->user()->name, $order);
+
+        }else{
+            if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
+                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
+            }
+            $order->update([
+                'status'=>'pre_paid'
+            ]);
+            $this->notify_user($order->user,'تمت الموافقة على طلبك من قبل '.auth('api')->user()->name, $order);
+        }
+        return $this->sendResponse([], 'تم قبول الطلب بنجاح');
+    }
+
 }

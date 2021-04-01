@@ -21,6 +21,7 @@ class SettingController extends MasterController
         $data = [];
         $data['verify_period'] = (integer)$setting->verify_period;
         $data['app_tax'] = (integer)$setting->app_tax;
+        $data['delivery_price'] = (integer)$setting->delivery_price;
         $data['km_delivery_price'] = (integer)$setting->km_delivery_price;
         $data['mobile'] = $setting->mobile;
         $data['email'] = $setting->email;

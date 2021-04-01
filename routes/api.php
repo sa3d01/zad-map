@@ -84,6 +84,15 @@ Route::group([
                 Route::put('/update-counts', 'CartController@updateCounts');
             });
         });
+        //Notification
+        Route::group([
+            'namespace' => 'Notification',
+        ], function () {
+            Route::group(['prefix' => 'notifications'], function () {
+                Route::get('/', 'NotificationController@index');
+                Route::get('/{id}', 'NotificationController@show');
+            });
+        });
         //Order
         Route::group([
             'namespace' => 'Order',
