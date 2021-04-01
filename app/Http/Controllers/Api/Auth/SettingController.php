@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\PasswordUpdateRequest;
 use App\Http\Requests\Api\Auth\ProfileUpdateRequest;
 use App\Http\Requests\Api\UploadImageRequest;
+use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
@@ -22,7 +23,6 @@ class SettingController extends MasterController
             ]);
         }
         $car->update([
-            'delivery_price'=>$request['car']['delivery_price'],
             'brand'=>$request['car']['brand'],
             'color'=>$request['car']['color'],
             'year'=>$request['car']['year'],
@@ -32,23 +32,36 @@ class SettingController extends MasterController
     }
     function updateBankData($request)
     {
-        $bank=Bank::where('user_id',auth('api')->id())->latest()->first();
-        if (!$bank){
-            $bank=Bank::create([
-                'user_id'=> auth('api')->id()
-            ]);
+        foreach ($request['banks'] as $bank){
+            $old_bank_name=Bank::where(['user_id'=>auth('api')->id(),'name'=>$bank['name']])->latest()->first();
+            if ($old_bank_name){
+                $old_bank_name->update([
+                    'user_id'=> auth('api')->id(),
+                    'name'=> $bank['name'],
+                    'account_number'=> $bank['account_number'],
+                ]);
+            } else{
+                Bank::create([
+                    'user_id'=> auth('api')->id(),
+                    'name'=> $bank['name'],
+                    'account_number'=> $bank['account_number'],
+                ]);
+            }
         }
-        $bank->update([
-            'name'=>$request['bank']['name'],
-            'account_number'=>$request['bank']['account_number'],
-        ]);
     }
+
     public function updateProfile(ProfileUpdateRequest $request): object
     {
         $user = auth('api')->user();
-        if ($user['type']=='PROVIDER'){
-            $this->updateCarData($request->validated());
-            $this->updateBankData($request->validated());
+        if ($user['type']!='USER'){
+            if ($request['car']){
+                $this->updateCarData($request->validated());
+            }
+            if ($request['banks']){
+                $this->updateBankData($request->validated());
+            }
+            $user->update($request->validated());
+            return $this->sendResponse(new ProviderLoginResourse($user));
         }
         $user->update($request->validated());
         return $this->sendResponse(new UserLoginResourse($user));
@@ -61,7 +74,11 @@ class SettingController extends MasterController
             $user->update([
                 'password' => $request['new_password'],
             ]);
-            return $this->sendResponse(new UserLoginResourse($user));
+            if ($user['type']!='USER'){
+                return $this->sendResponse(new ProviderLoginResourse($user));
+            }else{
+                return $this->sendResponse(new UserLoginResourse($user));
+            }
         }
         return $this->sendError('كلمة المرور غير صحيحة.');
     }

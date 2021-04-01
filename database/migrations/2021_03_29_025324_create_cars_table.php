@@ -17,7 +17,6 @@ class CreateCarsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->text('note')->nullable();
-            $table->integer('delivery_price')->nullable();
             $table->char('brand')->nullable();
             $table->char('color')->nullable();
             $table->char('year')->nullable();

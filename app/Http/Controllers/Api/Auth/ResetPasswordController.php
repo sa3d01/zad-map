@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Auth\PasswordReset\CheckTokenRequest;
 use App\Http\Requests\Api\Auth\PasswordReset\ForgotPasswordRequest;
 use App\Http\Requests\Api\Auth\PasswordReset\ResendForgotPasswordRequest;
 use App\Http\Requests\Api\Auth\PasswordReset\SetPasswordRequest;
+use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\PasswordReset;
 use App\Models\User;
@@ -64,7 +65,11 @@ class ResetPasswordController extends MasterController
             $passwordResetObject->update(['verified' => Carbon::now()]);
             $user->update(['password' => $request['password']]);
         });
-        return $this->sendResponse(new UserLoginResourse($user));
+        if ($user['type']!='USER'){
+            return $this->sendResponse(new ProviderLoginResourse($user));
+        }else{
+            return $this->sendResponse(new UserLoginResourse($user));
+        }
     }
 
 }

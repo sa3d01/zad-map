@@ -34,14 +34,12 @@ class ProfileUpdateRequest extends ApiMasterRequest
             'location.lng' => 'nullable',
             'location.address' => 'nullable',
             'car.note' => 'nullable',
-            'car.delivery_price' => 'nullable',
             'car.brand' => 'nullable',
             'car.color' => 'nullable',
             'car.year' => 'nullable',
             'car.identity' => 'nullable',
             'car.end_insurance_date' => 'nullable',
-            'bank.name' => 'nullable',
-            'bank.account_number' => 'nullable',
+            'banks' => 'array',
         ];
     }
     public function messages()

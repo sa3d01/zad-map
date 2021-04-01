@@ -84,6 +84,19 @@ Route::group([
                 Route::put('/update-counts', 'CartController@updateCounts');
             });
         });
+        //Order
+        Route::group([
+            'namespace' => 'Order',
+        ], function () {
+            Route::group(['prefix' => 'order'], function () {
+                Route::post('/', 'OrderController@store');
+                Route::get('/{status}/filter', 'OrderController@filteredOrders');
+                Route::get('/{id}', 'OrderController@show');
+                Route::put('/{id}', 'OrderController@update');
+                Route::post('/{id}/cancel', 'OrderStatusController@cancelOrder');
+                Route::post('/{id}/accept', 'OrderStatusController@acceptOrder');
+            });
+        });
     });
 
 

@@ -14,7 +14,7 @@ class CartCollection extends ResourceCollection
         foreach ($this as $obj) {
             $product = Product::find($obj['product_id']);
             $arr['id'] = (int)$product->id;
-            $arr['cart_item'] = (int)$obj->id;
+            $arr['cart_item_id'] = (int)$obj->id;
             $arr['count'] = (int)$obj->count;
             $arr['provider']['id'] = $product->user_id;
             $arr['provider']['name'] = $product->user->name;
@@ -24,8 +24,8 @@ class CartCollection extends ResourceCollection
             $arr['in_cart'] = true;
             $subtotal+=$product->price*$obj->count;
             $data['products'][] = $arr;
+            $data['total_price'] =(double)$subtotal;
         }
-        $data['total_price'] =(double)$subtotal;
         return $data;
     }
 }

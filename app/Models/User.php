@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use phpDocumentor\Reflection\Types\Object_;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -20,15 +21,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
-    public function getJWTCustomClaims()
+    public function getJWTCustomClaims():array
     {
         return [];
     }
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $fillable = [
         'type',
         'name',
@@ -48,21 +45,11 @@ class User extends Authenticatable implements JWTSubject
         'marketer_id',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'last_login_at' => 'datetime',
@@ -74,10 +61,6 @@ class User extends Authenticatable implements JWTSubject
         'deleted_at'
     ];
 
-//    protected $appends = [
-//        'is_completed_profile',
-//        'image_url',
-//    ];
 
     protected function getIsCompletedProfileAttribute(): bool
     {
@@ -87,16 +70,37 @@ class User extends Authenticatable implements JWTSubject
         return false;
     }
 
-    public function city(){
+    public function city():object
+    {
         return $this->belongsTo(DropDown::class,'city_id','id');
     }
-    public function district(){
+    public function district():object
+    {
         return $this->belongsTo(DropDown::class,'district_id','id');
     }
-    public function products(){
+    public function products():object
+    {
         return $this->hasMany(Product::class);
     }
-    protected function getImageAttribute()
+    public function banks():object
+    {
+        return $this->hasMany(Bank::class);
+    }
+    public function car():object
+    {
+        return $this->hasOne(Car::class);
+    }
+    public function cartItemsToOrder():object
+    {
+        $cart=Cart::where(['user_id'=>$this['id'],'ordered'=>0])->latest()->first();
+        if ($cart)
+        {
+            return $cart->cartItems;
+        }
+        return new Object_();
+    }
+
+    protected function getImageAttribute():string
     {
         $dest = $this->images_link;
         try {

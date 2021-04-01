@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+use phpDocumentor\Reflection\Types\Object_;
+
+class OrderResourse extends JsonResource
+{
+    public function toArray($request)
+    {
+        return [
+            'id' => (int)$this['id'],
+            'user' => [
+                'id' => $this['user_id'],
+                'name' => $this->user->name,
+                'phone' => $this->user->phone,
+                'location' => $this->user->location,
+            ],
+            'provider' => [
+                'id' => $this['provider_id'],
+                'name' => $this->provider->name,
+                'location' => $this->provider->location,
+                'phone' => $this->provider->phone,
+                'rating' => 3.5,
+            ],
+            'delivery_id' => $this->delivery_id ?? new Object_(),
+            'deliver_by' => $this->deliver_by,
+            'deliver_at' => $this->deliver_at,
+            'status' => $this->status,
+            'products'=>new OrderItemCollection($this->orderItems),
+            'price' => $this->price(),
+            'delivery' => $this->orderItems->first()->cartItem->product->delivery_price,
+            'total_price' => $this->price()+($this->orderItems->first()->cartItem->product->delivery_price),
+            'cancel_reason'=>$this->cancelReason()
+        ];
+    }
+}

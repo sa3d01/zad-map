@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\LoginRequest;
+use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\User;
 
@@ -21,7 +22,11 @@ class LoginController extends MasterController
             return $this->sendError('هذا الحساب غير مفعل.',['phone_verified'=>false]);
         }
         if (auth('api')->attempt($credentials)) {
-            return $this->sendResponse(new UserLoginResourse($user));
+            if ($user['type']!='USER'){
+                return $this->sendResponse(new ProviderLoginResourse($user));
+            }else{
+                return $this->sendResponse(new UserLoginResourse($user));
+            }
         }
         return $this->sendError('كلمة المرور غير صحيحة.');
     }

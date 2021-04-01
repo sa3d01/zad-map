@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Car extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id','note','delivery_price','brand','color','year','identity','insurance_image','end_insurance_date','identity_image','drive_image'];
+    protected $fillable = ['user_id','note','brand','color','year','identity','insurance_image','end_insurance_date','identity_image','drive_image'];
 
 
     public function user():object

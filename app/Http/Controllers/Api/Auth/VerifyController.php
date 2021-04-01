@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\ResendPhoneVerificationRequest;
 use App\Http\Requests\Api\Auth\VerifyPhoneRequest;
+use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\PhoneVerificationCode;
 use App\Models\User;
@@ -50,6 +51,10 @@ class VerifyController extends MasterController
             $verificationCode->update(['verified_at' => $now]);
             $user->update(['phone_verified_at' => $now]);
         });
-        return $this->sendResponse(new UserLoginResourse($user));
+        if ($user['type']!='USER'){
+            return $this->sendResponse(new ProviderLoginResourse($user));
+        }else{
+            return $this->sendResponse(new UserLoginResourse($user));
+        }
     }
 }
