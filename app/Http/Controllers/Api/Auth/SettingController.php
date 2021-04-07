@@ -11,6 +11,7 @@ use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use PhpParser\Node\Expr\Cast\Object_;
 
 class SettingController extends MasterController
@@ -93,9 +94,10 @@ class SettingController extends MasterController
             ]);
             $image=$user->image;
         }elseif ($request['type']=='transfer') {
-            return $this->sendResponse([
-                "image" => '$image'
-            ]);
+            $file=$request->file('image');
+            $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $file->move('media/image/transfer/', $filename);
+            $image= $filename;
         }else{
             $image_type=$request['type'];
             $car=Car::where('user_id',auth('api')->id())->latest()->first();
