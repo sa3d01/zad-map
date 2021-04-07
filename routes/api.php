@@ -51,6 +51,7 @@ Route::group([
     });
     //Profile
     Route::get('provider/{provider_id}', 'Provider\ProviderController@show');
+    Route::get('provider/{provider_id}/products', 'Provider\ProductController@list');
     //Authed end points
     Route::group([
         'middleware' => JwtTokenIsValid::class,

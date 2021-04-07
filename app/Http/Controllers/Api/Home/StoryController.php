@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Home;
 use App\Http\Controllers\Api\MasterController;
 use App\Models\Slider;
 use App\Models\Story;
+use App\Models\User;
 use Carbon\Carbon;
 
 class StoryController extends MasterController
@@ -16,25 +17,33 @@ class StoryController extends MasterController
         $this->model = $model;
         parent::__construct();
     }
-    public function index()
+    public function index():object
     {
-        $data=Story::where('approved_at','!=',null)->get()->filter(function($story) {
-            $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
-            $endTime=Carbon::parse($story->approved_at)->addDays($story->storyPeriod->story_period)->format('Y-M-d');
-            if (Carbon::now()->between($approved, $endTime)) {
-                return $story;
-            }
-        });
+        $users_stories= Story::where('approved_at','!=',null)->get()->groupBy('user_id');
         $results=[];
-        foreach ($data as $datum){
-            $result['id']=$datum->id;
-            $result['media']=$datum->media;
-            $result['media_type']=$datum->media_type;
-            $result['user']=[
-                'id'=>$datum->user_id,
-                'name'=>$datum->user->name,
+        foreach ($users_stories as $user_id=>$stories_of_user){
+            $user=User::find($user_id);
+            $arr['user']=[
+                'id'=>$user_id,
+                'name'=>$user->name,
+                'image'=>$user->image,
             ];
-            $results[]=$result;
+            $stories_data=$stories_of_user->filter(function($story) {
+                $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
+                $endTime=Carbon::parse($story->approved_at)->addDays($story->storyPeriod->story_period)->format('Y-M-d');
+                if (Carbon::now()->between($approved, $endTime)) {
+                    return $story;
+                }
+            });
+            $stories=[];
+            foreach ($stories_data as $datum){
+                $result['id']=$datum->id;
+                $result['media']=$datum->media;
+                $result['media_type']=$datum->media_type;
+                $stories[]=$result;
+            }
+            $arr['stories']=$stories;
+            $results[]=$arr;
         }
         return $this->sendResponse($results);
     }

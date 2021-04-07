@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Provider;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Provider\Product\storeProductRequest;
+use App\Http\Resources\ProductCollection;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -54,5 +55,14 @@ class ProductController extends MasterController
         $data['user_id'] = auth()->id();
         Product::create($data);
         return $this->sendResponse([]," تمت الإضافة بنجاح ..");
+    }
+
+    public function list($provider_id):object
+    {
+        $provider=User::find($provider_id);
+        if (!$provider){
+            return $this->sendError('توجد مشكلة بالبيانات');
+        }
+        return $this->sendResponse(new ProductCollection(Product::where('user_id',$provider_id)->latest()->get()));
     }
 }
