@@ -22,8 +22,8 @@ class UploadImageRequest extends ApiMasterRequest
     public function rules()
     {
         return [
-            'type' => 'required|in:avatar,insurance_image,identity_image,drive_image',
-            'image' => 'required|mimes:png,jpg,jpeg',
+            'type' => 'required|in:avatar,insurance_image,identity_image,drive_image,transfer',
+            'image' => 'required|image',
         ];
     }
 }

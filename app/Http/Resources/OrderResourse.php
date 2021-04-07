@@ -17,6 +17,7 @@ class OrderResourse extends JsonResource
             $delivery_model=User::find($this['delivery_id']);
             $delivery['id']=$delivery_model->id;
             $delivery['name']=$delivery_model->name;
+            $delivery['image']=$delivery_model->image;
             $delivery['location']=$delivery_model->location;
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=4;
@@ -32,12 +33,14 @@ class OrderResourse extends JsonResource
             'user' => [
                 'id' => $this['user_id'],
                 'name' => $this->user->name,
+                'image' => $this->user->image,
                 'phone' => $this->user->phone,
                 'location' => $this->user->location,
             ],
             'provider' => [
                 'id' => $this['provider_id'],
                 'name' => $this->provider->name,
+                'image' => $this->provider->image,
                 'location' => $this->provider->location,
                 'phone' => $this->provider->phone,
                 'rating' => 3.5,

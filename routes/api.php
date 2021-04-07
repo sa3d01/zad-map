@@ -106,6 +106,7 @@ Route::group([
                 Route::put('/{id}', 'OrderController@update');
                 Route::post('/{id}/cancel', 'OrderStatusController@cancelOrder');
                 Route::post('/{id}/accept', 'OrderStatusController@acceptOrder');
+                Route::post('/{id}/payment', 'OrderStatusController@payOrder');
             });
         });
     });

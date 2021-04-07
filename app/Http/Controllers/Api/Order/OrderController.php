@@ -12,7 +12,6 @@ use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
-use Edujugon\PushNotification\PushNotification;
 
 class OrderController extends MasterController
 {
@@ -113,7 +112,7 @@ class OrderController extends MasterController
             }
             //check deliver by
             if ($order->deliver_by!='delivery'){
-                $title = 'لديك طلب جديد عن طريق ' . $order->user->name;
+                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->name,$order->id);
                 $this->notify_provider(User::find($provider_id),$title, $order);
             }else{
                 $this->notify_deliveries($order);
@@ -128,7 +127,7 @@ class OrderController extends MasterController
     public function notify_deliveries($order)
     {
         $user = auth('api')->user();
-        $title = 'لديك طلب توصيل جديد عن طريق ' . $user['name'];
+        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user['name'],$order->id);
         $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->get();
         foreach ($deliveries as $delivery){
             $this->fcmPush($title,$delivery,$order);

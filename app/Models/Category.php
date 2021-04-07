@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory,ModelBaseFunctions;
+    private $route='category';
+    private $images_link='media/images/category/';
     protected $fillable = [
         'name',
         'image',

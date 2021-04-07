@@ -21,8 +21,9 @@ class OrderCollection extends ResourceCollection
             if ($obj->delivery_id==null){
                 $arr['delivery']=new Object_();
             }else{
-                $arr['delivery']['id'] = $obj->delivery_id;
-                $arr['delivery']['name'] = $obj->delivery->name;
+                $delivery['id']=$obj->delivery_id;
+                $delivery['name']=$obj->delivery->name;
+                $arr['delivery']=$delivery;
             }
             if ($obj['deliver_by']=='delivery')
             {

@@ -51,13 +51,12 @@ class OrderStatusController extends MasterController
             if ($order->delivery_id != null || $order->deliver_by != 'delivery') {
                 return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
             }
-            $title = 'لديك طلب جديد عن طريق ' . $order->user->name;
+            $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->name,$order->id);
             $this->notify_provider($order->provider,$title, $order);
             $order->update([
                'delivery_id'=>auth('api')->id()
             ]);
             $this->notify_user($order->user,'تمت الموافقة على طلب التوصيل من قبل '.auth('api')->user()->name, $order);
-
         }else{
             if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
                 return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
