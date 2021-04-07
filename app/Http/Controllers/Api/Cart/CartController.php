@@ -50,6 +50,30 @@ class CartController extends MasterController
         return $this->sendResponse([], 'تمت الإضافة بنجاح');
     }
 
+    public function addListToCart(Request $request): object
+    {
+        $user = $request->user();
+        foreach (\request()->input('cart') as $obj){
+            if (!Product::find($obj['product_id']))
+                return response()->json(['message' => "هذه القطعه غير متاحه."], 400);
+            $cart = Cart::where(['user_id' => $user->id, 'ordered' => false])->latest()->first();
+            if (!$cart) {
+                $cart = Cart::create([
+                    'user_id' => $user->id
+                ]);
+            }
+            $cart_item = CartItem::where(['cart_id' => $cart->id, 'product_id' => $obj['product_id'],'count'=>$obj['count']])->latest()->first();
+            if ($cart_item) {
+                $cart_item->update([
+                    'count'=>$obj['count']
+                ]);
+            }else{
+                CartItem::create(['cart_id' => $cart->id, 'product_id' => $obj['product_id'],'count'=>$obj['count']]);
+            }
+        }
+        return $this->sendResponse([], 'تمت الإضافة بنجاح');
+    }
+
     public function updateCounts():object
     {
         foreach (\request()->input('cart') as $obj){

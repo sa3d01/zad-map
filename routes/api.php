@@ -79,6 +79,7 @@ Route::group([
         Route::group([
             'namespace' => 'Cart',
         ], function () {
+            Route::post('cart', 'CartController@addListToCart');
             Route::post('product/{product_id}/cart', 'CartController@editCart');
             Route::group(['prefix' => 'cart'], function () {
                 Route::get('/', 'CartController@index');
