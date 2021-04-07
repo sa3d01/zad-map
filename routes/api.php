@@ -42,6 +42,7 @@ Route::group([
         Route::get('slider', 'SliderController@index');
         Route::get('story', 'StoryController@index');
         Route::get('providers-map', 'ProviderController@providersMap');
+        Route::get('product/{id}', 'ProductController@show');
     });
     //Category
     Route::group(['prefix' => 'category','namespace' => 'Category'], function () {
