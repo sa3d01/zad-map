@@ -96,8 +96,8 @@ class SettingController extends MasterController
         }elseif ($request['type']=='transfer') {
             $file=$request->file('image');
             $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
-            $file->move('media/image/transfer/', $filename);
-            $image= $filename;
+            $file->move('media/images/transfer/', $filename);
+            $image= asset('media/images/transfer/').'/'.$filename;
         }else{
             $image_type=$request['type'];
             $car=Car::where('user_id',auth('api')->id())->latest()->first();

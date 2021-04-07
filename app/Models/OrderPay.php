@@ -11,7 +11,7 @@ class OrderPay extends Model
     use HasFactory, ModelBaseFunctions;
 
     private $route='order_pay';
-    private $images_link='media/images/order_pay/';
+    private $images_link='media/images/transfer/';
     protected $fillable = ['order_id','user_id','provider_id','delivery_id','type','image'];
 
     public function user():object

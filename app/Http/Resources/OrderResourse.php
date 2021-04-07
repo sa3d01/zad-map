@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\OrderPay;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -28,6 +29,17 @@ class OrderResourse extends JsonResource
         }else{
             $delivery_price=$this->orderItems->first()->cartItem->product->delivery_price;
         }
+
+        $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
+        $delivery_payment_model['type']=$delivery_payment->type??"";
+        $delivery_payment_model['image']=$delivery_payment->image??"";
+        $payment_model['delivery']=$delivery_payment_model;
+
+        $provider_payment=OrderPay::where(['order_id'=>$this['id'],'provider_id'=>$this['provider_id']])->latest()->first();
+        $provider_payment_model['type']=$provider_payment->type??"";
+        $provider_payment_model['image']=$provider_payment->image??"";
+        $payment_model['provider']=$provider_payment_model;
+
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -53,7 +65,8 @@ class OrderResourse extends JsonResource
             'price' => $this->price(),
             'delivery_price' => $delivery_price,
             'total_price' => $this->price()+($delivery_price),
-            'cancel_reason'=>$this->cancelReason()
+            'cancel_reason'=>$this->cancelReason(),
+            'payment'=>$payment_model
         ];
     }
 }
