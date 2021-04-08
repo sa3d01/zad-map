@@ -14,7 +14,12 @@ class LoginController extends MasterController
     {
         //todo: check if provider approved
         $credentials = $request->only('phone', 'password');
-        $user = User::where(['phone' => $request['phone'], 'type' => $request['type']])->first();
+        if ($request['type']=='USER' || $request['type']=='DELIVERY'){
+            $user = User::where(['phone' => $request['phone'], 'type' => $request['type']])->first();
+        }else{
+            $types=['PROVIDER','FAMILY'];
+            $user = User::where('phone' , $request['phone'])->whereIn('type',$types)->first();
+        }
         if (!$user) {
             return $this->sendError('هذا الحساب غير موجود.');
         }
