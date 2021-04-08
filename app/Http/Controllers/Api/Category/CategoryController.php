@@ -32,7 +32,8 @@ class CategoryController extends MasterController
     }
     public function providers():object
     {
-        $providers_q=User::where(['approved'=>1,'banned'=>0])->whereHas('products');
+//        $providers_q=User::where(['approved'=>1,'banned'=>0])->whereHas('products');
+        $providers_q=User::whereHas('products');
         if (request()->has('name')){
             $providers_q->where('name',request()->input('name'));
         }
