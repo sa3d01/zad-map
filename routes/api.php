@@ -108,6 +108,8 @@ Route::group([
                 Route::post('/{id}/cancel', 'OrderStatusController@cancelOrder');
                 Route::post('/{id}/accept', 'OrderStatusController@acceptOrder');
                 Route::post('/{id}/payment', 'OrderStatusController@payOrder');
+                Route::post('/{id}/delivered', 'OrderStatusController@delivered');
+                Route::post('/{id}/rate', 'OrderController@rate');
             });
         });
         //Chat

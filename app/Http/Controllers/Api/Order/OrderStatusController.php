@@ -19,6 +19,33 @@ class OrderStatusController extends MasterController
         parent::__construct();
     }
 
+    public function delivered($id):object
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        if (auth('api')->user()->type=='DELIVERY'){
+            if (($order->delivery_id != auth('api')->id()) || $order->status != 'in_progress') {
+                return $this->sendError("ﻻ يمكنك تأكيد استلام هذا الطلب");
+            }
+            $order->update([
+                'status'=>'delivered_to_delivery'
+            ]);
+            $this->notify_user($order->user,'تم تأكيد الاستلام من قبل المندوب  '.auth('api')->user()->name, $order);
+            return $this->sendResponse([], 'تم استلام الطلب بنجاح');
+        }elseif (auth('api')->user()->type=='USER'){
+            if (($order->user_id != auth('api')->id()) || ($order->status == 'completed')) {
+                return $this->sendError("تم تأكيد الاستلام من قبل");
+            }
+            $order->update([
+                'status'=>'completed'
+            ]);
+            return $this->sendResponse([], 'تم استلام الطلب بنجاح');
+        }else{
+            return $this->sendError("ﻻ يمكنك تأكيد استلام هذا الطلب");
+        }
+    }
     public function cancelOrder($id, CancelOrderRequest $request): object
     {
         $request->validated();
@@ -40,7 +67,6 @@ class OrderStatusController extends MasterController
         //todo:notify
         return $this->sendResponse([], 'تم الغاء الطلب بنجاح');
     }
-
     public function acceptOrder($id): object
     {
         $order = Order::find($id);
@@ -118,5 +144,4 @@ class OrderStatusController extends MasterController
         }
         return $this->sendResponse([], 'تم تحديد أسلوب الدفع للطلب بنجاح');
     }
-
 }

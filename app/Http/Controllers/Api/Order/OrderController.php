@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Api\MasterController;
+use App\Http\Requests\Api\Order\RateOrderRequest;
 use App\Http\Requests\Api\Order\storeOrderRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResourse;
@@ -11,6 +12,7 @@ use App\Models\CartItem;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Rate;
 use App\Models\User;
 
 class OrderController extends MasterController
@@ -26,17 +28,29 @@ class OrderController extends MasterController
     public function filteredOrders($status): object
     {
         $user = auth('api')->user();
+        $status_arr=[$status,'delivered_to_delivery'];
         if ($user['type'] === 'USER') {
-            $orders = new OrderCollection(Order::where(['user_id' => $user->id, 'status' => $status])->latest()->get());
-        } elseif($user['type'] ==='DELIVERY') {
-            if ($status=='new'){
-                $orders = new OrderCollection(Order::where(['deliver_by'=>'delivery','delivery_id'=>null,'status' => $status])->latest()->get());
+            if ($status=='in_progress'){
+                $orders_q = Order::where('user_id' , auth('api')->id())->whereIn('status',$status_arr);
             }else{
-                $orders = new OrderCollection(Order::where(['delivery_id' => $user->id, 'status' => $status])->latest()->get());
+                $orders_q = Order::where(['user_id' => auth('api')->id(), 'status' => $status]);
+            }
+        }elseif($user['type'] ==='DELIVERY') {
+            if ($status=='in_progress'){
+                $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
+            }elseif ($status=='new'){
+                $orders_q = Order::where(['deliver_by'=>'delivery','delivery_id'=>null,'status' => $status]);
+            }else{
+                $orders_q = Order::where(['delivery_id' => auth('api')->id(), 'status' => $status]);
             }
         }else {
-            $orders = new OrderCollection(Order::where(['provider_id' => $user->id, 'status' => $status])->latest()->get());
+            if ($status=='completed'){
+                $orders_q = Order::where('provider_id' , auth('api')->id())->whereIn('status',$status_arr);
+            }else{
+                $orders_q = Order::where(['provider_id' => auth('api')->id(), 'status' => $status]);
+            }
         }
+        $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
 
@@ -139,4 +153,39 @@ class OrderController extends MasterController
         }
     }
 
+    public function rate($id,RateOrderRequest $request):object
+    {
+        $request->validated();
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        if (auth('api')->user()->type!='USER' || $order->status!='completed'){
+            return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
+        }else{
+            if ($request['provider']){
+                Rate::Create([
+                    'user_id'=>auth('api')->id(),
+                    'order_id'=>$order->id,
+                    'rated_id'=>$order->provider_id,
+                    'rate'=>$request['provider']['rate'],
+                    'feedback'=>$request['provider']['feedback'],
+                ]);
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+                $this->notify_provider($order->provider,$title, $order);
+            }
+            if ($request['delivery']){
+                Rate::Create([
+                    'user_id'=>auth('api')->id(),
+                    'order_id'=>$order->id,
+                    'rated_id'=>$order->delivery_id,
+                    'rate'=>$request['delivery']['rate'],
+                    'feedback'=>$request['delivery']['feedback'],
+                ]);
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+                $this->notify_provider($order->delivery,$title, $order);
+            }
+        }
+        return $this->sendResponse([], 'تم التقييم بنجاح');
+    }
 }

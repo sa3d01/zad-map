@@ -86,6 +86,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Bank::class);
     }
+    public function rates():object
+    {
+        return $this->hasMany(Rate::class,'rated_id','id');
+    }
     public function car():object
     {
         return $this->hasOne(Car::class);
@@ -98,6 +102,22 @@ class User extends Authenticatable implements JWTSubject
             return $cart->cartItems;
         }
         return new Object_();
+    }
+    public function feedbacks(){
+        $feedbacks=[];
+        foreach ($this->rates as $rate){
+            $arr['feedback']=$rate->feedback;
+            $arr['user']['id']=$rate->user->id;
+            $arr['user']['name']=$rate->user->name;
+            $arr['user']['image']=$rate->user->image;
+            $feedbacks[]=$arr;
+        }
+        return $feedbacks;
+    }
+    public function averageRate()
+    {
+        return $this->rates()->sum('rate')/$this->rates()->count('rate');
+
     }
 
     protected function getImageAttribute():string

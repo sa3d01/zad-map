@@ -17,7 +17,7 @@ class ProviderCollection extends ResourceCollection
         $data = [];
         foreach ($this as $obj) {
             $arr['id'] = (int)$obj->id;
-            $arr['rating'] = 3.5;
+            $arr['rating'] = (double)$obj->averageRate();
             $arr['type'] = $obj->type;
             $arr['name'] = $obj->name;
             $arr['location'] = $obj->location;

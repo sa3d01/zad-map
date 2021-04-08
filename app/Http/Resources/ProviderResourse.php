@@ -24,8 +24,8 @@ class ProviderResourse extends JsonResource
         }
         return [
             'id' => (int)$this->id,
-            'rating' => 3.5,
-            'feedBacks' => [],
+            'rating' => (double)$this->averageRate(),
+            'feedBacks' => $this->feedbacks(),
             'type' => $this->type,
             'name' => $this->name,
             'phone' => $this->phone ?? "",

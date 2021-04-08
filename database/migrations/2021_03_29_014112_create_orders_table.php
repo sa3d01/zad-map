@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('provider_id')->nullable();
-            $table->enum('status',['new','pre_paid','in_progress','rejected','completed'])->default('new');
+            $table->enum('status',['new','rejected','pre_paid','in_progress','delivered_to_delivery','completed'])->default('new');
             $table->enum('deliver_by',['user','provider','delivery'])->default('user');
             $table->unsignedBigInteger('delivery_id')->nullable();
             $table->dateTime('deliver_at')->nullable();

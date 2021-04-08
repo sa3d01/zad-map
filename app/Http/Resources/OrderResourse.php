@@ -21,7 +21,7 @@ class OrderResourse extends JsonResource
             $delivery['image']=$delivery_model->image;
             $delivery['location']=$delivery_model->location;
             $delivery['phone']=$delivery_model->phone;
-            $delivery['rating']=4;
+            $delivery['rating']=(double)$delivery_model->averageRate();
         }
         if ($this['deliver_by']=='delivery')
         {
@@ -55,7 +55,7 @@ class OrderResourse extends JsonResource
                 'image' => $this->provider->image,
                 'location' => $this->provider->location,
                 'phone' => $this->provider->phone,
-                'rating' => 3.5,
+                'rating' => (double)$this->provider->averageRate(),
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,
