@@ -10,47 +10,14 @@ use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
+use App\Traits\UserBanksAndCarsTrait;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\Cast\Object_;
 
 class SettingController extends MasterController
 {
-    function updateCarData($request)
-    {
-        $car=Car::where('user_id',auth('api')->id())->latest()->first();
-        if (!$car){
-            $car=Car::create([
-                'user_id'=> auth('api')->id()
-            ]);
-        }
-        $car->update([
-            'brand'=>$request['car']['brand'],
-            'color'=>$request['car']['color'],
-            'year'=>$request['car']['year'],
-            'identity'=>$request['car']['identity'],
-            'end_insurance_date'=>$request['car']['end_insurance_date'],
-        ]);
-    }
-    function updateBankData($request)
-    {
-        foreach ($request['banks'] as $bank){
-            $old_bank_name=Bank::where(['user_id'=>auth('api')->id(),'name'=>$bank['name']])->latest()->first();
-            if ($old_bank_name){
-                $old_bank_name->update([
-                    'user_id'=> auth('api')->id(),
-                    'name'=> $bank['name'],
-                    'account_number'=> $bank['account_number'],
-                ]);
-            } else{
-                Bank::create([
-                    'user_id'=> auth('api')->id(),
-                    'name'=> $bank['name'],
-                    'account_number'=> $bank['account_number'],
-                ]);
-            }
-        }
-    }
+    use UserBanksAndCarsTrait;
 
     public function updateProfile(ProfileUpdateRequest $request): object
     {

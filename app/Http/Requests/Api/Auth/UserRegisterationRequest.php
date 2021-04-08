@@ -38,6 +38,13 @@ class UserRegisterationRequest extends ApiMasterRequest
             'location.lng' => 'nullable',
             'location.address' => 'nullable',
             'marketer_id' => 'nullable',
+            'car.note' => 'nullable',
+            'car.brand' => 'nullable',
+            'car.color' => 'nullable',
+            'car.year' => 'nullable',
+            'car.identity' => 'nullable',
+            'car.end_insurance_date' => 'nullable',
+            'banks' => 'array',
         ];
     }
     public function messages()

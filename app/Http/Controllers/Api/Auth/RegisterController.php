@@ -4,14 +4,16 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\UserRegisterationRequest;
+use App\Http\Resources\ProviderLoginResourse;
 use App\Models\DropDown;
 use App\Models\User;
+use App\Traits\UserBanksAndCarsTrait;
 use App\Traits\UserPhoneVerificationTrait;
 use Spatie\Permission\Models\Role;
 
 class RegisterController extends MasterController
 {
-    use UserPhoneVerificationTrait;
+    use UserPhoneVerificationTrait,UserBanksAndCarsTrait;
 
     public function register(UserRegisterationRequest $request): object
     {
@@ -23,6 +25,15 @@ class RegisterController extends MasterController
         $role = Role::findOrCreate($user->type);
         $user->assignRole($role);
         $this->createPhoneVerificationCodeForUser($user);
+        if ($user['type']!='USER'){
+            if ($request['car']){
+                $this->updateCarData($request->validated());
+            }
+            if ($request['banks']){
+                $this->updateBankData($request->validated());
+            }
+            $user->update($request->validated());
+        }
         return $this->sendResponse([
             "phone" => $request["phone"]
         ]);
