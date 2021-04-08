@@ -116,8 +116,10 @@ class User extends Authenticatable implements JWTSubject
     }
     public function averageRate()
     {
+        if ($this->rates()->count('rate') < 1){
+            return 0;
+        }
         return $this->rates()->sum('rate')/$this->rates()->count('rate');
-
     }
 
     protected function getImageAttribute():string

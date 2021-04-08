@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,
             DistrictSeeder::class,
             SliderSeeder::class,
-            ProviderSeeder::class,
+           // ProviderSeeder::class,
             StorySeeder::class,
             CategorySeeder::class,
             ContactTypeSeeder::class,
