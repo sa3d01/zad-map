@@ -110,6 +110,16 @@ Route::group([
                 Route::post('/{id}/payment', 'OrderStatusController@payOrder');
             });
         });
+        //Chat
+        Route::group([
+            'namespace' => 'Chat',
+        ], function () {
+            Route::group(['prefix' => 'chat'], function () {
+                Route::get('/', 'ChatController@getConversations');
+                Route::get('/{receiver_id}', 'ChatController@getMessages');
+                Route::post('/', 'ChatController@store');
+            });
+        });
     });
 
 
