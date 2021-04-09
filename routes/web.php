@@ -32,7 +32,26 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('user', 'UserController');
+    Route::post('user/{id}/ban', 'UserController@ban')->name('user.ban');
+    Route::post('user/{id}/activate', 'UserController@activate')->name('user.activate');
+
+
+    Route::get('provider/binned', 'ProviderController@binned')->name('provider.binned');
     Route::resource('provider', 'ProviderController');
+
+    Route::get('delivery/binned', 'DeliveryController@binned')->name('delivery.binned');
     Route::resource('delivery', 'DeliveryController');
+
+    Route::get('story/binned', 'StoryController@binned')->name('story.binned');
+    Route::resource('story', 'StoryController');
+
+    Route::get('order/new', 'OrderController@new')->name('order.new');
+    Route::get('order/pre_paid', 'OrderController@pre_paid')->name('order.pre_paid');
+    Route::get('order/in_progress', 'OrderController@in_progress')->name('order.in_progress');
+    Route::get('order/completed', 'OrderController@completed')->name('order.completed');
+    Route::get('order/rejected', 'OrderController@rejected')->name('order.rejected');
+
+    Route::resource('notifications', 'NotificationController');
+
 
 });

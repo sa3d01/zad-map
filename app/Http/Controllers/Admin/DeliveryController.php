@@ -6,7 +6,7 @@ use App\Http\Requests\Dashboard\Auth\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends MasterController
+class DeliveryController extends MasterController
 {
     public function __construct(User $model)
     {
@@ -19,13 +19,13 @@ class UserController extends MasterController
 
     public function index()
     {
-        $rows = $this->model->where('type','USER')->latest()->get();
-        return view('Dashboard.user.index', compact('rows'));
+        $rows = $this->model->where('type','DELIVERY')->latest()->get();
+        return view('Dashboard.delivery.index', compact('rows'));
     }
     public function show($id):object
     {
         $user=$this->model->find($id);
-        return view('Dashboard.user.show', compact('user'));
+        return view('Dashboard.delivery.show', compact('user'));
     }
     public function ban($id):object
     {

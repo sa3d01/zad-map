@@ -7,23 +7,27 @@
                 <span> الرئيسية </span>
             </a>
         </li>
+
         <li>
             <a href="{{route('admin.user.index')}}">
-                <i class="mdi mdi-account-card-details"></i>
+                <i class="mdi mdi-human"></i>
                 <span> إدارة المستخدمين </span>
             </a>
         </li>
+
         <li>
             <a href="javascript: void(0);">
-                <i class="mdi mdi-human"></i>
+                <i class="mdi mdi-home-currency-usd"></i>
                 <span> إدارة مزودى الخدمات </span>
                 <span class="menu-arrow"></span>
             </a>
             <ul class="nav-second-level" aria-expanded="false">
-                <li><a href="ui-buttons.html">طلبات الإنضمام</a></li>
-                <li><a href="ui-cards.html">مزودى الخدمات</a></li>
+                <li><a href="{{route('admin.provider.binned')}}">طلبات الإنضمام</a></li>
+                <li><a href="{{route('admin.story.binned')}}">طلبات إضافة إستورى</a></li>
+                <li><a href="{{route('admin.provider.index')}}">عرض الكل</a></li>
             </ul>
         </li>
+
         <li>
             <a href="javascript: void(0);">
                 <i class="mdi mdi-car"></i>
@@ -31,34 +35,100 @@
                 <span class="menu-arrow"></span>
             </a>
             <ul class="nav-second-level" aria-expanded="false">
-                <li><a href="ui-buttons.html">طلبات الإنضمام</a></li>
-                <li><a href="ui-cards.html">المندوبيين</a></li>
+                <li><a href="{{route('admin.delivery.binned')}}">طلبات الإنضمام</a></li>
+                <li><a href="{{route('admin.delivery.index')}}"> عرض الكل</a></li>
             </ul>
         </li>
 
         <li>
             <a href="javascript: void(0);">
+                <i class="mdi mdi-battlenet"></i>
+                <span> إدارة الخدمات </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-box-shadow"></i>
+                <span> إدارة التصنيفات </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-cart-plus"></i>
+                <span> إدارة الطلبات </span>
+                <span class="menu-arrow"></span>
+            </a>
+            <ul class="nav-second-level" aria-expanded="false">
+                <li><a href="{{route('admin.order.new')}}">طلبات جديدة</a></li>
+                <li><a href="{{route('admin.order.pre_paid')}}">طلبات بانتظار الدفع</a></li>
+                <li><a href="{{route('admin.order.in_progress')}}">طلبات جارية</a></li>
+                <li><a href="{{route('admin.order.completed')}}">طلبات مكتملة</a></li>
+                <li><a href="{{route('admin.order.rejected')}}">طلبات مرفوضة</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="{{route('admin.notifications.index')}}">
+                <i class="mdi mdi-alert-octagram"></i>
+                <span> إدارة الإشعارات الجماعية </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-cached"></i>
+                <span> إدارة الحوالات البنكية </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-mailbox"></i>
+                <span> إدارة رسائل التواصل </span>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);">
                 <i class="mdi mdi-share-variant"></i>
-                <span> Multi Level </span>
+                <span> إعدادات أخرى </span>
                 <span class="menu-arrow"></span>
             </a>
             <ul class="nav-second-level nav" aria-expanded="false">
                 <li>
-                    <a href="javascript: void(0);">Level 1.1</a>
+                    <a href="javascript: void(0);">الإعدادات العامة</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0);" aria-expanded="false">Level 1.2
+                    <a href="javascript: void(0);" aria-expanded="false">الصفحات
                         <span class="menu-arrow"></span>
                     </a>
                     <ul class="nav-third-level nav" aria-expanded="false">
                         <li>
-                            <a href="javascript: void(0);">Level 2.1</a>
+                            <a href="javascript: void(0);">عن التطبيق</a>
                         </li>
                         <li>
-                            <a href="javascript: void(0);">Level 2.2</a>
+                            <a href="javascript: void(0);">الشروط والأحكام للمستخدم</a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);">الشروط والأحكام للمندوب ومقدم الخدمة</a>
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="javascript: void(0);">أنواع التواصل</a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);">المدن والأحياء</a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);">الحسابات البنكية</a>
+                </li>
+                <li>
+                    <a href="javascript: void(0);">الإعلانات</a>
+                </li>
+
             </ul>
         </li>
     </ul>
