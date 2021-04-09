@@ -87,10 +87,14 @@ class OrderController extends MasterController
             foreach ($old_order_items as $old_order_item) {
                 $old_order_item->delete();
             }
-            OrderItem::create([
-                'order_id' => $order->id,
-                'cart_item_id' => $cartItem->id,
-            ]);
+            if ($obj['count']==0){
+                $cartItem->delete();
+            }else{
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'cart_item_id' => $cartItem->id,
+                ]);
+            }
         }
         return $this->sendResponse(new OrderResourse($order));
     }

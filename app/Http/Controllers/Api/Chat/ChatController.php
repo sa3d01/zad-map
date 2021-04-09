@@ -59,23 +59,6 @@ class ChatController extends MasterController
         }
         return $this->sendResponse(MessageResource::collection($messages));
     }
-    function fcmPush($title,$user,$message)
-    {
-        $push = new PushNotification('fcm');
-        $msg = [
-            'notification' => array('title' => $title, 'sound' => 'default'),
-            'data' => [
-                'title' => $title,
-                'body' => $title,
-                'type' => 'chat',
-                'order' => new MessageResource($message),
-            ],
-            'priority' => 'high',
-        ];
-        $push->setMessage($msg)
-            ->setDevicesToken($user->device['id'])
-            ->send();
-    }
 
     public function notify_receiver($user,$title, $message)
     {
