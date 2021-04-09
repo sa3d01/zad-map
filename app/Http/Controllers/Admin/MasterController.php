@@ -73,12 +73,12 @@ abstract class MasterController extends Controller
     public function index()
     {
         $rows = $this->model->latest()->get();
-        return view('admin.' . $this->route . '.index', compact('rows'));
+        return view('Dashboard.' . $this->route . '.index', compact('rows'));
     }
 
     public function create()
     {
-        return view('admin.' . $this->route . '.create');
+        return view('Dashboard.' . $this->route . '.create');
     }
 
     public function store(Request $request)
@@ -91,7 +91,7 @@ abstract class MasterController extends Controller
     public function edit($id)
     {
         $row = $this->model->find($id);
-        return View('admin.' . $this->route . '.edit', compact('row'));
+        return View('Dashboard.' . $this->route . '.edit', compact('row'));
     }
 
     public function update($id, Request $request)
@@ -111,7 +111,7 @@ abstract class MasterController extends Controller
     public function show($id)
     {
         $row = $this->model->find($id);
-        return View('admin.' . $this->route . '.show', compact('row'));
+        return View('Dashboard.' . $this->route . '.show', compact('row'));
     }
 }
 

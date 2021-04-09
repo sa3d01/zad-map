@@ -21,6 +21,8 @@ class CartCollection extends ResourceCollection
             $arr['name'] = $product->name;
             $arr['image'] = $product->images[0];
             $arr['price'] = (double)$product->price;
+            $arr['delivery_price'] = (double)$product->delivery_price;
+            $arr['has_delivery'] = (double)$product->has_delivery;
             $arr['in_cart'] = true;
             $subtotal+=$product->price*$obj->count;
             $data['products'][] = $arr;

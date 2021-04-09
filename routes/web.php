@@ -32,5 +32,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('user', 'UserController');
+    Route::resource('provider', 'ProviderController');
+    Route::resource('delivery', 'DeliveryController');
 
 });
