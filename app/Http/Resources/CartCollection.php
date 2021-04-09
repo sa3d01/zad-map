@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -24,6 +26,8 @@ class CartCollection extends ResourceCollection
             $arr['delivery_price'] = (double)$product->delivery_price;
             $arr['has_delivery'] = (double)$product->has_delivery;
             $arr['in_cart'] = true;
+            $cart_item=CartItem::find($obj->id);
+            $arr['cart_count'] = $cart_item->count;
             $subtotal+=$product->price*$obj->count;
             $data['products'][] = $arr;
             $data['total_price'] =(double)$subtotal;

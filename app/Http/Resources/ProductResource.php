@@ -9,19 +9,23 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {
-    function inCart():bool
+
+    function inCart():array
     {
-        $in_cart=false;
+        $cart=[];
+        $cart['in_cart']=false;
+        $cart['cart_count']=0;
         if (auth('api')->check()) {
             $pre_request_cart=Cart::where(['user_id'=>auth('api')->id(),'ordered'=>false])->latest()->first();
             if ($pre_request_cart){
                 $cart_item=CartItem::where(['cart_id'=>$pre_request_cart->id,'product_id'=>$this['id']])->latest()->first();
                 if ($cart_item){
-                    $in_cart=true;
+                    $cart['in_cart']=true;
+                    $cart['cart_count']=$cart_item->count;
                 }
             }
         }
-        return $in_cart;
+        return $cart;
     }
     /**
      * Transform the resource into an array.
@@ -47,7 +51,8 @@ class ProductResource extends JsonResource
             ],
             'images'=>$this->images,
             'price'=> (double)$this->price,
-            'in_cart'=>$this->inCart(),
+            'in_cart'=>$this->inCart()['in_cart'],
+            'cart_count'=>$this->inCart()['cart_count'],
         ];
     }
 }

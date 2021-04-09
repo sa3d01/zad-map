@@ -23,20 +23,26 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @foreach($rows as $row)
                                 <tr>
-                                    <td>Tiger Nixon</td>
-                                    <td>System Architect</td>
-                                    <td>Edinburgh</td>
-                                    <td>61</td>
-                                    <td>2011/04/25</td>
+                                    <td>{{$row->name}}</td>
+                                    <td>{{$row->phone}}</td>
+                                    <td>{{$row->city->name}}</td>
+                                    <td>
+                                        <span class="badge @if($row->banned==0) badge-success @else badge-danger @endif">
+                                            {{$row->banned==0?'مفعل':'غير مفعل'}}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="button-list">
+                                            <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
+                                            <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>حظر</span> </button>
+                                            <button class="btn btn-success waves-effect waves-light"> <span>تفعيل</span> <i class="fa fa-user-clock ml-1"></i> </button>
+                                        </div>
+                                    </td>
+
                                 </tr>
-                                <tr>
-                                    <td>Garrett Winters</td>
-                                    <td>Accountant</td>
-                                    <td>Tokyo</td>
-                                    <td>63</td>
-                                    <td>2011/07/25</td>
-                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

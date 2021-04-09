@@ -18,10 +18,12 @@ abstract class MasterController extends Controller
 
     public function sendResponse($result, $message = null)
     {
-        if (is_array($result)){
+        try {
             if (count($result)==0){
                 $result=new Object_();
             }
+        }catch (\Exception $e){
+
         }
         $response = [
             'status' => 200,
@@ -33,10 +35,12 @@ abstract class MasterController extends Controller
 
     public function sendError($error,$data=[], $code = 400)
     {
-        if (is_array($data)){
+        try {
             if (count($data)==0){
                 $data=new Object_();
             }
+        }catch (\Exception $e){
+
         }
         $response = [
             'status' => $code,
