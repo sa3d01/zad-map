@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResourse;
 use App\Models\Notification;
 use Edujugon\PushNotification\PushNotification;
+use phpDocumentor\Reflection\Types\Object_;
 
 abstract class MasterController extends Controller
 {
@@ -17,6 +18,9 @@ abstract class MasterController extends Controller
 
     public function sendResponse($result, $message = null)
     {
+        if (count($result)==0){
+            $result=new Object_();
+        }
         $response = [
             'status' => 200,
             'message' => $message ? $message : '',
@@ -27,6 +31,9 @@ abstract class MasterController extends Controller
 
     public function sendError($error,$data=[], $code = 400)
     {
+        if (count($data)==0){
+            $data=new Object_();
+        }
         $response = [
             'status' => $code,
             'message' => $error,
