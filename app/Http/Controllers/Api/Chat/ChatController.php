@@ -6,7 +6,10 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Chat\ChatRequest;
 use App\Http\Resources\ChatCollection;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResourse;
 use App\Models\Chat;
+use App\Models\Notification;
+use Edujugon\PushNotification\PushNotification;
 
 class ChatController extends MasterController
 {
@@ -39,6 +42,7 @@ class ChatController extends MasterController
                 'room' => $message->id
             ]);
         }
+        $this->notify_receiver($message->receiver,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->name, $message);
         $messages = Chat::where('room', $message->room)->latest()->get();
         return $this->sendResponse(MessageResource::collection($messages));
     }
@@ -55,5 +59,43 @@ class ChatController extends MasterController
         }
         return $this->sendResponse(MessageResource::collection($messages));
     }
+    function fcmPush($title,$user,$message)
+    {
+        $push = new PushNotification('fcm');
+        $msg = [
+            'notification' => array('title' => $title, 'sound' => 'default'),
+            'data' => [
+                'title' => $title,
+                'body' => $title,
+                'type' => 'chat',
+                'order' => new MessageResource($message),
+            ],
+            'priority' => 'high',
+        ];
+        $push->setMessage($msg)
+            ->setDevicesToken($user->device['id'])
+            ->send();
+    }
 
+    public function notify_receiver($user,$title, $message)
+    {
+        $push = new PushNotification('fcm');
+        $msg = [
+            'notification' => array('title' => $title, 'sound' => 'default'),
+            'data' => [
+                'title' => $title,
+                'body' => $title,
+                'type' => 'chat',
+                'message' => new MessageResource($message),
+            ],
+            'priority' => 'high',
+        ];
+        $push->setMessage($msg)
+            ->setDevicesToken($user->device['id'])
+            ->send();
+        $notification['title'] = $title;
+        $notification['note'] = $title;
+        $notification['receiver_id'] = $user->id;
+        Notification::create($notification);
+    }
 }
