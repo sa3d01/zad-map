@@ -8,7 +8,7 @@
             </a>
         </li>
         <li>
-            <a href="typography.html">
+            <a href="{{route('admin.user')}}">
                 <i class="mdi mdi-format-font"></i>
                 <span> Typography </span>
             </a>
