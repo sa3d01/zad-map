@@ -34,11 +34,12 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <div class="button-list">
                                             <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
-                                            <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>حظر</span> </button>
-                                            <button class="btn btn-success waves-effect waves-light"> <span>تفعيل</span> <i class="fa fa-user-clock ml-1"></i> </button>
-                                        </div>
+                                            @if($row->banned==0)
+                                                <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>حظر</span> </button>
+                                            @else
+                                                <button class="btn btn-success waves-effect waves-light"> <span>تفعيل</span> <i class="fa fa-user-clock ml-1"></i> </button>
+                                            @endif
                                     </td>
 
                                 </tr>
