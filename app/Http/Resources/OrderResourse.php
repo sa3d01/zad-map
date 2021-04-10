@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\OrderPay;
+use App\Models\Rate;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,16 +30,28 @@ class OrderResourse extends JsonResource
         }else{
             $delivery_price=$this->orderItems->first()->cartItem->product->delivery_price;
         }
-
         $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
         $delivery_payment_model['type']=$delivery_payment->type??"";
         $delivery_payment_model['image']=$delivery_payment->image??"";
         $payment_model['delivery']=$delivery_payment_model;
-
         $provider_payment=OrderPay::where(['order_id'=>$this['id'],'provider_id'=>$this['provider_id']])->latest()->first();
         $provider_payment_model['type']=$provider_payment->type??"";
         $provider_payment_model['image']=$provider_payment->image??"";
         $payment_model['provider']=$provider_payment_model;
+
+        $provider_rating=new Object_();
+        $delivery_rating=new Object_();
+        $provider_rating_model=Rate::where(['order_id'=>$this['id'],'rated_id'=>$this['provider_id']])->latest()->first();
+        $delivery_rating_model=Rate::where(['order_id'=>$this['id'],'rated_id'=>$this['delivery_id']])->latest()->first();
+        if ($provider_rating_model){
+            $provider_rating['rate']=$provider_rating_model->rate;
+            $provider_rating['feedback']=$provider_rating_model->feedback;
+        }
+        if ($delivery_rating_model){
+            $delivery_rating['rate']=$delivery_rating_model->rate;
+            $delivery_rating['feedback']=$delivery_rating_model->feedback;
+        }
+
 
         return [
             'id' => (int)$this['id'],
@@ -66,7 +79,9 @@ class OrderResourse extends JsonResource
             'delivery_price' => $delivery_price,
             'total_price' => $this->price()+($delivery_price),
             'cancel_reason'=>$this->cancelReason(),
-            'payment'=>$payment_model
+            'payment'=>$payment_model,
+            'provider_rating'=>$provider_rating,
+            'delivery_rating'=>$delivery_rating
         ];
     }
 }
