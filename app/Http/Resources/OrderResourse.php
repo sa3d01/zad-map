@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Chat;
 use App\Models\OrderPay;
 use App\Models\Rate;
 use App\Models\Setting;
@@ -17,12 +18,14 @@ class OrderResourse extends JsonResource
             $delivery=new Object_();
         }else{
             $delivery_model=User::find($this['delivery_id']);
+            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id']])->latest()->first();
             $delivery['id']=$delivery_model->id;
             $delivery['name']=$delivery_model->name;
             $delivery['image']=$delivery_model->image;
             $delivery['location']=$delivery_model->location;
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=(double)$delivery_model->averageRate();
+            $delivery['room'] = (int)$provider_chat?$provider_chat->room:0;
         }
         if ($this['deliver_by']=='delivery')
         {
@@ -52,7 +55,7 @@ class OrderResourse extends JsonResource
             $delivery_rating['feedback']=$delivery_rating_model->feedback;
         }
 
-
+        $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id']])->latest()->first();
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -69,6 +72,7 @@ class OrderResourse extends JsonResource
                 'location' => $this->provider->location,
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
+                'room' => (int)$provider_chat?$provider_chat->room:0,
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,
