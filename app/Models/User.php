@@ -43,6 +43,9 @@ class User extends Authenticatable implements JWTSubject
         'last_login_at',
         'last_ip',
         'marketer_id',
+        'approved',
+        'reject_reason',
+        'approved_at'
     ];
 
     protected $hidden = [
@@ -120,6 +123,19 @@ class User extends Authenticatable implements JWTSubject
             return 0;
         }
         return $this->rates()->sum('rate')/$this->rates()->count('rate');
+    }
+
+    public function getTypeString():string
+    {
+        if ($this['type']=='USER'){
+            return 'مستخدم';
+        }elseif ($this['type']=='PROVIDER'){
+            return 'مقدم خدمة';
+        }elseif ($this['type']=='FAMILY'){
+            return 'أسرة منتجة';
+        }else{
+            return 'مندوب';
+        }
     }
 
     protected function getImageAttribute():string

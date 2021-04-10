@@ -17,6 +17,7 @@ class Story extends Model
         'media_type',
         'status',
         'approved_at',
+        'reject_reason',
     ];
     public function user(){
         return $this->belongsTo(User::class);

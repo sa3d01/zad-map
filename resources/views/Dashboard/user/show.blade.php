@@ -1,5 +1,5 @@
 @extends('Dashboard.layouts.master')
-@section('title', 'المستخدمين')
+@section('title', 'بيانات مستخدم')
 @section('style')
 @endsection
 @section('content')

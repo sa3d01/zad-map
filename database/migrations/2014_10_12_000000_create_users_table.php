@@ -29,6 +29,7 @@ class CreateUsersTable extends Migration
             $table->boolean('online')->nullable()->default(true);
             //for provider
             $table->boolean('approved')->nullable()->default(false);
+            $table->string('reject_reason')->nullable();
             $table->timestamp('approved_at')->nullable();
             $table->string('marketer_id')->nullable();
             //id and os

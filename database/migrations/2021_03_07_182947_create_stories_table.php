@@ -21,6 +21,7 @@ class CreateStoriesTable extends Migration
             $table->char('media_type',20)->nullable();
             $table->enum('status',['pending','approved','rejected','expired'])->default('pending');
             $table->timestamp('approved_at')->nullable();
+            $table->string('reject_reason')->nullable();
             $table->timestamps();
         });
     }

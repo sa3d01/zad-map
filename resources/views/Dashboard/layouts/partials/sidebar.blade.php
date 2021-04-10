@@ -23,8 +23,9 @@
             </a>
             <ul class="nav-second-level" aria-expanded="false">
                 <li><a href="{{route('admin.provider.binned')}}">طلبات الإنضمام</a></li>
+                <li><a href="{{route('admin.provider.index')}}">مزودى الخدمات بالتطبيق</a></li>
+{{--                <li><a href="{{route('admin.provider.rejected')}}">مزودى الخدمات المرفوضين</a></li>--}}
                 <li><a href="{{route('admin.story.binned')}}">طلبات إضافة إستورى</a></li>
-                <li><a href="{{route('admin.provider.index')}}">عرض الكل</a></li>
             </ul>
         </li>
 

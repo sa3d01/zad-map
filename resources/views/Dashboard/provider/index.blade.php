@@ -1,5 +1,5 @@
 @extends('Dashboard.layouts.master')
-@section('title', 'المستخدمين')
+@section('title', 'مزودى الخدمات')
 @section('style')
     <link href="{{asset('assets/libs/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/libs/datatables/responsive.bootstrap4.css')}}" rel="stylesheet" type="text/css" />
@@ -35,7 +35,7 @@
                                     </td>
                                     <td>
                                         <div class="button-list">
-                                            <a href="{{route('admin.user.show',$row->id)}}">
+                                            <a href="{{route('admin.provider.show',$row->id)}}">
                                                 <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
                                             </a>
                                             @if($row->banned==0)

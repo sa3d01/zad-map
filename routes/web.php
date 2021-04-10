@@ -37,13 +37,21 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
 
     Route::get('provider/binned', 'ProviderController@binned')->name('provider.binned');
+    Route::get('provider/rejected', 'ProviderController@rejected')->name('provider.rejected');
     Route::resource('provider', 'ProviderController');
+    Route::get('provider/{id}/reject', 'ProviderController@reject')->name('provider.reject');
+    Route::get('provider/{id}/accept', 'ProviderController@accept')->name('provider.accept');
+
 
     Route::get('delivery/binned', 'DeliveryController@binned')->name('delivery.binned');
     Route::resource('delivery', 'DeliveryController');
+    Route::get('delivery/{id}/reject', 'DeliveryController@reject')->name('delivery.reject');
+    Route::get('delivery/{id}/accept', 'DeliveryController@accept')->name('delivery.accept');
+
 
     Route::get('story/binned', 'StoryController@binned')->name('story.binned');
-    Route::resource('story', 'StoryController');
+    Route::get('story/{id}/reject', 'StoryController@reject')->name('story.reject');
+    Route::get('story/{id}/accept', 'StoryController@accept')->name('story.accept');
 
     Route::get('order/new', 'OrderController@new')->name('order.new');
     Route::get('order/pre_paid', 'OrderController@pre_paid')->name('order.pre_paid');
