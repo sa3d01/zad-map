@@ -22,6 +22,7 @@ class MessageResource extends JsonResource
                 'name'=>$this->receiver->name,
                 'image'=>$this->receiver->image,
             ],
+            'by_me' => $this->sender_id==auth('api')->id(),
             'send_from' => Carbon::parse($this->created_at)->diffForHumans(),
         ];
     }
