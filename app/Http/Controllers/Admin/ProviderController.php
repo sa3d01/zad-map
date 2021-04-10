@@ -11,9 +11,6 @@ class ProviderController extends MasterController
     public function __construct(User $model)
     {
         $this->model = $model;
-//        $this->middleware('permission:view-admins', ['only' => ['index']]);
-//        $this->middleware('permission:add-admins', ['only' => ['create']]);
-//        $this->middleware('permission:edit-admins', ['only' => ['show','activate']]);
         parent::__construct();
     }
 
@@ -21,6 +18,12 @@ class ProviderController extends MasterController
     {
         $types=['PROVIDER','FAMILY'];
         $rows = $this->model->whereIn('type',$types)->latest()->get();
+        return view('Dashboard.provider.index', compact('rows'));
+    }
+    public function binned()
+    {
+        $types=['PROVIDER','FAMILY'];
+        $rows = $this->model->whereIn('type',$types)->where('approved',0)->latest()->get();
         return view('Dashboard.provider.index', compact('rows'));
     }
     public function show($id):object

@@ -9,7 +9,10 @@ use App\Http\Resources\MessageResource;
 use App\Http\Resources\OrderResourse;
 use App\Models\Chat;
 use App\Models\Notification;
+use App\Traits\paginationTrait;
+use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
+use phpDocumentor\Reflection\Types\Object_;
 
 class ChatController extends MasterController
 {
@@ -21,11 +24,32 @@ class ChatController extends MasterController
         parent::__construct();
     }
 
-    public function getConversations(): object
+    function paginateRes($data)
+    {
+        $res['current_page']= collect($data)['current_page'];
+        $res['first_page_url']= collect($data)['first_page_url'];
+        $res['from']= collect($data)['from'];
+        $res['next_page_url']= collect($data)['next_page_url'];
+        $res['path']= collect($data)['path'];
+        $res['per_page']= collect($data)['per_page'];
+        $res['prev_page_url']= collect($data)['prev_page_url'];
+        $res['to']= collect($data)['to'];
+        return $res;
+    }
+    public function getConversations()
     {
         $chat_ids = Chat::where('sender_id', auth('api')->id())->orWhere('receiver_id', auth('api')->id())->pluck('room')->unique();
-        $chats = Chat::whereIn('room', $chat_ids)->latest()->get()->unique('room');
-        return $this->sendResponse(new ChatCollection($chats));
+        $chats = Chat::whereIn('room', $chat_ids)->latest()->simplepaginate(10);
+        $data['chats'] = [];
+        foreach ($chats->unique('room') as $chat) {
+            $unread_count=Chat::where(['read'=>false,'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
+            $arr['unread_count'] = $unread_count;
+            $arr['room'] = $chat->room;
+            $arr['latest_message'] = new MessageResource($chat);
+            $data['chats'][]= $arr;
+        }
+        $data['paginate']=$this->paginateRes($chats);
+        return $this->sendResponse($data);
     }
 
     public function store(ChatRequest $request): object
@@ -49,15 +73,32 @@ class ChatController extends MasterController
 
     public function getMessages($room_id): object
     {
-        $messages = Chat::where('room', $room_id)->latest()->get();
+        $messages = Chat::where('room', $room_id)->latest()->simplepaginate(10);
+        $data['chats'] = [];
         foreach ($messages as $message){
             if ($message->receiver_id==auth('api')->id()){
                 $message->update([
                     'read'=>true
                 ]);
             }
+            $arr['id'] = (int)$message->id;
+            $arr['message'] = $message->message;
+            $arr['sender'] =[
+                'id'=>$message->sender_id,
+                'name'=>$message->sender->name,
+                'image'=>$message->sender->image,
+            ];
+            $arr['receiver'] =[
+                'id'=>$message->receiver_id,
+                'name'=>$message->receiver->name,
+                'image'=>$message->receiver->image,
+            ];
+            $arr['by_me'] = $message->sender_id==auth('api')->id();
+            $arr['send_from'] = Carbon::parse($message->created_at)->diffForHumans();
+            $data['chats'][] = $arr;
         }
-        return $this->sendResponse(MessageResource::collection($messages));
+        $data['paginate']=$this->paginateRes($messages);
+        return $this->sendResponse($data);
     }
 
     public function notify_receiver($user,$title, $message)
