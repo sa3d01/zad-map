@@ -53,7 +53,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($seven_orders as $last_order)
+                    @foreach(\App\Models\Order::latest()->take(7)->get() as $last_order)
                     <tr>
                         <td>{{$last_order->id}}</td>
                         <td>{{$last_order->user->name}}</td>
