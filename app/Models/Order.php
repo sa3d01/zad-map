@@ -52,4 +52,18 @@ class Order extends Model
         }
         return new Object_();
     }
+    public function getStatusArabic():string
+    {
+        if ($this['status']=='new'){
+            return "جديد";
+        }elseif ($this['status']=='pre_paid'){
+            return "بانتظار الدفع";
+        }elseif ($this['status']=='completed'){
+            return "مكتمل";
+        }elseif ($this['status']=='rejected'){
+            return "ملغى";
+        }else{
+            return "جارى";
+        }
+    }
 }
