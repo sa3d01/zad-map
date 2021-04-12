@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('admin.home');
 });
 
 Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')->group(function() {
@@ -47,6 +47,14 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::resource('delivery', 'DeliveryController');
     Route::get('delivery/{id}/reject', 'DeliveryController@reject')->name('delivery.reject');
     Route::get('delivery/{id}/accept', 'DeliveryController@accept')->name('delivery.accept');
+
+    Route::resource('category', 'CategoryController');
+    Route::post('category/{id}/ban', 'CategoryController@ban')->name('category.ban');
+    Route::post('category/{id}/activate', 'CategoryController@activate')->name('category.activate');
+
+    Route::resource('product', 'ProductController');
+    Route::post('product/{id}/ban', 'ProductController@ban')->name('product.ban');
+    Route::post('product/{id}/activate', 'ProductController@activate')->name('product.activate');
 
 
     Route::get('story/binned', 'StoryController@binned')->name('story.binned');

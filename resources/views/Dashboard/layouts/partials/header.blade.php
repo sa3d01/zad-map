@@ -6,10 +6,10 @@
     <div class="logo-box">
         <a href="{{route('admin.home')}}" class="logo text-center">
             <span class="logo-lg">
-                <img src="{{config('app.logo')}}" alt="" height="60">
+                <img src="{{asset('media/images/logo.jpeg')}}" alt="" height="60">
             </span>
             <span class="logo-sm">
-                <img src="{{config('app.logo')}}" alt="" height="24">
+                <img src="{{asset('media/images/logo.jpeg')}}" alt="" height="24">
             </span>
         </a>
     </div>

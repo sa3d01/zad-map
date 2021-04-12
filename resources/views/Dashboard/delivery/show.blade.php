@@ -1,5 +1,5 @@
 @extends('Dashboard.layouts.master')
-@section('title', 'بيانات مقدم خدمة')
+@section('title', 'بيانات مندوب')
 @section('style')
 @endsection
 @section('content')
@@ -61,48 +61,91 @@
                             </table>
                         </div>
                     </div>
-                </div>
-                {{--                credit--}}
-            </div>
-            {{--                products--}}
-            <div class="row">
-                <div class="col-xl-12">
+                    {{--                car--}}
                     <div class="card-box">
-                        <h4 class="header-title mt-0 mb-3">المنتجات</h4>
+                        <h4 class="header-title mt-0 mb-3">تفاصيل السيارة</h4>
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>التصنيف</th>
-                                    <th>الاسم</th>
-                                    <th>الوصف</th>
-                                    <th>السعر</th>
-                                    <th>سعر التوصيل المبدأى</th>
-                                    <th>صورة</th>
+                                    <th>#</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($user->products as $key=>$product)
                                     <tr>
-                                        <td>{{$product->id}}</td>
-                                        <td>{{$product->category->name}}</td>
-                                        <td>{{$product->name}}</td>
-                                        <td>{{\Illuminate\Support\Str::limit($product->note,20)}}</td>
-                                        <td>{{$product->price}}</td>
-                                        <td>{{$product->delivery_price??'ﻻ يوجد توصيل'}}</td>
-                                        <td>
-                                            <img class="card-img-top img-fluid" style="max-height: 100px;max-width: 100px" src="{{$product->images[0]}}">
-                                        </td>
+                                        <td>نوع السيارة</td>
+                                        <td>{{$user->car->brand}}</td>
                                     </tr>
-                                @endforeach
+                                    <tr>
+                                        <td>سنة الصنع</td>
+                                        <td>{{$user->car->year}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>اللون</td>
+                                        <td>{{$user->car->color}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>رقم لوحة السيارة</td>
+                                        <td>{{$user->car->identity}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>تاريخ انتهاء التأمين</td>
+                                        <td>{{$user->car->end_insurance_date}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>صورة التأمين</td>
+                                        <td data-toggle="modal" data-target="#insuranceModal{{$user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->insurance_image}}">
+                                        </td>
+                                        <div id="insuranceModal{{$user->car->id}}" class="modal fade" role="img">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <img data-toggle="modal" data-target="#insuranceModal{{$user->car->id}}" class="img-preview" src="{{$user->car->insurance_image}}" style="max-height: 500px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        <td>صورة رخصة القيادة</td>
+                                        <td data-toggle="modal" data-target="#driveModal{{$user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->drive_image}}">
+                                        </td>
+                                        <div id="driveModal{{$user->car->id}}" class="modal fade" role="img">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <img data-toggle="modal" data-target="#driveModal{{$user->car->id}}" class="img-preview" src="{{$user->car->drive_image}}" style="max-height: 500px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+                                    <tr>
+                                        <td>صورة رخصة السيارة</td>
+                                        <td data-toggle="modal" data-target="#identityModal{{$user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->identity_image}}">
+                                        </td>
+                                        <div id="identityModal{{$user->car->id}}" class="modal fade" role="img">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-body">
+                                                        <img data-toggle="modal" data-target="#identityModal{{$user->car->id}}" class="img-preview" src="{{$user->car->identity_image}}" style="max-height: 500px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </tr>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+                {{--                credit--}}
             </div>
-
         </div>
     </div>
 @endsection

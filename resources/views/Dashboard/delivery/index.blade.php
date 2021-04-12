@@ -35,7 +35,7 @@
                                     </td>
                                     <td>
                                         <div class="button-list">
-                                            <a href="{{route('admin.provider.show',$row->id)}}">
+                                            <a href="{{route('admin.delivery.show',$row->id)}}">
                                                 <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
                                             </a>
                                             @if($row->banned==0)

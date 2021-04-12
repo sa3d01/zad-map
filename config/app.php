@@ -14,8 +14,6 @@ return [
     */
 
     'name' => env('APP_NAME', 'zadMap'),
-//    'logo' => asset('media/images/logo.jpeg'),
-//    'default_user' => asset('media/images/default.jpeg'),
 
     /*
     |--------------------------------------------------------------------------

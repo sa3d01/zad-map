@@ -8,7 +8,7 @@
     <meta content="sa3d01" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ config('app.logo') }}">
+    <link rel="shortcut icon" href="{{asset('media/images/logo.jpeg') }}">
     <link rel="stylesheet" href="{{asset('assets/libs/morris-js/morris.css')}}" />
     <link href="{{asset('assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />

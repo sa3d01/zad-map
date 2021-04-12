@@ -22,11 +22,6 @@ class StoryController extends MasterController
         $rows = $this->model->where('status','pending')->latest()->get();
         return view('Dashboard.story.binned', compact('rows'));
     }
-    public function show($id):object
-    {
-        $story=$this->model->find($id);
-        return view('Dashboard.story.show', compact('story'));
-    }
     public function reject($id,Request $request):object
     {
         $story=$this->model->find($id);

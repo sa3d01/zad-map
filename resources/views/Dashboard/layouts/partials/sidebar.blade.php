@@ -24,7 +24,6 @@
             <ul class="nav-second-level" aria-expanded="false">
                 <li><a href="{{route('admin.provider.binned')}}">طلبات الإنضمام</a></li>
                 <li><a href="{{route('admin.provider.index')}}">مزودى الخدمات بالتطبيق</a></li>
-{{--                <li><a href="{{route('admin.provider.rejected')}}">مزودى الخدمات المرفوضين</a></li>--}}
                 <li><a href="{{route('admin.story.binned')}}">طلبات إضافة إستورى</a></li>
             </ul>
         </li>
@@ -49,7 +48,7 @@
         </li>
 
         <li>
-            <a href="javascript: void(0);">
+            <a href="{{route('admin.category.index')}}">
                 <i class="mdi mdi-box-shadow"></i>
                 <span> إدارة التصنيفات </span>
             </a>
@@ -62,16 +61,16 @@
                 <span class="menu-arrow"></span>
             </a>
             <ul class="nav-second-level" aria-expanded="false">
-                <li><a href="{{route('admin.order.new')}}">طلبات جديدة</a></li>
-                <li><a href="{{route('admin.order.pre_paid')}}">طلبات بانتظار الدفع</a></li>
-                <li><a href="{{route('admin.order.in_progress')}}">طلبات جارية</a></li>
-                <li><a href="{{route('admin.order.completed')}}">طلبات مكتملة</a></li>
-                <li><a href="{{route('admin.order.rejected')}}">طلبات مرفوضة</a></li>
+                <li><a href="javascript: void(0);">طلبات جديدة</a></li>
+                <li><a href="javascript: void(0);">طلبات بانتظار الدفع</a></li>
+                <li><a href="javascript: void(0);">طلبات جارية</a></li>
+                <li><a href="javascript: void(0);">طلبات مكتملة</a></li>
+                <li><a href="javascript: void(0);">طلبات مرفوضة</a></li>
             </ul>
         </li>
 
         <li>
-            <a href="{{route('admin.notifications.index')}}">
+            <a href="javascript: void(0);">
                 <i class="mdi mdi-alert-octagram"></i>
                 <span> إدارة الإشعارات الجماعية </span>
             </a>
