@@ -64,15 +64,16 @@
                     {{--                car--}}
                     <div class="card-box">
                         <h4 class="header-title mt-0 mb-3">تفاصيل السيارة</h4>
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>#</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                        @if($user->car)
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>#</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     <tr>
                                         <td>نوع السيارة</td>
                                         <td>{{$user->car->brand}}</td>
@@ -139,9 +140,12 @@
                                         </div>
                                     </tr>
 
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <p class="card-text">لم يتم تحديد بيانات بعد</p>
+                        @endif
                     </div>
                 </div>
                 {{--                credit--}}
