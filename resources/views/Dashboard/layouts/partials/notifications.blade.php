@@ -9,9 +9,9 @@
             <h5 class="m-0">
                                         <span class="float-right">
                                             <a href="" class="text-dark">
-                                                <small>Clear All</small>
+                                                <small>حذف الكل</small>
                                             </a>
-                                        </span>Notification
+                                        </span>الإشعارات
             </h5>
         </div>
 
@@ -40,10 +40,10 @@
         </div>
 
         <!-- All-->
-        <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-            View all
-            <i class="fi-arrow-right"></i>
-        </a>
+{{--        <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">--}}
+{{--            View all--}}
+{{--            <i class="fi-arrow-right"></i>--}}
+{{--        </a>--}}
 
     </div>
 </li>
