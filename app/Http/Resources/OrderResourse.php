@@ -42,17 +42,19 @@ class OrderResourse extends JsonResource
         $provider_payment_model['image']=$provider_payment->image??"";
         $payment_model['provider']=$provider_payment_model;
 
-        $provider_rating=new Object_();
-        $delivery_rating=new Object_();
         $provider_rating_model=Rate::where(['order_id'=>$this['id'],'rated_id'=>$this['provider_id']])->latest()->first();
         $delivery_rating_model=Rate::where(['order_id'=>$this['id'],'rated_id'=>$this['delivery_id']])->latest()->first();
         if ($provider_rating_model){
             $provider_rating['rate']=$provider_rating_model->rate;
             $provider_rating['feedback']=$provider_rating_model->feedback;
+        }else{
+            $provider_rating=new Object_();
         }
         if ($delivery_rating_model){
             $delivery_rating['rate']=$delivery_rating_model->rate;
             $delivery_rating['feedback']=$delivery_rating_model->feedback;
+        }else{
+            $delivery_rating=new Object_();
         }
 
         $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id']])->latest()->first();
@@ -72,7 +74,7 @@ class OrderResourse extends JsonResource
                 'location' => $this->provider->location,
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
-                'room' => (int)$provider_chat?$provider_chat->room:0,
+                'room' => $provider_chat?$provider_chat->room:0,
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,

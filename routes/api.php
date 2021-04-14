@@ -53,6 +53,8 @@ Route::group([
         Route::get('/{category_id}/provider/{provider_id}/products', 'CategoryController@products');
     });
     //Profile
+    Route::get('provider/wallet', 'Provider\ProviderController@wallet')->middleware(JwtTokenIsValid::class);
+    Route::post('provider/wallet-pay', 'Provider\ProviderController@walletPay')->middleware(JwtTokenIsValid::class);
     Route::get('provider/{provider_id}', 'Provider\ProviderController@show');
     Route::get('provider/{provider_id}/products', 'Provider\ProductController@list');
     //Authed end points
@@ -76,6 +78,8 @@ Route::group([
             Route::group(['prefix' => 'product'], function () {
                 Route::post('/upload-images', 'ProductController@uploadImages');
                 Route::post('/', 'ProductController@store');
+                Route::put('/{id}', 'ProductController@update');
+                Route::delete('/{id}', 'ProductController@delete');
             });
         });
         //Cart

@@ -24,6 +24,7 @@ class CreateProductsTable extends Migration
             $table->double('delivery_price')->default(0);
             $table->json('images')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

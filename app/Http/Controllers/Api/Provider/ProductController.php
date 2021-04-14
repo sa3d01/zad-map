@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Api\Provider;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Provider\Product\storeProductRequest;
 use App\Http\Resources\ProductCollection;
+use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -64,5 +67,50 @@ class ProductController extends MasterController
             return $this->sendError('توجد مشكلة بالبيانات');
         }
         return $this->sendResponse(new ProductCollection(Product::where('user_id',$provider_id)->latest()->get()));
+    }
+
+    public function delete($id):object
+    {
+        $product=$this->model->find($id);
+        if (!$product || ($product->user_id != auth('api')->id())){
+            return $this->sendError('توجد مشكلة بالبيانات');
+        }
+        $cart_items=CartItem::where('product_id',$id)->get();
+        foreach ($cart_items as $cart_item)
+        {
+            if ($cart_item->cart->ordered==0){
+                $cart_item->delete();
+            }else{
+                $item_orders=OrderItem::where('cart_item_id',$cart_item->id)->get();
+                foreach ($item_orders as $item_order){
+                    if ($item_order->order->status!='completed' && $item_order->order->status!='rejected'){
+                        return $this->sendError('توجد طلبات جارية على هذه السلعة');
+                    }
+                }
+            }
+        }
+        $product->delete();
+        return $this->sendResponse(new ProductCollection(Product::where('user_id',auth('api')->id())->latest()->get()));
+    }
+
+    public function update($id,storeProductRequest $request):object
+    {
+        $product=$this->model->find($id);
+        if (!$product || ($product->user_id != auth('api')->id())){
+            return $this->sendError('توجد مشكلة بالبيانات');
+        }
+        $cart_items=CartItem::where('product_id',$id)->get();
+        foreach ($cart_items as $cart_item)
+        {
+            $item_orders=OrderItem::where('cart_item_id',$cart_item->id)->get();
+            foreach ($item_orders as $item_order){
+                if ($item_order->order->status!='completed' && $item_order->order->status!='rejected'){
+                    return $this->sendError('توجد طلبات جارية على هذه السلعة');
+                }
+            }
+        }
+        $data = $request->validated();
+        $product->update($data);
+        return $this->sendResponse(new ProductCollection(Product::where('user_id',auth('api')->id())->latest()->get()));
     }
 }

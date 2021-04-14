@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Traits\ModelBaseFunctions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory,ModelBaseFunctions;
+    use HasFactory,ModelBaseFunctions,SoftDeletes;
+
     private $route='product';
     private $images_link='media/images/product/';
     protected $fillable = [
@@ -20,7 +22,12 @@ class Product extends Model
         'has_delivery',
         'delivery_price',
         'images',
+        'deleted_at',
     ];
+    protected $dates = [
+        'deleted_at'
+    ];
+    protected $softDelete = true;
     protected $casts = [
         'images' => 'array',
     ];

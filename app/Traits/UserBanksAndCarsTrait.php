@@ -28,21 +28,17 @@ trait UserBanksAndCarsTrait
 
     protected function updateBankData($request)
     {
+        $user = auth('api')->user();
+        $banks=$user->banks;
+        foreach ($banks as $bank){
+            $bank->delete();
+        }
         foreach ($request['banks'] as $bank) {
-            $old_bank_name = Bank::where(['user_id' => auth('api')->id(), 'name' => $bank['name']])->latest()->first();
-            if ($old_bank_name) {
-                $old_bank_name->update([
-                    'user_id' => auth('api')->id(),
-                    'name' => $bank['name'],
-                    'account_number' => $bank['account_number'],
-                ]);
-            } else {
-                Bank::create([
-                    'user_id' => auth('api')->id(),
-                    'name' => $bank['name'],
-                    'account_number' => $bank['account_number'],
-                ]);
-            }
+            Bank::create([
+                'user_id' => auth('api')->id(),
+                'name' => $bank['name'],
+                'account_number' => $bank['account_number'],
+            ]);
         }
     }
 
