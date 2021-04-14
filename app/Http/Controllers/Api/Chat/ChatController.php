@@ -106,6 +106,7 @@ class ChatController extends MasterController
                 'title' => $title,
                 'body' => $title,
                 'type' => 'chat',
+                'room' => $message->room,
                 'message' => new MessageResource($message),
             ],
             'priority' => 'high',

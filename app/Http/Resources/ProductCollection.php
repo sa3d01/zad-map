@@ -36,6 +36,7 @@ class ProductCollection extends ResourceCollection
             $arr['has_delivery'] = (int)$obj->has_delivery;
             $arr['delivery_price'] = (int)$obj->delivery_price;
             $arr['name'] = $obj->name;
+            $arr['note'] = $obj->note??"";
             $arr['image'] = $obj->images[0];
             $arr['price'] = (double)$obj->price;
             $arr['in_cart'] = $this->inCart($obj->id)['in_cart'];

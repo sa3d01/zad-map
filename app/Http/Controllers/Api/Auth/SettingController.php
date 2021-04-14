@@ -11,6 +11,7 @@ use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
 use App\Traits\UserBanksAndCarsTrait;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PhpParser\Node\Expr\Cast\Object_;
@@ -50,6 +51,21 @@ class SettingController extends MasterController
             }
         }
         return $this->sendError('كلمة المرور غير صحيحة.');
+    }
+
+    public function updateOnlineStatus(): object
+    {
+        $user = auth('api')->user();
+        if ($user['online']==1){
+            $user->update([
+                'online' => 0,
+            ]);
+        }else{
+            $user->update([
+                'online' => 1,
+            ]);
+        }
+        return $this->sendResponse(new ProviderLoginResourse($user));
     }
 
     public function uploadImage(UploadImageRequest $request):object

@@ -11,6 +11,7 @@ class BankCollection extends ResourceCollection
         $data = [];
         foreach ($this as $obj) {
             $arr['id'] = (int)$obj->id;
+            $arr['logo'] = $obj->logo;
             $arr['name'] = $obj->name;
             $arr['account_number'] = $obj->account_number;
             $data[] = $arr;

@@ -38,6 +38,7 @@ class User extends Authenticatable implements JWTSubject
         'location',
         'email',
         'email_verified_at',
+        'online',
         'banned',
         'device',
         'last_login_at',

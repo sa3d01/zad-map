@@ -36,6 +36,7 @@ class ProviderLoginResourse extends JsonResource
         return [
             "user" => [
                 'id' => (int)$this->id,
+                'online' => $this->online,
                 'rating' => (double)$this->averageRate(),
                 'feedBacks' => $this->feedbacks(),
                 'type' => $this->type,

@@ -28,11 +28,13 @@ Route::group([
             Route::post('logout', 'LoginController@logout');
             Route::post('upload-image', 'SettingController@uploadImage');
             Route::put('update', 'SettingController@updateProfile');
+            Route::post('update-online-status', 'SettingController@updateOnlineStatus');
         });
     });
     // General
     Route::group(['namespace' => 'General', 'prefix' => 'general'], function () {
         Route::get('settings', 'SettingController@getSettings');
+        Route::get('banks', 'BankController@index');
         Route::get('cities', 'DropDownController@cities');
         Route::get('cities/{cityId}/districts', 'DropDownController@districts');
         Route::get('pages/{user_type}/{type}', 'PageController@getPage');
