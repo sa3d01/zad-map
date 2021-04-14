@@ -41,7 +41,7 @@
         </li>
 
         <li>
-            <a href="javascript: void(0);">
+            <a href="{{route('admin.product.index')}}">
                 <i class="mdi mdi-battlenet"></i>
                 <span> إدارة الخدمات </span>
             </a>
@@ -61,11 +61,11 @@
                 <span class="menu-arrow"></span>
             </a>
             <ul class="nav-second-level" aria-expanded="false">
-                <li><a href="javascript: void(0);">طلبات جديدة</a></li>
-                <li><a href="javascript: void(0);">طلبات بانتظار الدفع</a></li>
-                <li><a href="javascript: void(0);">طلبات جارية</a></li>
-                <li><a href="javascript: void(0);">طلبات مكتملة</a></li>
-                <li><a href="javascript: void(0);">طلبات مرفوضة</a></li>
+                <li><a href="{{route('admin.orders.list','new')}}">طلبات جديدة</a></li>
+                <li><a href="{{route('admin.orders.list','pre_paid')}}">طلبات بانتظار الدفع</a></li>
+                <li><a href="{{route('admin.orders.list','in_progress')}}">طلبات جارية</a></li>
+                <li><a href="{{route('admin.orders.list','completed')}}">طلبات مكتملة</a></li>
+                <li><a href="{{route('admin.orders.list','rejected')}}">طلبات مرفوضة</a></li>
             </ul>
         </li>
 

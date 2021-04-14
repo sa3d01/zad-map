@@ -38,7 +38,8 @@ class Order extends Model
     {
         $subtotal=0;
         foreach (OrderItem::where('order_id',$this->id)->get() as $orderItem){
-            $product=$orderItem->cartItem->product;
+            $product_id=$orderItem->cartItem->product_id;
+            $product=Product::withTrashed()->find($product_id);
             $subtotal+=$product->price*$orderItem->cartItem->count;
         }
         return (double)$subtotal;

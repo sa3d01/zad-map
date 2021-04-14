@@ -22,6 +22,7 @@ class Product extends Model
         'has_delivery',
         'delivery_price',
         'images',
+        'status',
         'deleted_at',
     ];
     protected $dates = [

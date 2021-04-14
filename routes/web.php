@@ -61,11 +61,9 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::get('story/{id}/reject', 'StoryController@reject')->name('story.reject');
     Route::get('story/{id}/accept', 'StoryController@accept')->name('story.accept');
 
-    Route::get('order/new', 'OrderController@new')->name('order.new');
-    Route::get('order/pre_paid', 'OrderController@pre_paid')->name('order.pre_paid');
-    Route::get('order/in_progress', 'OrderController@in_progress')->name('order.in_progress');
-    Route::get('order/completed', 'OrderController@completed')->name('order.completed');
-    Route::get('order/rejected', 'OrderController@rejected')->name('order.rejected');
+    Route::get('orders/{status}', 'OrderController@list')->name('orders.list');
+    Route::resource('order', 'OrderController');
+
 
     Route::resource('notifications', 'NotificationController');
 

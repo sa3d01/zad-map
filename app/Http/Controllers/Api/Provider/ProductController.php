@@ -51,9 +51,9 @@ class ProductController extends MasterController
     {
         $user=User::find(auth()->id());
         $category=Category::find($request['category_id']);
-        if ($user->products->count()+1 > $category->free_products ){
-            return $this->sendError("تخطيت الحد المجانى لهذا التصنيف");
-        }
+//        if ($user->products->count()+1 > $category->free_products ){
+//            return $this->sendError("تخطيت الحد المجانى لهذا التصنيف");
+//        }
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         Product::create($data);
