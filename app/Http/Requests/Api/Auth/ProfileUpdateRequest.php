@@ -39,6 +39,9 @@ class ProfileUpdateRequest extends ApiMasterRequest
             'car.year' => 'nullable',
             'car.identity' => 'nullable',
             'car.end_insurance_date' => 'nullable',
+            'car.insurance_image' => 'nullable',
+            'car.identity_image' => 'nullable',
+            'car.drive_image' => 'nullable',
             'banks' => 'array',
         ];
     }

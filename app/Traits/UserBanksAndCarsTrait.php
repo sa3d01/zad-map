@@ -24,6 +24,9 @@ trait UserBanksAndCarsTrait
             'year' => $request['car']['year'],
             'identity' => $request['car']['identity'],
             'end_insurance_date' => $request['car']['end_insurance_date'],
+            'insurance_image' => $request['car']['insurance_image'],
+            'identity_image' => $request['car']['identity_image'],
+            'drive_image' => $request['car']['drive_image'],
         ]);
     }
 
