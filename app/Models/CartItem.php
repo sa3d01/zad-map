@@ -17,6 +17,6 @@ class CartItem extends Model
     }
     public function product():object
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 }

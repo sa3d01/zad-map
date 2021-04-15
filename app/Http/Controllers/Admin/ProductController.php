@@ -23,7 +23,7 @@ class ProductController extends MasterController
 
     public function show($id):object
     {
-        $product=$this->model->find($id);
+        $product=$this->model->withTrashed()->find($id);
         return view('Dashboard.product.show', compact('product'));
     }
     public function ban($id):object

@@ -17,34 +17,41 @@
                                     <h3>{{config('app.name')}}</h3>
                                 </div>
                                 <div class="float-right">
-                                    <h4>فاتورة # <br>
-                                        <strong>{{$order->id}}</strong>
-                                    </h4>
+                                    <h4>فاتورة # </h4>
                                 </div>
                             </div>
                             <hr>
                             <div class="row">
                                 <div class="col-md-12">
-
                                     <div class="float-left mt-3">
-                                        <address>
-                                            <strong>Twitter, Inc.</strong><br>
-                                            795 Folsom Ave, Suite 600<br>
-                                            San Francisco, CA 94107<br>
-                                            <abbr title="Phone">P:</abbr> (123) 456-7890
-                                        </address>
+                                        <strong> صاحب الطلب: </strong>
+                                        <p>
+                                            <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                        </p>
+                                        <strong> مزود الخدمة: </strong>
+                                        <p>
+                                            <a href="{{route('admin.provider.show',$order->provider_id)}}">{{$order->provider->name}}</a>
+                                        </p>
+                                        @if($order->delivery_id!=null)
+                                            <strong> مندوب التوصيل : </strong>
+                                            <p>
+                                                <a href="{{route('admin.delivery.show',$order->delivery_id)}}">{{$order->delivery->name}}</a>
+                                            </p>
+                                        @endif
                                     </div>
                                     <div class="float-right mt-3">
+                                        <strong> تاريخ الطلب: </strong>
                                         <p>
-                                            <strong> تاريخ الطلب: </strong>
-                                            {{\Carbon\Carbon::parse($order->created_at)->format('Y-M-d H:i')}}
+                                            {{\Carbon\Carbon::parse($order->created_at)->format('Y-M-d')}}
                                         </p>
+                                        <strong> تاريخ الاستلام: </strong>
                                         <p>
-                                            <strong> تاريخ الاستلام: </strong>
-                                            {{\Carbon\Carbon::parse($order->deliver_at)->format('Y-M-d H:i')}}
+                                            {{\Carbon\Carbon::parse($order->deliver_at)->format('Y-M-d')}}
                                         </p>
-                                        <p class="m-t-10"><strong>Order Status: </strong> <span class="label label-pink">Pending</span></p>
-                                        <p class="m-t-10"><strong>Order ID: </strong> #123456</p>
+                                        <p class="m-t-10"><strong>حالة الطلب: </strong>
+                                            <span class="badge @if($order->status=='rejected') badge-danger @elseif($order->status=='completed') badge-success @elseif($order->status=='new') badge-primary @elseif($order->status=='in_progress') badge-purple @else badge-pill @endif">{{$order->getStatusArabic()}}</span>
+                                        </p>
+                                        <p class="m-t-10"><strong>رقم الطلب: </strong> #{{$order->id}}</p>
                                     </div>
                                 </div><!-- end col -->
                             </div>
@@ -55,86 +62,75 @@
                                     <div class="table-responsive">
                                         <table class="table mt-4">
                                             <thead>
-                                            <tr><th>#</th>
-                                                <th>Item</th>
-                                                <th>Description</th>
-                                                <th>Quantity</th>
-                                                <th>Unit Cost</th>
-                                                <th>Total</th>
-                                            </tr></thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>اسم الخدمة</th>
+                                                    <th>الكمية</th>
+                                                    <th>سعر الوحدة</th>
+                                                    <th>المجموع</th>
+                                                </tr>
+                                            </thead>
                                             <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>LCD</td>
-                                                <td>Lorem ipsum dolor sit amet.</td>
-                                                <td>1</td>
-                                                <td>$380</td>
-                                                <td>$380</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Mobile</td>
-                                                <td>Lorem ipsum dolor sit amet.</td>
-                                                <td>5</td>
-                                                <td>$50</td>
-                                                <td>$250</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>LED</td>
-                                                <td>Lorem ipsum dolor sit amet.</td>
-                                                <td>2</td>
-                                                <td>$500</td>
-                                                <td>$1000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>LCD</td>
-                                                <td>Lorem ipsum dolor sit amet.</td>
-                                                <td>3</td>
-                                                <td>$300</td>
-                                                <td>$900</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td>Mobile</td>
-                                                <td>Lorem ipsum dolor sit amet.</td>
-                                                <td>5</td>
-                                                <td>$80</td>
-                                                <td>$400</td>
-                                            </tr>
+                                            @foreach($order->orderItems as $orderItem)
+                                                <tr>
+                                                    <td><a href="{{route('admin.product.show',$orderItem->cartItem->product_id)}}"> {{$orderItem->cartItem->product_id}}</a></td>
+                                                    <td>{{$orderItem->cartItem->product->name}}</td>
+                                                    <td>{{$orderItem->cartItem->count}}</td>
+                                                    <td>{{$orderItem->cartItem->product->price}}</td>
+                                                    <td>{{$orderItem->cartItem->product->price*$orderItem->cartItem->count}}</td>
+                                                </tr>
+                                            @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
+                                @if($order->status=='rejected')
                                 <div class="col-xl-6 col-6">
                                     <div class="clearfix mt-4">
-                                        <h5 class="small text-dark">PAYMENT TERMS AND POLICIES</h5>
-
+                                        <h5 class="small text-dark">سبب الالغاء</h5>
                                         <small>
-                                            All accounts are to be paid within 7 days from receipt of
-                                            invoice. To be paid by cheque or credit card or direct payment
-                                            online. If account is not paid within 7 days the credits details
-                                            supplied as confirmation of work undertaken will be charged the
-                                            agreed quoted fee noted above.
+                                            {{\App\Models\CancelOrder::where('order_id',$order->id)->latest()->value('reason')}}
+                                        </small>
+                                        <h5 class="small text-dark">صاحب عملية الالغاء</h5>
+                                        @php
+                                            $canceller_id=\App\Models\CancelOrder::where('order_id',$order->id)->latest()->value('user_id');
+                                            $canceller=\App\Models\User::find($canceller_id);
+                                            if ($canceller->type=='PROVIDER'){
+                                                $canceller_show=route('admin.provider.show',$canceller_id);
+                                            }elseif ($canceller->type=='USER'){
+                                                $canceller_show=route('admin.user.show',$canceller_id);
+                                            }else{
+                                                $canceller_show=route('admin.delivery.show',$canceller_id);
+                                            }
+                                        @endphp
+                                        <small>
+                                            <a href="{{$canceller_show}}">{{$canceller->name}}</a>
                                         </small>
                                     </div>
                                 </div>
+                                @endif
+                                @php
+                                    if ($order['deliver_by']=='delivery')
+                                    {
+                                        $delivery_price=\App\Models\Setting::value('delivery_price');
+                                    }else{
+                                        $delivery_price=$order->orderItems->first()->cartItem->product->delivery_price;
+                                    }
+                                @endphp
                                 <div class="col-xl-3 col-6 offset-xl-3">
-                                    <p class="text-right"><b>Sub-total:</b> 2930.00</p>
-                                    <p class="text-right">Discout: 12.9%</p>
-                                    <p class="text-right">VAT: 12.9%</p>
+                                    <p class="text-right"><b>المجموع:</b> {{$order->price()}}</p>
+                                    <p class="text-right">التوصيل: {{$delivery_price}}</p>
                                     <hr>
-                                    <h3 class="text-right">USD 2930.00</h3>
+                                    <h3 class="text-right">ريال {{$order->price()+$delivery_price}}</h3>
                                 </div>
                             </div>
                             <hr>
                             <div class="d-print-none">
                                 <div class="float-right">
                                     <a href="javascript:window.print()" class="btn btn-dark waves-effect waves-light"><i class="fa fa-print"></i></a>
-                                    <a href="#" class="btn btn-primary waves-effect waves-light">Submit</a>
+{{--                                    <a href="#" class="btn btn-primary waves-effect waves-light">Submit</a>--}}
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
