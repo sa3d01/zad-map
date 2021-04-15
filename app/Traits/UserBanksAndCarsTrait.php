@@ -19,6 +19,7 @@ trait UserBanksAndCarsTrait
         }
         $car->update([
             'brand' => $request['car']['brand'],
+            'note' => $request['car']['note'],
             'color' => $request['car']['color'],
             'year' => $request['car']['year'],
             'identity' => $request['car']['identity'],
