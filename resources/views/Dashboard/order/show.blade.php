@@ -46,7 +46,7 @@
                                             {{\Carbon\Carbon::parse($order->deliver_at)->format('Y-M-d')}}
                                         </p>
                                         <p class="m-t-10"><strong>حالة الطلب: </strong>
-                                            <span class="badge @if($order->status=='rejected') badge-danger @elseif($order->status=='completed') badge-success @elseif($order->status=='new') badge-primary @elseif($order->status=='in_progress') badge-purple @else badge-pill @endif">{{$order->getStatusArabic()}}</span>
+                                            <span class="badge @if($order->status=='rejected') badge-danger @elseif($order->status=='completed') badge-success @elseif($order->status=='new') badge-primary @elseif($order->status=='in_progress') badge-purple @else badge-warning @endif">{{$order->getStatusArabic()}}</span>
                                         </p>
                                         <p class="m-t-10"><strong>رقم الطلب: </strong> #{{$order->id}}</p>
                                     </div>

@@ -48,7 +48,7 @@
                         <td>{{$last_order->user->name}}</td>
                         <td>{{\Carbon\Carbon::parse($last_order->created_at)->format('Y-M-d')}}</td>
                         <td>{{\Carbon\Carbon::parse($last_order->deliver_at)->format('Y-M-d')}}</td>
-                        <td><span class="badge @if($last_order->status=='rejected') badge-danger @elseif($last_order->status=='completed') badge-success @elseif($last_order->status=='new') badge-primary @elseif($last_order->status=='in_progress') badge-purple @else badge-pill @endif">{{$last_order->getStatusArabic()}}</span></td>
+                        <td><span class="badge @if($last_order->status=='rejected') badge-danger @elseif($last_order->status=='completed') badge-success @elseif($last_order->status=='new') badge-primary @elseif($last_order->status=='in_progress') badge-purple @else badge-warning @endif">{{$last_order->getStatusArabic()}}</span></td>
                         <td>{{$last_order->provider->name}}</td>
                         <td>
                             <a href="{{route('admin.order.show',$last_order->id)}}">
