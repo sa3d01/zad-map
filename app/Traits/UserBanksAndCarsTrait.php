@@ -35,12 +35,15 @@ trait UserBanksAndCarsTrait
             $bank->delete();
         }
         foreach ($request['banks'] as $bank) {
-            Bank::create([
+            $bank=Bank::create([
                 'user_id' => auth('api')->id(),
                 'name' => $bank['name'],
                 'account_number' => $bank['account_number'],
             ]);
+            $bank->refresh();
         }
+        $user->refresh();
+
     }
 
 }
