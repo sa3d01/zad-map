@@ -10,6 +10,7 @@ class Car extends Model
 {
     use HasFactory;
     protected $fillable = ['user_id','note','brand','color','year','identity','insurance_image','end_insurance_date','identity_image','drive_image'];
+    private $images_link='media/images/car/';
 
 
     public function user():object
@@ -20,7 +21,7 @@ class Car extends Model
     private function upload_file($file)
     {
         $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
-        $file->move('media/images/car/', $filename);
+        $file->move($this->images_link, $filename);
         return $filename;
     }
 
@@ -35,8 +36,8 @@ class Car extends Model
 
     protected function setInsuranceImageAttribute()
     {
-        $image = request('image');
-        $filename = null;
+        $image = request('car.insurance_image');
+        $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);
         } elseif (filter_var($image, FILTER_VALIDATE_URL) === True) {
@@ -47,20 +48,24 @@ class Car extends Model
 
     protected function getInsuranceImageAttribute()
     {
-        $dest = 'media/images/car/';
         try {
-            if ($this->attributes['insurance_image'])
-                return asset($dest) . '/' . $this->attributes['insurance_image'];
-            return asset($dest) . '/default.png';
+            if ($this->attributes['insurance_image']){
+                if (filter_var($this->attributes['insurance_image'], FILTER_VALIDATE_URL)) {
+                    return $this->attributes['insurance_image'];
+                }else{
+                    return asset($this->images_link) . '/' . $this->attributes['insurance_image'];
+                }
+            }
+            return asset($this->images_link) . '/default.png';
         } catch (\Exception $e) {
-            return asset($dest) . '/default.png';
+            return asset($this->images_link) . '/default.png';
         }
     }
 
     protected function setIdentityImageAttribute()
     {
-        $image = request('image');
-        $filename = null;
+        $image = request('car.identity_image');
+        $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);
         } elseif (filter_var($image, FILTER_VALIDATE_URL) === True) {
@@ -71,20 +76,24 @@ class Car extends Model
 
     protected function getIdentityImageAttribute()
     {
-        $dest = 'media/images/car/';
         try {
-            if ($this->attributes['identity_image'])
-                return asset($dest) . '/' . $this->attributes['identity_image'];
-            return asset($dest) . '/default.png';
+            if ($this->attributes['identity_image']){
+                if (filter_var($this->attributes['identity_image'], FILTER_VALIDATE_URL)) {
+                    return $this->attributes['identity_image'];
+                }else{
+                    return asset($this->images_link) . '/' . $this->attributes['identity_image'];
+                }
+            }
+            return asset($this->images_link) . '/default.png';
         } catch (\Exception $e) {
-            return asset($dest) . '/default.png';
+            return asset($this->images_link) . '/default.png';
         }
     }
 
     protected function setDriveImageAttribute()
     {
-        $image = request('image');
-        $filename = null;
+        $image = request('car.drive_image');
+        $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);
         } elseif (filter_var($image, FILTER_VALIDATE_URL) === True) {
@@ -95,13 +104,17 @@ class Car extends Model
 
     protected function getDriveImageAttribute()
     {
-        $dest = 'media/images/car/';
         try {
-            if ($this->attributes['drive_image'])
-                return asset($dest) . '/' . $this->attributes['drive_image'];
-            return asset($dest) . '/default.png';
+            if ($this->attributes['drive_image']){
+                if (filter_var($this->attributes['drive_image'], FILTER_VALIDATE_URL)) {
+                    return $this->attributes['drive_image'];
+                }else{
+                    return asset($this->images_link) . '/' . $this->attributes['drive_image'];
+                }
+            }
+            return asset($this->images_link) . '/default.png';
         } catch (\Exception $e) {
-            return asset($dest) . '/default.png';
+            return asset($this->images_link) . '/default.png';
         }
     }
 
