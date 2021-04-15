@@ -70,30 +70,33 @@ class SettingController extends MasterController
 
     public function uploadImage(UploadImageRequest $request):object
     {
-        $user = auth('api')->user();
         if ($request['type']=='avatar'){
+            $user = auth('api')->user();
             $user->update([
                 'image'=>$request->file('image')
             ]);
             $image=$user->image;
         }elseif ($request['type']=='transfer') {
+            $user = auth('api')->user();
             $file=$request->file('image');
             $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
             $file->move('media/images/transfer/', $filename);
             $image= asset('media/images/transfer/').'/'.$filename;
         }else{
             $image_type=$request['type'];
-            $car=Car::where('user_id',auth('api')->id())->latest()->first();
-            if (!$car){
-                $car=Car::create([
-                   'user_id'=> auth('api')->id()
-                ]);
-            }
-            $car->update([
-                $image_type=>$request->file('image')
-            ]);
-            $image=$car->$image_type;
-
+//            $car=Car::where('user_id',auth('api')->id())->latest()->first();
+//            if (!$car){
+//                $car=Car::create([
+//                   'user_id'=> auth('api')->id()
+//                ]);
+//            }
+//            $car->update([
+//                $image_type=>$request->file('image')
+//            ]);
+            $file=$request->file('image');
+            $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $file->move('media/images/car/', $filename);
+            $image= asset('media/images/car/').'/'.$filename;
         }
         return $this->sendResponse([
             "image" => $image

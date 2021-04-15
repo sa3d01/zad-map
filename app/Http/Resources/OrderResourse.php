@@ -12,6 +12,20 @@ use phpDocumentor\Reflection\Types\Object_;
 
 class OrderResourse extends JsonResource
 {
+    function getCityData($user)
+    {
+         return [
+             'id' => $user->city ? (int)$user->city->id : 0,
+             'name' => $user->city ? $user->city->name : "",
+         ];
+    }
+    function getDistrictData($user)
+    {
+         return [
+             'id' => $user->district ? (int)$user->district->id : 0,
+             'name' => $user->district ? $user->district->name : "",
+         ];
+    }
     public function toArray($request)
     {
         if ($this['delivery_id']==null){
@@ -23,6 +37,8 @@ class OrderResourse extends JsonResource
             $delivery['name']=$delivery_model->name;
             $delivery['image']=$delivery_model->image;
             $delivery['location']=$delivery_model->location;
+            $delivery['city']=$this->getCityData($delivery_model);
+            $delivery['district']=$this->getDistrictData($delivery_model);
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=(double)$delivery_model->averageRate();
             $delivery['room'] = (int)$provider_chat?$provider_chat->room:0;
@@ -66,12 +82,16 @@ class OrderResourse extends JsonResource
                 'image' => $this->user->image,
                 'phone' => $this->user->phone,
                 'location' => $this->user->location,
+                'city'=>$this->getCityData($this->user),
+                'district'=>$this->getDistrictData($this->user)
             ],
             'provider' => [
                 'id' => $this['provider_id'],
                 'name' => $this->provider->name,
                 'image' => $this->provider->image,
                 'location' => $this->provider->location,
+                'city'=>$this->getCityData($this->provider),
+                'district'=>$this->getDistrictData($this->provider),
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
                 'room' => $provider_chat?$provider_chat->room:0,

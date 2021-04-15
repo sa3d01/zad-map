@@ -21,12 +21,13 @@ Route::group([
             Route::post('resend', 'ResetPasswordController@resend');
             Route::post('code', 'ResetPasswordController@checkCode');
         });
+        Route::post('upload-image', 'SettingController@uploadImage');
+
         // AuthedUser
         Route::group([
             'middleware' => JwtTokenIsValid::class,
         ], function () {
             Route::post('logout', 'LoginController@logout');
-            Route::post('upload-image', 'SettingController@uploadImage');
             Route::put('update', 'SettingController@updateProfile');
             Route::post('update-online-status', 'SettingController@updateOnlineStatus');
         });
