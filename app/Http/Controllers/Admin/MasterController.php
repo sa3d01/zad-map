@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
@@ -45,6 +46,8 @@ abstract class MasterController extends Controller
 
         $seven_orders=Order::where('created_at','>',Carbon::now()->subDays(7))->orderBy('created_at','asc')->get();
 
+        $unread_notifications_count=Notification::where(['type'=>'admin','read'=>'false'])->count();
+        $notifications=Notification::where(['type'=>'admin'])->latest()->get();
         view()->share(array(
             'module_name' => $this->module_name,
             'single_module_name' => $this->single_module_name,
@@ -67,6 +70,8 @@ abstract class MasterController extends Controller
             'new_orders_count'=>$new_orders_count,
             'all_orders_count'=>$all_orders_count>0?$all_orders_count:1,
             'seven_orders'=>$seven_orders,
+            'notifications'=>$notifications,
+            'unread_notifications_count'=>$unread_notifications_count,
            ));
     }
 

@@ -8,9 +8,6 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card-box">
-                        <!-- <div class="panel-heading">
-                            <h4>Invoice</h4>
-                        </div> -->
                         <div class="panel-body">
                             <div class="clearfix">
                                 <div class="float-left">
@@ -130,7 +127,6 @@
                             <div class="d-print-none">
                                 <div class="float-right">
                                     <a href="javascript:window.print()" class="btn btn-dark waves-effect waves-light"><i class="fa fa-print"></i></a>
-{{--                                    <a href="#" class="btn btn-primary waves-effect waves-light">Submit</a>--}}
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
