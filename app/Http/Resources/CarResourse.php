@@ -13,6 +13,7 @@ class CarResourse extends JsonResource
         return [
             'id' => (int)$this->id,
             'brand' => $this->brand??"",
+            'note' => $this->note??"",
             'color' => $this->color??"",
             'year' => $this->year??"",
             'identity' => $this->identity??"",
