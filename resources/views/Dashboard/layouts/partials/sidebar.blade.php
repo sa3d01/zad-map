@@ -117,16 +117,16 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="javascript: void(0);">أنواع التواصل</a>
+                    <a href="{{route('admin.contact_type.index')}}">أنواع التواصل</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0);">المدن والأحياء</a>
+                    <a href="{{route('admin.city.index')}}">المدن والأحياء</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0);">الحسابات البنكية</a>
+                    <a href="{{route('admin.bank.index')}}">الحسابات البنكية</a>
                 </li>
                 <li>
-                    <a href="javascript: void(0);">الإعلانات</a>
+                    <a href="{{route('admin.slider.index')}}">الإعلانات</a>
                 </li>
 
             </ul>

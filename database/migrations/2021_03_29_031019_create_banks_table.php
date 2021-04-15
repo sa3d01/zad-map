@@ -19,6 +19,7 @@ class CreateBanksTable extends Migration
             $table->char('logo')->nullable();
             $table->char('name')->nullable();
             $table->char('account_number')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

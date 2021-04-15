@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class Bank extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id','logo','name','account_number'];
+    protected $fillable = ['user_id','logo','name','account_number','status'];
 
     private $route='bank';
     private $images_link='media/images/bank/';

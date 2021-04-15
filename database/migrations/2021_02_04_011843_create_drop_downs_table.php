@@ -16,7 +16,7 @@ class CreateDropDownsTable extends Migration
         Schema::create('drop_downs', function (Blueprint $table) {
             $table->id();
             $table->char('class',50)->nullable();
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(true);
             $table->string('name')->nullable();
             $table->char('image',20)->nullable();
             $table->bigInteger('parent_id')->unsigned()->nullable();

@@ -64,8 +64,21 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::get('orders/{status}', 'OrderController@list')->name('orders.list');
     Route::resource('order', 'OrderController');
 
-
     Route::resource('notifications', 'NotificationController');
 
+    Route::resource('bank', 'BankController');
+    Route::post('bank/{id}/ban', 'BankController@ban')->name('bank.ban');
+    Route::post('bank/{id}/activate', 'BankController@activate')->name('bank.activate');
 
+    Route::resource('contact_type', 'ContactTypeController');
+    Route::post('contact_type/{id}/ban', 'ContactTypeController@ban')->name('contact_type.ban');
+    Route::post('contact_type/{id}/activate', 'ContactTypeController@activate')->name('contact_type.activate');
+
+    Route::resource('city', 'BankController');
+    Route::post('city/{id}/ban', 'BankController@ban')->name('city.ban');
+    Route::post('city/{id}/activate', 'BankController@activate')->name('city.activate');
+
+    Route::resource('slider', 'SliderController');
+    Route::post('slider/{id}/ban', 'SliderController@ban')->name('slider.ban');
+    Route::post('slider/{id}/activate', 'SliderController@activate')->name('slider.activate');
 });
