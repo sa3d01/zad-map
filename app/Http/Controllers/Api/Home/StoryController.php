@@ -23,6 +23,11 @@ class StoryController extends MasterController
         $results=[];
         foreach ($users_stories as $user_id=>$stories_of_user){
             $user=User::find($user_id);
+            if (request()->user()){
+                if (request()->user()->city_id != $user->city_id){
+                    continue;
+                }
+            }
             $arr['user']=[
                 'id'=>$user_id,
                 'name'=>$user->name,
@@ -32,11 +37,7 @@ class StoryController extends MasterController
                 $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
                 $endTime=Carbon::parse($story->approved_at)->addDays($story->storyPeriod->story_period)->format('Y-M-d');
                 if (Carbon::now()->between($approved, $endTime)) {
-                    if (request()->user()){
-                        if (request()->user()->city_id == $story->user->city_id){
-                            return $story;
-                        }
-                    }
+                    return $story;
                 }
             });
             $stories=[];
