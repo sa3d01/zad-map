@@ -33,8 +33,8 @@ class OrderCollection extends ResourceCollection
             }else{
                 $delivery_price=$obj->orderItems->first()->cartItem->product->delivery_price;
             }
-            if ($this->promo_code) {
-                $promo_code = PromoCode::where('code', $this->promo_code)->first();
+            if ($obj->promo_code) {
+                $promo_code = PromoCode::where('code', $obj->promo_code)->first();
                 $discount=$promo_code->discount_percent*($obj->price()+$delivery_price)/100;
                 $arr['price'] = ($obj->price()+$delivery_price)-$discount;
             }else{
