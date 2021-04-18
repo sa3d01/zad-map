@@ -36,8 +36,6 @@ class StoryController extends MasterController
                         if (request()->user()->city_id == $story->user->city_id){
                             return $story;
                         }
-                    }else{
-                        return $story;
                     }
                 }
             });
