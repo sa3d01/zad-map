@@ -117,7 +117,7 @@ class OrderController extends MasterController
             return $this->sendError("هذا الكود غير صالح");
         } else {
             $new_price=$promo_code->discount_percent*$request['total_price']/100;
-            return $this->sendResponse(['total_price'=>$request['total_price'],'new_price'=>$new_price], "تم التأكد من صحة الكود");
+            return $this->sendResponse(['total_price'=>(double)$request['total_price'],'new_price'=>$new_price], "تم التأكد من صحة الكود");
         }
     }
 
