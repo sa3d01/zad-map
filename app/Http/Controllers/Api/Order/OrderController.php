@@ -72,6 +72,12 @@ class OrderController extends MasterController
         if ($order->user_id != auth('api')->id() || $order->status != 'new') {
             return $this->sendError("ﻻ يمكنك تعديل هذا الطلب");
         }
+        if (\request()->input('deliver_at'))
+        {
+            $order->update([
+                'deliver_at'=>\request()->input('deliver_at')
+            ]);
+        }
         foreach (\request()->input('cart') as $obj) {
             $cartItem = CartItem::find($obj['cart_item_id']);
             if (!$cartItem) {

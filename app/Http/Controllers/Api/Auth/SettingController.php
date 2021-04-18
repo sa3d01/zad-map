@@ -10,6 +10,7 @@ use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
+use App\Models\DropDown;
 use App\Traits\UserBanksAndCarsTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Hash;
@@ -20,9 +21,21 @@ class SettingController extends MasterController
 {
     use UserBanksAndCarsTrait;
 
+    private function getDistrictId($district){
+        $data=['class'=>'District','name'=>$district,'parent_id'=>request()->input('city_id')];
+        $model=DropDown::where($data)->first();
+        if (!$model){
+            $model=DropDown::create($data);
+        }
+        return $model->id;
+    }
+
     public function updateProfile(ProfileUpdateRequest $request): object
     {
         $user = auth('api')->user();
+        $data=$request->validated();
+        $data['district_id'] = $this->getDistrictId($request['district']);
+        $data['last_ip'] = $request->ip();
         if ($user['type']!='USER'){
             if ($request['car']){
                 $this->updateCarData($request->validated());
@@ -30,10 +43,10 @@ class SettingController extends MasterController
             if ($request['banks']){
                 $this->updateBankData($request->validated());
             }
-            $user->update($request->validated());
+            $user->update($data);
             return $this->sendResponse(new ProviderLoginResourse($user));
         }
-        $user->update($request->validated());
+        $user->update($data);
         return $this->sendResponse(new UserLoginResourse($user));
     }
 

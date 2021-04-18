@@ -109,7 +109,10 @@
                                 </div>
                                 @endif
                                 @php
-                                    if ($order['deliver_by']=='delivery')
+                                    if ($order['deliver_by']=='user')
+                                    {
+                                        $delivery_price=0;
+                                    }elseif ($order['deliver_by']=='delivery')
                                     {
                                         $delivery_price=\App\Models\Setting::value('delivery_price');
                                     }else{

@@ -25,8 +25,9 @@ class OrderCollection extends ResourceCollection
                 $delivery['name']=$obj->delivery->name;
                 $arr['delivery']=$delivery;
             }
-            if ($obj['deliver_by']=='delivery')
-            {
+            if ($obj['deliver_by']=='user') {
+                $delivery_price=0;
+            }elseif ($obj['deliver_by']=='delivery') {
                 $delivery_price=Setting::value('delivery_price');
             }else{
                 $delivery_price=$obj->orderItems->first()->cartItem->product->delivery_price;

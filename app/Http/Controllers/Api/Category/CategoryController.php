@@ -30,10 +30,12 @@ class CategoryController extends MasterController
         }
         return $this->sendResponse($results);
     }
-    public function providers():object
+    public function providers($category_id):object
     {
-//        $providers_q=User::where(['approved'=>1,'banned'=>0])->whereHas('products');
-        $providers_q=User::whereHas('products');
+        $category=Category::find($category_id);
+        $provider_ids=$category->products->pluck('user_id');
+        $providers_q=User::whereIn('id',$provider_ids);
+        $providers_q=$providers_q->where(['approved'=>1,'banned'=>0]);
         if (request()->has('name')){
             $providers_q->where('name',request()->input('name'));
         }

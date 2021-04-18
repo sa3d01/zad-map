@@ -43,7 +43,10 @@ class OrderResourse extends JsonResource
             $delivery['rating']=(double)$delivery_model->averageRate();
             $delivery['room'] = (int)$provider_chat?$provider_chat->room:0;
         }
-        if ($this['deliver_by']=='delivery')
+        if ($this['deliver_by']=='user')
+        {
+            $delivery_price=0;
+        }elseif ($this['deliver_by']=='delivery')
         {
             $delivery_price=Setting::value('delivery_price');
         }else{
