@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\PromoCode;
 use App\Models\Setting;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use phpDocumentor\Reflection\Types\Object_;
@@ -32,7 +33,13 @@ class OrderCollection extends ResourceCollection
             }else{
                 $delivery_price=$obj->orderItems->first()->cartItem->product->delivery_price;
             }
-            $arr['price'] = $obj->price()+$delivery_price;
+            if ($this->promo_code) {
+                $promo_code = PromoCode::where('code', $this->promo_code)->first();
+                $discount=$promo_code->discount_percent*($obj->price()+$delivery_price)/100;
+                $arr['price'] = ($obj->price()+$delivery_price)-$discount;
+            }else{
+                $arr['price'] = $obj->price()+$delivery_price;
+            }
             $data[]=$arr;
         }
         return $data;

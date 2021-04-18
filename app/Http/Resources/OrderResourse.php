@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Chat;
 use App\Models\OrderPay;
+use App\Models\PromoCode;
 use App\Models\Rate;
 use App\Models\Setting;
 use App\Models\User;
@@ -76,6 +77,12 @@ class OrderResourse extends JsonResource
             $delivery_rating=new Object_();
         }
 
+        $promo_code = PromoCode::where('code', $this->promo_code)->first();
+        $discount=0;
+        if ($promo_code){
+            $discount=$promo_code->discount_percent*($this->price()+($delivery_price))/100;
+        }
+
         $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id']])->latest()->first();
         return [
             'id' => (int)$this['id'],
@@ -107,7 +114,8 @@ class OrderResourse extends JsonResource
             'products'=>new OrderItemCollection($this->orderItems),
             'price' => $this->price(),
             'delivery_price' => $delivery_price,
-            'total_price' => $this->price()+($delivery_price),
+            'discount' => $discount,
+            'total_price' => ($this->price()+($delivery_price))-$discount,
             'cancel_reason'=>$this->cancelReason(),
             'payment'=>$payment_model,
             'provider_rating'=>$provider_rating,

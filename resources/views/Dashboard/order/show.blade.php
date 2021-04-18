@@ -118,12 +118,19 @@
                                     }else{
                                         $delivery_price=$order->orderItems->first()->cartItem->product->delivery_price;
                                     }
+
+                                    $promo_code = \App\Models\PromoCode::where('code', $order->promo_code)->first();
+                                    $discount=0;
+                                    if ($promo_code){
+                                        $discount=$promo_code->discount_percent*($order->price()+($delivery_price))/100;
+                                    }
                                 @endphp
                                 <div class="col-xl-3 col-6 offset-xl-3">
                                     <p class="text-right"><b>المجموع:</b> {{$order->price()}}</p>
                                     <p class="text-right">التوصيل: {{$delivery_price}}</p>
+                                    <p class="text-right">الخصم: {{$discount}}</p>
                                     <hr>
-                                    <h3 class="text-right">ريال {{$order->price()+$delivery_price}}</h3>
+                                    <h3 class="text-right">ريال {{($order->price()+$delivery_price)-$discount}}</h3>
                                 </div>
                             </div>
                             <hr>
