@@ -16,7 +16,7 @@ Route::group([
         // ForgotPassword
         Route::group(['prefix' => 'password'], function () {
             Route::put('update', 'SettingController@updatePassword')->middleware(JwtTokenIsValid::class);
-            Route::post('set', 'ResetPasswordController@setNewPassword')->middleware(JwtTokenIsValid::class);
+            Route::post('set', 'ResetPasswordController@setNewPassword');
             Route::post('forgot', 'ResetPasswordController@forgotPassword');
             Route::post('resend', 'ResetPasswordController@resend');
             Route::post('code', 'ResetPasswordController@checkCode');

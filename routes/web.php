@@ -64,7 +64,8 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::get('orders/{status}', 'OrderController@list')->name('orders.list');
     Route::resource('order', 'OrderController');
 
-    Route::resource('notifications', 'NotificationController');
+    Route::resource('notification', 'NotificationController');
+    Route::resource('contact', 'ContactController');
 
     Route::resource('bank', 'BankController');
     Route::post('bank/{id}/ban', 'BankController@ban')->name('bank.ban');

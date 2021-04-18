@@ -70,7 +70,7 @@
         </li>
 
         <li>
-            <a href="javascript: void(0);">
+            <a href="{{route('admin.notification.index')}}">
                 <i class="mdi mdi-alert-octagram"></i>
                 <span> إدارة الإشعارات الجماعية </span>
             </a>
@@ -84,7 +84,7 @@
         </li>
 
         <li>
-            <a href="javascript: void(0);">
+            <a href="{{route('admin.contact.index')}}">
                 <i class="mdi mdi-mailbox"></i>
                 <span> إدارة رسائل التواصل </span>
             </a>

@@ -1,6 +1,6 @@
 @extends('Dashboard.layouts.master')
 @section('title', 'بيانات طلب')
-@section('style')
+@section('styles')
 @endsection
 @section('content')
     <div class="content">
