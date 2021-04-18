@@ -23,8 +23,8 @@ class StoryController extends MasterController
         $results=[];
         foreach ($users_stories as $user_id=>$stories_of_user){
             $user=User::find($user_id);
-            if (request()->user()){
-                if (request()->user()->city_id != $user->city_id){
+            if (auth('api')->check()){
+                if (auth('api')->user()->city_id != $user->city_id){
                     continue;
                 }
             }
