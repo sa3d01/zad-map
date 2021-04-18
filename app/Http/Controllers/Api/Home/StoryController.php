@@ -32,7 +32,13 @@ class StoryController extends MasterController
                 $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
                 $endTime=Carbon::parse($story->approved_at)->addDays($story->storyPeriod->story_period)->format('Y-M-d');
                 if (Carbon::now()->between($approved, $endTime)) {
-                    return $story;
+                    if (request()->user()){
+                        if (request()->user()->city_id == $story->user->city_id){
+                            return $story;
+                        }
+                    }else{
+                        return $story;
+                    }
                 }
             });
             $stories=[];
