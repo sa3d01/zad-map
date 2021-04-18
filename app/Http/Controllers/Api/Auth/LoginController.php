@@ -19,6 +19,9 @@ class LoginController extends MasterController
         }else{
             $types=['PROVIDER','FAMILY'];
             $user = User::where('phone' , $request['phone'])->whereIn('type',$types)->first();
+            if ($user->approved != 1){
+                return $this->sendError('هذا الحساب غير مفعل من قبل الإدارة.');
+            }
         }
         if (!$user) {
             return $this->sendError('هذا الحساب غير موجود.');
