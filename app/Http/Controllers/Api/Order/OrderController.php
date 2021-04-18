@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Order;
 
 use App\Http\Controllers\Api\MasterController;
+use App\Http\Requests\Api\Order\CheckPromoCodeRequest;
 use App\Http\Requests\Api\Order\RateOrderRequest;
 use App\Http\Requests\Api\Order\storeOrderRequest;
 use App\Http\Resources\OrderCollection;
@@ -12,8 +13,10 @@ use App\Models\CartItem;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PromoCode;
 use App\Models\Rate;
 use App\Models\User;
+use Carbon\Carbon;
 
 class OrderController extends MasterController
 {
@@ -103,6 +106,19 @@ class OrderController extends MasterController
             }
         }
         return $this->sendResponse(new OrderResourse($order));
+    }
+
+    public function checkPromoCode(CheckPromoCodeRequest $request)
+    {
+        $data = $request->validated();
+        $promo_code = PromoCode::where('code', $request['promo_code'])->first();
+        if (!$promo_code) {
+            return $this->sendError("هذا الكود غير صالح");
+        } elseif (Carbon::createFromTimestamp($promo_code->end_date)->toDateTimeString() < Carbon::now()) {
+            return $this->sendError("هذا الكود غير صالح");
+        } else {
+            return $this->sendResponse([], "تم التأكد من صحة الكود");
+        }
     }
 
     public function store(storeOrderRequest $request): object

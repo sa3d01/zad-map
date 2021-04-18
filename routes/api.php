@@ -108,6 +108,7 @@ Route::group([
             'namespace' => 'Order',
         ], function () {
             Route::group(['prefix' => 'order'], function () {
+                Route::post('check_promo_code', 'OrderController@checkPromoCode');
                 Route::post('/', 'OrderController@store');
                 Route::get('/{status}/filter', 'OrderController@filteredOrders');
                 Route::get('/{id}', 'OrderController@show');
