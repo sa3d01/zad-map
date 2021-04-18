@@ -22,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('delivery_id')->nullable();
             $table->dateTime('deliver_at')->nullable();
             $table->char('promo_code')->nullable();
+            $table->string('address')->nullable();
             $table->timestamps();
         });
     }

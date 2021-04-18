@@ -27,6 +27,7 @@ class storeOrderRequest extends ApiMasterRequest
             'deliver_by' => 'required|in:user,provider,delivery',
             'deliver_at' => 'required|date|after:today',
             'promo_code' => 'nullable|max:100',
+            'address' => 'nullable|max:200',
         ];
     }
 }

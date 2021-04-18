@@ -16,6 +16,7 @@ class Order extends Model
         'deliver_by',
         'deliver_at',
         'promo_code',
+        'address',
         'status',
     ];
     public function user():object
