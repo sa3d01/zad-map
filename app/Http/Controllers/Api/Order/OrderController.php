@@ -110,11 +110,10 @@ class OrderController extends MasterController
 
     public function checkPromoCode(CheckPromoCodeRequest $request)
     {
-        $data = $request->validated();
         $promo_code = PromoCode::where('code', $request['promo_code'])->first();
         if (!$promo_code) {
             return $this->sendError("هذا الكود غير صالح");
-        } elseif (Carbon::createFromTimestamp($promo_code->end_date)->toDateTimeString() < Carbon::now()) {
+        } elseif (Carbon::parse($promo_code->end_date) < Carbon::now()) {
             return $this->sendError("هذا الكود غير صالح");
         } else {
             return $this->sendResponse([], "تم التأكد من صحة الكود");
