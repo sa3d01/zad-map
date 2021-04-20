@@ -12,7 +12,6 @@ class LoginController extends MasterController
 {
     public function login(LoginRequest $request): object
     {
-        //todo: check if provider approved
         $credentials = $request->only('phone', 'password');
         if ($request['type']=='USER' || $request['type']=='DELIVERY'){
             $user = User::where(['phone' => $request['phone'], 'type' => $request['type']])->first();

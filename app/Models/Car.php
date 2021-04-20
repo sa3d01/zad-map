@@ -34,9 +34,9 @@ class Car extends Model
         }
     }
 
-    protected function setInsuranceImageAttribute()
+    protected function setInsuranceImageAttribute($insurance_image)
     {
-        $image = request('car.insurance_image');
+        $image = $insurance_image;
         $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);
@@ -62,9 +62,9 @@ class Car extends Model
         }
     }
 
-    protected function setIdentityImageAttribute()
+    protected function setIdentityImageAttribute($identity_image)
     {
-        $image = request('car.identity_image');
+        $image = $identity_image;
         $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);
@@ -90,9 +90,9 @@ class Car extends Model
         }
     }
 
-    protected function setDriveImageAttribute()
+    protected function setDriveImageAttribute($drive_image)
     {
-        $image = request('car.drive_image');
+        $image = $drive_image;
         $filename = $image;
         if (is_file($image)) {
             $filename = $this->upload_file($image);

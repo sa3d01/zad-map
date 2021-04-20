@@ -9,12 +9,12 @@ trait UserBanksAndCarsTrait
 {
 
 
-    protected function updateCarData($request)
+    protected function updateCarData($request,$user)
     {
-        $car = Car::where('user_id', auth('api')->id())->latest()->first();
+        $car = Car::where('user_id', $user->id)->latest()->first();
         if (!$car) {
             $car = Car::create([
-                'user_id' => auth('api')->id()
+                'user_id' => $user->id
             ]);
         }
         $car->update([
@@ -30,16 +30,15 @@ trait UserBanksAndCarsTrait
         ]);
     }
 
-    protected function updateBankData($request)
+    protected function updateBankData($request,$user)
     {
-        $user = auth('api')->user();
-        $banks=$user->banks;
+        $banks=$user->banks();
         foreach ($banks as $bank){
             $bank->delete();
         }
         foreach ($request['banks'] as $bank) {
             $bank=Bank::create([
-                'user_id' => auth('api')->id(),
+                'user_id' =>$user->id,
                 'name' => $bank['name'],
                 'account_number' => $bank['account_number'],
             ]);

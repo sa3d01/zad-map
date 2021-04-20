@@ -27,10 +27,10 @@ class RegisterController extends MasterController
         $this->createPhoneVerificationCodeForUser($user);
         if ($user['type']!='USER'){
             if ($request['car']){
-                $this->updateCarData($request->validated());
+                $this->updateCarData($request->validated(),$user);
             }
             if ($request['banks']){
-                $this->updateBankData($request->validated());
+                $this->updateBankData($request->validated(),$user);
             }
             $user->update($request->validated());
         }
