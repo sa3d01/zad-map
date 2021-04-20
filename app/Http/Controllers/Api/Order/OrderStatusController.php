@@ -91,7 +91,7 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (($order->user_id != auth('api')->id() && $order->provider_id != auth('api')->id()) || ($order->status == 'rejected' || $order->status == 'completed')) {
+        if (($order->user_id != auth('api')->id() && $order->provider_id != auth('api')->id() && $order->delivery_id != auth('api')->id()) || ($order->status == 'rejected' || $order->status == 'completed')) {
             return $this->sendError("ﻻ يمكنك الغاء هذا الطلب");
         }
         $order->update([
@@ -103,6 +103,17 @@ class OrderStatusController extends MasterController
             'reason' => $request['reason']
         ]);
         //todo:notify
+        if (auth('api')->user()->type=='USER'){
+            $title = sprintf('لقد تم الغاء الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+            $this->notify_provider($order->provider,$title, $order);
+        }elseif (auth('api')->user()->type=='PROVIDER'){
+            $title = sprintf('لقد تم الغاء الطلب من قبل مزود الخدمة  %s , طلب رقم %s ',$order->provider->name,$order->id);
+            $this->notify_provider($order->user,$title, $order);
+        }else{
+            $title = sprintf('لقد تم الغاء الطلب من قبل مندوب التوصيل  %s , طلب رقم %s ',$order->delivery->name,$order->id);
+            $this->notify_provider($order->provider,$title, $order);
+            $this->notify_provider($order->user,$title, $order);
+        }
         return $this->sendResponse([], 'تم الغاء الطلب بنجاح');
     }
     public function acceptOrder($id): object

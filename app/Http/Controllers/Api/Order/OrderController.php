@@ -105,6 +105,8 @@ class OrderController extends MasterController
                 ]);
             }
         }
+        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+        $this->notify_provider($order->provider,$title, $order);
         return $this->sendResponse(new OrderResourse($order));
     }
 
