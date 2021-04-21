@@ -51,7 +51,8 @@ class OrderController extends MasterController
             if ($status=='completed'){
                 $orders_q = Order::where('provider_id' , auth('api')->id())->whereIn('status',$status_arr);
             }elseif ($status=='new'){
-                $orders=Order::where('provider_id' , auth('api')->id())->where('status',$status)->filter(function($order) {
+                $orders_q=Order::where('provider_id' , auth('api')->id())->where('status',$status)->latest()->get();
+                $orders=$orders_q->filter(function($order) {
                     if ($order->deliver_by=='delivery') {
                         if ($order->delivery_id!=null){
                             return $order;
