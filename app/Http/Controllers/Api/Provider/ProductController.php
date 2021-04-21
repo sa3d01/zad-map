@@ -49,9 +49,10 @@ class ProductController extends MasterController
 
     public function store(storeProductRequest $request):object
     {
-        $user=User::find(auth()->id());
+        $user=User::find(auth('api')->id());
         $category=Category::find($request['category_id']);
-        if ($user->products->count()+1 > $category->free_products ){
+        $user_category_products=Product::where(['category_id'=>$request['category_id'],'user_id'=>auth('api')->id()])->count();
+        if ($user_category_products+1 > $category->free_products ){
             return $this->sendError("تخطيت الحد المجانى لهذا التصنيف");
         }
         $data = $request->validated();
