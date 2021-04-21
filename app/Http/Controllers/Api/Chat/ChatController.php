@@ -114,9 +114,9 @@ class ChatController extends MasterController
         $push->setMessage($msg)
             ->setDevicesToken($user->device['id'])
             ->send();
-        $notification['title'] = $title;
-        $notification['note'] = $title;
-        $notification['receiver_id'] = $user->id;
-        Notification::create($notification);
+//        $notification['title'] = $title;
+//        $notification['note'] = $title;
+//        $notification['receiver_id'] = $user->id;
+//        Notification::create($notification);
     }
 }
