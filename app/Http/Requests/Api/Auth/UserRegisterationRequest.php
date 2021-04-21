@@ -27,7 +27,7 @@ class UserRegisterationRequest extends ApiMasterRequest
         return [
             'type' => 'required|string|max:110',
             'name' => 'required|string|max:110',
-            'email' => 'email|max:90|unique:users',
+            'email' => 'email:rfc,dns|max:90|unique:users',
             'phone' => 'required|string|max:90|unique:users',
             'password' => 'required|string|min:6|max:15',
             'city_id' => 'required|numeric|exists:drop_downs,id',

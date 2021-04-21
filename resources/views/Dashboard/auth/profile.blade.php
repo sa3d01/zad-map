@@ -26,7 +26,7 @@
                         </div>
                         <div class="form-group">
                             <label for="emailAddress">البريد الإلكترونى*</label>
-                            <input type="email" name="email" required
+                            <input type="email" name="email" required pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/"
                                    value="{{auth()->user()->email}}" class="form-control" id="emailAddress">
                         </div>
                         <div class="form-group">

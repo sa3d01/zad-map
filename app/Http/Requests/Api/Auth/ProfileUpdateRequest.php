@@ -26,6 +26,7 @@ class ProfileUpdateRequest extends ApiMasterRequest
         return [
             'name' => 'nullable|string|max:110',
             'phone' => 'nullable|string|max:90|unique:users,phone,' . \request()->user()->id,
+            'email' => 'nullable|email:rfc,dns|max:90|unique:users,email,' . \request()->user()->id,
             'city_id' => 'nullable|numeric|exists:drop_downs,id',
             'district_id' => 'nullable|numeric|exists:drop_downs,id',
             'device.id' => 'required',
