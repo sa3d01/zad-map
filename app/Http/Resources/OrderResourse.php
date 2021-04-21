@@ -42,7 +42,7 @@ class OrderResourse extends JsonResource
             $delivery['district']=$this->getDistrictData($delivery_model);
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=(double)$delivery_model->averageRate();
-            $delivery['room'] = (int)$provider_chat?$provider_chat->room:0;
+            $delivery['room'] = $provider_chat?$provider_chat->room:0;
         }
         if ($this['deliver_by']=='user')
         {
