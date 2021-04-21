@@ -38,10 +38,10 @@ class SettingController extends MasterController
         $data['last_ip'] = $request->ip();
         if ($user['type']!='USER'){
             if ($request['car']){
-                $this->updateCarData($request->validated());
+                $this->updateCarData($request->validated(),$user);
             }
             if ($request['banks']){
-                $this->updateBankData($request->validated());
+                $this->updateBankData($request->validated(),$user);
             }
             $user->update($data);
             return $this->sendResponse(new ProviderLoginResourse($user));
