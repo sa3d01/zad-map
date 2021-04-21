@@ -17,6 +17,7 @@ use App\Models\PromoCode;
 use App\Models\Rate;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrderController extends MasterController
 {
@@ -49,6 +50,17 @@ class OrderController extends MasterController
         }else {
             if ($status=='completed'){
                 $orders_q = Order::where('provider_id' , auth('api')->id())->whereIn('status',$status_arr);
+            }elseif ($status=='new'){
+                $orders=Order::where('provider_id' , auth('api')->id())->where('status',$status)->latest()->filter(function($order) {
+                    if ($order->deliver_by=='delivery') {
+                        if ($order->delivery_id!=null){
+                            return $order;
+                        }
+                    }else{
+                        return $order;
+                    }
+                });
+                return $this->sendResponse(new OrderCollection($orders));
             }else{
                 $orders_q = Order::where(['provider_id' => auth('api')->id(), 'status' => $status]);
             }
