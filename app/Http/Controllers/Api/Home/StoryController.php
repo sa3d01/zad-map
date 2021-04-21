@@ -47,6 +47,9 @@ class StoryController extends MasterController
                 $result['media_type']=$datum->media_type;
                 $stories[]=$result;
             }
+            if (count($stories) < 1){
+                continue;
+            }
             $arr['stories']=$stories;
             $results[]=$arr;
         }
