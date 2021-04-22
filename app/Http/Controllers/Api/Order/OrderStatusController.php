@@ -58,7 +58,6 @@ class OrderStatusController extends MasterController
             }
         }
     }
-
     public function delivered($id):object
     {
         $order = Order::find($id);

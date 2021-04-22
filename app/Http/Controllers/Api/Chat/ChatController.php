@@ -37,7 +37,7 @@ class ChatController extends MasterController
         $chat_ids = Chat::where('sender_id', auth('api')->id())->orWhere('receiver_id', auth('api')->id())->pluck('room')->unique();
         $chats = Chat::whereIn('room', $chat_ids)->latest()->simplepaginate(10);
         $data['chats'] = [];
-        foreach ($chats->unique('room') as $chat) {
+        foreach ($chats as $chat) {
             $unread_count=Chat::where(['read'=>false,'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
             $arr['unread_count'] = $unread_count;
             $arr['room'] = $chat->room;
