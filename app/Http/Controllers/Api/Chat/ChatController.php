@@ -9,6 +9,7 @@ use App\Models\Chat;
 use App\Models\Notification;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ChatController extends MasterController
 {
@@ -35,7 +36,17 @@ class ChatController extends MasterController
     public function getConversations()
     {
         $chat_ids = Chat::where('sender_id', auth('api')->id())->orWhere('receiver_id', auth('api')->id())->pluck('room')->unique();
-        $chats = Chat::whereIn('room', $chat_ids)->latest()->simplepaginate(10);
+        $all_chats = Chat::whereIn('room', $chat_ids)->latest()->get();
+        $rooms=[];
+        $unique_chat_ids=[];
+        foreach ($all_chats as $all_chat) {
+            if (in_array($all_chat->room,$rooms)){
+                continue;
+            }
+            $rooms[]=$all_chat->room;
+            $unique_chat_ids[]=$all_chat->id;
+        }
+        $chats = Chat::whereIn('id',$unique_chat_ids)->latest()->simplepaginate(10);
         $data['chats'] = [];
         foreach ($chats as $chat) {
             $unread_count=Chat::where(['read'=>false,'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
