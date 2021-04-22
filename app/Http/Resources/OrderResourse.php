@@ -33,7 +33,7 @@ class OrderResourse extends JsonResource
             $delivery=new Object_();
         }else{
             $delivery_model=User::find($this['delivery_id']);
-            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id']])->latest()->first();
+            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
             $delivery['id']=$delivery_model->id;
             $delivery['name']=$delivery_model->name;
             $delivery['image']=$delivery_model->image;
@@ -42,7 +42,7 @@ class OrderResourse extends JsonResource
             $delivery['district']=$this->getDistrictData($delivery_model);
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=(double)$delivery_model->averageRate();
-            $delivery['room'] = $provider_chat?$provider_chat->room:0;
+            $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->id);
         }
         if ($this['deliver_by']=='user')
         {
@@ -83,7 +83,7 @@ class OrderResourse extends JsonResource
             $discount=$promo_code->discount_percent*($this->price()+($delivery_price))/100;
         }
 
-        $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id']])->latest()->first();
+        $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -104,7 +104,7 @@ class OrderResourse extends JsonResource
                 'district'=>$this->getDistrictData($this->provider),
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
-                'room' => $provider_chat?$provider_chat->room:0,
+                'room' => $provider_chat?$provider_chat->room:(int)($this['id'].$this['provider_id']),
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,

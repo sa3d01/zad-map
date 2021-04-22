@@ -11,11 +11,16 @@ class Chat extends Model
 
     protected $fillable = [
         'room',
+        'order_id',
         'sender_id',
         'receiver_id',
         'message',
         'read',
     ];
+    public function order():object
+    {
+        return $this->belongsTo(Order::class);
+    }
     public function sender():object
     {
         return $this->belongsTo(User::class,'sender_id','id');

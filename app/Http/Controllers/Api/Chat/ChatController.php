@@ -6,10 +6,10 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Chat\ChatRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Chat;
-use App\Models\Notification;
+use App\Models\Order;
+use App\Models\User;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class ChatController extends MasterController
 {
@@ -39,19 +39,21 @@ class ChatController extends MasterController
         $all_chats = Chat::whereIn('room', $chat_ids)->latest()->get();
         $rooms=[];
         $unique_chat_ids=[];
-        foreach ($all_chats as $all_chat) {
-            if (in_array($all_chat->room,$rooms)){
+        foreach ($all_chats as $conversation) {
+            if (in_array($conversation->room,$rooms)){
                 continue;
             }
-            $rooms[]=$all_chat->room;
-            $unique_chat_ids[]=$all_chat->id;
+            $rooms[]=$conversation->room;
+            $unique_chat_ids[]=$conversation->id;
         }
         $chats = Chat::whereIn('id',$unique_chat_ids)->latest()->simplepaginate(10);
         $data['chats'] = [];
         foreach ($chats as $chat) {
             $unread_count=Chat::where(['read'=>false,'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
             $arr['unread_count'] = $unread_count;
+            $arr['order_id'] = $chat->order_id;
             $arr['room'] = $chat->room;
+            $arr['active']=$chat->order->status!='completed';
             $arr['latest_message'] = new MessageResource($chat);
             $data['chats'][]= $arr;
         }
@@ -63,16 +65,23 @@ class ChatController extends MasterController
     {
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
-        $pre_msg = Chat::where(['sender_id' => $data['sender_id'], 'receiver_id' => $data['receiver_id']])->orWhere(['sender_id' => $data['receiver_id'], 'receiver_id' => $data['sender_id']])->first();
-        if ($pre_msg) {
-            $data['room'] = $pre_msg->id;
-            $message = Chat::create($data);
-        } else {
-            $message = Chat::create($data);
-            $message->update([
-                'room' => $message->id
-            ]);
+        $sender=auth('api')->user();
+        $receiver=User::find($request['receiver_id']);
+        if ($request['order_id']){
+            $order=Order::find($request['order_id']);
+            if ($sender->type=='PROVIDER' || $receiver->type=='PROVIDER'){
+                $data['room']=$request['order_id'].$order->provider_id;
+            }else{
+                $data['room']=$request['order_id'].$order->delivery_id;
+            }
+        }else{
+            $pre_msg = Chat::where(['sender_id' => $data['sender_id'], 'receiver_id' => $data['receiver_id']])->orWhere(['sender_id' => $data['receiver_id'], 'receiver_id' => $data['sender_id']])->first();
+            if (!$pre_msg){
+                return $this->sendError('حدثت مشكلة');
+            }
+            $data['room']=$pre_msg->room;
         }
+        $message = Chat::create($data);
         $this->notify_receiver($message->receiver,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->name, $message);
         $messages = Chat::where('room', $message->room)->latest()->get();
         return $this->sendResponse(MessageResource::collection($messages));
@@ -118,6 +127,7 @@ class ChatController extends MasterController
                 'body' => $title,
                 'type' => 'chat',
                 'room' => $message->room,
+                'order_id' => $message->order_id,
                 'message' => new MessageResource($message),
             ],
             'priority' => 'high',
@@ -125,9 +135,5 @@ class ChatController extends MasterController
         $push->setMessage($msg)
             ->setDevicesToken($user->device['id'])
             ->send();
-//        $notification['title'] = $title;
-//        $notification['note'] = $title;
-//        $notification['receiver_id'] = $user->id;
-//        Notification::create($notification);
     }
 }
