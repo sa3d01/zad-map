@@ -84,6 +84,25 @@ class OrderResourse extends JsonResource
         }
 
         $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
+        $can_confirm=false;
+
+        if (auth('api')->user()->type=='USER')
+        {
+            if ($this['delivery_id']!=null){
+                if ($this['status']=='delivered_to_delivery'){
+                    $can_confirm=true;
+                }
+            }else{
+                if ($this['status']=='in_progress'){
+                    $can_confirm=true;
+                }
+            }
+        }elseif (auth('api')->user()->type=='DELIVERY')
+        {
+            if ($this['status']=='in_progress'){
+                $can_confirm=true;
+            }
+        }
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -119,7 +138,8 @@ class OrderResourse extends JsonResource
             'cancel_reason'=>$this->cancelReason(),
             'payment'=>$payment_model,
             'provider_rating'=>$provider_rating,
-            'delivery_rating'=>$delivery_rating
+            'delivery_rating'=>$delivery_rating,
+            'can_confirm'=>$can_confirm
         ];
     }
 }
