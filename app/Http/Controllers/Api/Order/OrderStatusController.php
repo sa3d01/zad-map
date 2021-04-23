@@ -169,7 +169,7 @@ class OrderStatusController extends MasterController
                 $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
                 $this->notify_provider($order->provider,$title, $order);
             }
-            if ($request['delivery']){
+            if ($request['delivery'] && $order->delivery_id!=null){
                 if (array_key_exists("image",$request['delivery']))
                 {
                     $image=$request['delivery']['image'];
