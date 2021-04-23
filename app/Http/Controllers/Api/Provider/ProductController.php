@@ -30,7 +30,7 @@ class ProductController extends MasterController
         $validate = Validator::make($request->all(),
             [
                 'images' => 'required',
-                'images.*' => 'image|mimes:jpeg,jpg,png,jpg,gif,svg'
+                'images.*' => 'image'
             ]
         );
         if ($validate->fails()) {
@@ -49,7 +49,6 @@ class ProductController extends MasterController
 
     public function store(storeProductRequest $request):object
     {
-        $user=User::find(auth('api')->id());
         $category=Category::find($request['category_id']);
         $user_category_products=Product::where(['category_id'=>$request['category_id'],'user_id'=>auth('api')->id()])->count();
         if ($user_category_products+1 > $category->free_products ){
