@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResourse;
 use App\Models\Notification;
 use Edujugon\PushNotification\PushNotification;
+use Illuminate\Http\Resources\Json\JsonResource;
 use phpDocumentor\Reflection\Types\Object_;
 
 abstract class MasterController extends Controller
@@ -52,21 +53,23 @@ abstract class MasterController extends Controller
 
     function fcmPush($title,$user,$order)
     {
-        $push = new PushNotification('fcm');
-        $msg = [
-            'notification' => array('title' => $title, 'sound' => 'default'),
-            'data' => [
-                'title' => $title,
-                'body' => $title,
-                'status' => $order->status,
-                'type' => 'order',
-                'order' => new OrderResourse($order),
-            ],
-            'priority' => 'high',
-        ];
-        $push->setMessage($msg)
-            ->setDevicesToken($user->device['id'])
-            ->send();
+        if (in_array('id',$user->device)){
+            $push = new PushNotification('fcm');
+            $msg = [
+                'notification' => array('title' => $title, 'sound' => 'default'),
+                'data' => [
+                    'title' => $title,
+                    'body' => $title,
+                    'status' => $order->status,
+                    'type' => 'order',
+                    'order' => new OrderResourse($order),
+                ],
+                'priority' => 'high',
+            ];
+            $push->setMessage($msg)
+                ->setDevicesToken($user->device['id'])
+                ->send();
+        }
     }
     public function notify_provider($provider,$title, $order)
     {
