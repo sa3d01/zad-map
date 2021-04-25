@@ -74,6 +74,8 @@ class ChatController extends MasterController
             }else{
                 $data['room']=$request['order_id'].$order->delivery_id;
             }
+        }elseif($request['room']){
+            $data['room']=$request['room'];
         }else{
             $pre_msg = Chat::where(['sender_id' => $data['sender_id'], 'receiver_id' => $data['receiver_id']])->orWhere(['sender_id' => $data['receiver_id'], 'receiver_id' => $data['sender_id']])->first();
             if (!$pre_msg){
