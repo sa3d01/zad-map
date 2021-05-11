@@ -6,7 +6,7 @@
                     <i class="mdi mdi-dots-vertical"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a href="javascript:void(0);" class="dropdown-item">المزيد</a>
+                    <a href="{{route('admin.contact.index')}}" class="dropdown-item">المزيد</a>
                 </div>
             </div>
             <h4 class="header-title mb-3">رسائل تواصل الأعضاء</h4>

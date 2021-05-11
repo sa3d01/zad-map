@@ -52,6 +52,26 @@ trait ModelBaseFunctions
         }
     }
 
+    protected function setStartDateAttribute()
+    {
+        if (request('start_date')!=null){
+            if ( is_numeric(request('start_date')) && (int)request('start_date') == request('start_date') ){
+                $this->attributes['start_date'] = request('start_date');
+            }else{
+                $this->attributes['start_date'] = Carbon::parse(request('start_date'))->timestamp;
+            }
+        }
+    }
+    protected function setEndDateAttribute($endDate)
+    {
+        if ($endDate!=null){
+            if ( is_numeric($endDate) && (int)$endDate == $endDate ){
+                $this->attributes['end_date'] = $endDate;
+            }else{
+                $this->attributes['end_date'] = Carbon::parse($endDate)->timestamp;
+            }
+        }
+    }
 
     protected function setPasswordAttribute($password)
     {

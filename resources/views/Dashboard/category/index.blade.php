@@ -55,6 +55,11 @@
                                             <a href="{{route('admin.category.show',$row->id)}}">
                                                 <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
                                             </a>
+                                            <br>
+                                            <a href="{{route('admin.category.edit',$row->id)}}">
+                                                <button class="btn btn-warning waves-effect waves-light"> <i class="fa fa-map-pin mr-1"></i> <span>تعديل</span> </button>
+                                            </a>
+                                            <br>
                                             @if($row->status==1)
                                                 <form class="ban" data-id="{{$row->id}}" method="POST" action="{{ route('admin.category.ban',[$row->id]) }}">
                                                     @csrf

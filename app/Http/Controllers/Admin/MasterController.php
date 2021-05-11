@@ -47,7 +47,7 @@ abstract class MasterController extends Controller
         $seven_orders=Order::where('created_at','>',Carbon::now()->subDays(7))->orderBy('created_at','asc')->get();
 
         $unread_notifications_count=Notification::where(['type'=>'admin','read'=>'false'])->count();
-        $notifications=Notification::where(['type'=>'admin'])->latest()->get();
+        $notifications=Notification::where(['type'=>'admin','read'=>'false'])->latest()->get();
         view()->share(array(
             'module_name' => $this->module_name,
             'single_module_name' => $this->single_module_name,
@@ -86,12 +86,12 @@ abstract class MasterController extends Controller
         return view('Dashboard.' . $this->route . '.create');
     }
 
-    public function store(Request $request)
-    {
-        $this->validate($request, $this->validation_func(1), $this->validation_msg());
-        $this->model->create($request->all());
-        return redirect('admin/' . $this->route . '')->with('created', 'تمت الاضافة بنجاح');
-    }
+//    public function store(Request $request)
+//    {
+//        $this->validate($request, $this->validation_func(1), $this->validation_msg());
+//        $this->model->create($request->all());
+//        return redirect('admin/' . $this->route . '')->with('created', 'تمت الاضافة بنجاح');
+//    }
 
     public function edit($id)
     {

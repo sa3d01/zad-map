@@ -33,6 +33,18 @@ class CategoryController extends MasterController
         $category=$this->model->find($id);
         return view('Dashboard.category.show', compact('category'));
     }
+    public function edit($id):object
+    {
+        $category=$this->model->find($id);
+        return view('Dashboard.category.edit', compact('category'));
+    }
+    public function update($id,Request $request)
+    {
+        $category=$this->model->find($id);
+        $category->update($request->all());
+        return redirect()->back()->with('updated');
+
+    }
     public function ban($id):object
     {
         $category=$this->model->find($id);

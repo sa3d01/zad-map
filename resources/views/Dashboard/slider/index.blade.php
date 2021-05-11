@@ -18,23 +18,29 @@
                         <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap">
                             <thead>
                             <tr>
-                                <th>الشعار</th>
-                                <th>إسم البنك</th>
-                                <th>رقم الحساب</th>
+                                <th>موعد بداية العرض</th>
+                                <th>موعد نهاية العرض</th>
+                                <th>العنوان</th>
+                                <th>الوصف</th>
+                                <th>الصورة</th>
                                 <th>العمليات المتاحة</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($rows as $row)
                                 <tr>
+                                    <td>{{\Carbon\Carbon::createFromTimestamp($row->start_date)->format('Y-M-d')}}</td>
+                                    <td>{{\Carbon\Carbon::createFromTimestamp($row->end_date)->format('Y-M-d')}}</td>
+                                    <td>{{$row->title}}</td>
+                                    <td>{{$row->note}}</td>
                                     <td data-toggle="modal" data-target="#imgModal{{$row->id}}">
-                                        <img width="50px" height="50px" class="img_preview" src="{{ $row->logo}}">
+                                        <img width="50px" height="50px" class="img_preview" src="{{ $row->image}}">
                                     </td>
                                     <div id="imgModal{{$row->id}}" class="modal fade" role="img">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-body">
-                                                    <img data-toggle="modal" data-target="#imgModal{{$row->id}}" class="img-preview" src="{{ $row->logo}}" style="max-height: 500px">
+                                                    <img data-toggle="modal" data-target="#imgModal{{$row->id}}" class="img-preview" src="{{ $row->image}}" style="max-height: 500px">
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
@@ -42,23 +48,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <td>{{$row->name}}</td>
-                                    <td>{{$row->account_number}}</td>
                                     <td>
                                         <div class="button-list">
-                                            @if($row->status==1)
-                                                <form class="ban" data-id="{{$row->id}}" method="POST" action="{{ route('admin.bank.ban',[$row->id]) }}">
-                                                    @csrf
-                                                    {{ method_field('POST') }}
-                                                    <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>حظر</span> </button>
-                                                </form>
-                                            @else
-                                                <form class="activate" data-id="{{$row->id}}" method="POST" action="{{ route('admin.bank.activate',[$row->id]) }}">
-                                                    @csrf
-                                                    {{ method_field('POST') }}
-                                                    <button class="btn btn-success waves-effect waves-light"> <i class="fa fa-user-clock mr-1"></i> <span>تفعيل</span> </button>
-                                                </form>
-                                            @endif
+                                            <form class="delete" data-id="{{$row->id}}" method="POST" action="{{ route('admin.slider.destroy',[$row->id]) }}">
+                                                @csrf
+                                                {{ method_field('DELETE') }}
+                                                <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>حذف</span> </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -91,29 +87,11 @@
     <script src="{{asset('assets/js/pages/datatables.init.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script>
-        $(document).on('click', '.ban', function (e) {
+        $(document).on('click', '.delete', function (e) {
             e.preventDefault();
             var id = $(this).data('id');
             Swal.fire({
-                title: "تأكيد عملية الحظر ؟",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: 'btn-danger',
-                confirmButtonText: 'نعم !',
-                cancelButtonText: 'ﻻ , الغى العملية!',
-                closeOnConfirm: false,
-                closeOnCancel: false,
-                preConfirm: () => {
-                    $("form[data-id='" + id + "']").submit();
-                },
-                allowOutsideClick: () => !Swal.isLoading()
-            })
-        });
-        $(document).on('click', '.activate', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            Swal.fire({
-                title: "تأكيد عملية التفعيل ؟",
+                title: "تأكيد عملية الحذف ؟",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: 'btn-danger',

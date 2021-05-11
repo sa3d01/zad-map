@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Bank;
-use App\Models\Category;
+use App\Http\Requests\Dashboard\SliderStoreRequest;
 use App\Models\Slider;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 class SliderController extends MasterController
 {
@@ -21,20 +18,23 @@ class SliderController extends MasterController
         $rows = $this->model->latest()->get();
         return view('Dashboard.slider.index', compact('rows'));
     }
+
     public function create()
     {
         return view('Dashboard.slider.create');
     }
-    public function store(Request $request)
+
+    public function store(SliderStoreRequest $request)
     {
-        $data=$request->all();
-        $data['user_id']=auth()->id();
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
         $this->model->create($data);
         return redirect()->route('admin.slider.index')->with('created');
     }
-    public function ban($id):object
+
+    public function ban($id): object
     {
-        $slider=$this->model->find($id);
+        $slider = $this->model->find($id);
         $slider->update(
             [
                 'status'=>0,

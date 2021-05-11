@@ -29,7 +29,7 @@ class ContactTypeController extends MasterController
     {
         $data=$request->all();
         $this->model->create($data);
-        return redirect()->route('admin.contact-type.index')->with('created');
+        return redirect()->route('admin.contact_type.index')->with('created');
     }
 
     public function ban($id):object

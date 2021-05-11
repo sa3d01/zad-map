@@ -27,7 +27,7 @@
                             <div class="form-group">
                                 <label for="image">الصورة</label>
                                 <div class="card-box">
-                                    <input name="image" id="input-file-now-custom-1 image" type="file" class="dropify" data-default-file="{{auth()->user()->image}}"  />
+                                    <input name="image" id="input-file-now-custom-1 image" type="file" class="dropify" data-default-file="{{asset('media/images/logo.jpeg') }}"  />
                                 </div>
                             </div>
                             <div class="form-group text-right mb-0">

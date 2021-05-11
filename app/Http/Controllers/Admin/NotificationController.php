@@ -16,6 +16,16 @@ class NotificationController extends MasterController
         parent::__construct();
     }
 
+    public function clearAdminNotifications()
+    {
+        $unread_notifications_count=Notification::where(['type'=>'admin','read'=>'false'])->get();
+        foreach ($unread_notifications_count as $item){
+            $item->update([
+               'read'=>'true'
+            ]);
+        }
+        return redirect()->back();
+    }
     public function index()
     {
         $rows = $this->model->latest()->get();

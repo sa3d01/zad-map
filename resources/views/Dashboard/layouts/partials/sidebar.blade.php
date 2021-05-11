@@ -77,7 +77,7 @@
         </li>
 
         <li>
-            <a href="javascript: void(0);">
+            <a href="{{route('admin.wallet-pay.index')}}">
                 <i class="mdi mdi-cached"></i>
                 <span> إدارة الحوالات البنكية </span>
             </a>
@@ -106,13 +106,19 @@
                     </a>
                     <ul class="nav-third-level nav" aria-expanded="false">
                         <li>
-                            <a href="javascript: void(0);">عن التطبيق</a>
+                            <a href="{{route('admin.page.edit',['type'=>'about','for'=>'all'])}}">عن التطبيق</a>
                         </li>
                         <li>
-                            <a href="javascript: void(0);">الشروط والأحكام للمستخدم</a>
+                            <a href="{{route('admin.page.edit',['type'=>'percent','for'=>'all'])}}">عمولة التطبيق</a>
                         </li>
                         <li>
-                            <a href="javascript: void(0);">الشروط والأحكام للمندوب ومقدم الخدمة</a>
+                            <a href="{{route('admin.page.edit',['type'=>'terms','for'=>'user'])}}">الشروط والأحكام للمستخدم</a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.page.edit',['type'=>'terms','for'=>'provider'])}}">الشروط والأحكام لمقدم الخدمة</a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.page.edit',['type'=>'terms','for'=>'delivery'])}}">الشروط والأحكام للمندوب</a>
                         </li>
                     </ul>
                 </li>
@@ -120,7 +126,17 @@
                     <a href="{{route('admin.contact_type.index')}}">أنواع التواصل</a>
                 </li>
                 <li>
-                    <a href="{{route('admin.city.index')}}">المدن والأحياء</a>
+                    <a href="javascript: void(0);" aria-expanded="false">المدن والأحياء
+                        <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="nav-third-level nav" aria-expanded="false">
+                        <li>
+                            <a href="{{route('admin.city.index')}}">المدن</a>
+                        </li>
+                        <li>
+                            <a href="{{route('admin.district.index')}}">الأحياء</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{route('admin.bank.index')}}">الحسابات البنكية</a>

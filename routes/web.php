@@ -27,6 +27,9 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
         Route::get('/password/reset/{token}','ResetPasswordController@showResetForm')->name('password.reset');
         Route::post('/password/reset','ResetPasswordController@reset')->name('password.update');
     });
+    Route::get('clear-notifications', 'NotificationController@clearAdminNotifications')->name('clear-notifications');
+
+
     Route::get('/profile', 'AdminController@profile')->name('profile');
     Route::put('/profile', 'AdminController@updateProfile')->name('profile.update');
 
@@ -75,11 +78,23 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::post('contact_type/{id}/ban', 'ContactTypeController@ban')->name('contact_type.ban');
     Route::post('contact_type/{id}/activate', 'ContactTypeController@activate')->name('contact_type.activate');
 
-    Route::resource('city', 'BankController');
-    Route::post('city/{id}/ban', 'BankController@ban')->name('city.ban');
-    Route::post('city/{id}/activate', 'BankController@activate')->name('city.activate');
+    Route::resource('city', 'CityController');
+    Route::post('city/{id}/ban', 'CityController@ban')->name('city.ban');
+    Route::post('city/{id}/activate', 'CityController@activate')->name('city.activate');
+
+    Route::resource('district', 'DistrictController');
+    Route::post('district/{id}/ban', 'DistrictController@ban')->name('district.ban');
+    Route::post('district/{id}/activate', 'DistrictController@activate')->name('district.activate');
 
     Route::resource('slider', 'SliderController');
     Route::post('slider/{id}/ban', 'SliderController@ban')->name('slider.ban');
     Route::post('slider/{id}/activate', 'SliderController@activate')->name('slider.activate');
+
+    Route::resource('wallet-pay', 'WalletPayController');
+    Route::post('wallet-pay/{id}/reject', 'WalletPayController@reject')->name('wallet-pay.reject');
+    Route::post('wallet-pay/{id}/accept', 'WalletPayController@accept')->name('wallet-pay.accept');
+
+    Route::get('page/{type}/{for}', 'PageController@page')->name('page.edit');
+    Route::put('page/{id}', 'PageController@update')->name('page.update');
+
 });

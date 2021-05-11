@@ -5,16 +5,18 @@
     </a>
     <div class="dropdown-menu dropdown-menu-right dropdown-lg">
         <!-- item-->
+        @if(count($notifications)>0)
         <div class="dropdown-item noti-title">
             <h5 class="m-0">
                 <span class="float-right">
-                    <a href="" class="text-dark">
+                    <a href="{{route('admin.clear-notifications')}}" class="text-dark">
                         <small>حذف الكل</small>
                     </a>
                 </span>الإشعارات
             </h5>
         </div>
-
+        @endif
+        @if(count($notifications)>0)
         <div class="slimscroll noti-scroll">
             @foreach($notifications as $notification)
                 @if($notification->more_details['type']=='contact')
@@ -41,12 +43,15 @@
                 @endif
             @endforeach
         </div>
-
-        <!-- All-->
-{{--        <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">--}}
-{{--            View all--}}
-{{--            <i class="fi-arrow-right"></i>--}}
-{{--        </a>--}}
-
+        @else
+            <div class="slimscroll noti-scroll">
+                <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <div class="notify-icon bg-primary">
+                        <i class="mdi mdi-bed-empty"></i>
+                    </div>
+                    <p class="notify-details"> ! ﻻ يوجد اشعارات جديدة</p>
+                </a>
+            </div>
+        @endif
     </div>
 </li>

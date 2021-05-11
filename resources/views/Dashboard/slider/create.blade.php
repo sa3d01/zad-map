@@ -1,7 +1,10 @@
 @extends('Dashboard.layouts.master')
-@section('title', 'إضافة تصنيف')
+@section('title', 'إضافة صورة إعلانية')
 @section('styles')
     <link href="{{asset('assets/libs/dropify/dist/css/dropify.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/libs/bootstrap-daterangepicker/daterangepicker.css')}}" rel="stylesheet">
 @endsection
 @section('content')
     <div class="content">
@@ -17,21 +20,39 @@
                         </div>
                     @endif
                     <div class="card-box">
-                        <form method="POST" action="{{route('admin.bank.store')}}" enctype="multipart/form-data" data-parsley-validate novalidate>
+                        <form method="POST" action="{{route('admin.slider.store')}}" enctype="multipart/form-data" data-parsley-validate novalidate>
                             @csrf
                             @method('POST')
                             <div class="form-group">
-                                <label for="name">اسم البنك*</label>
-                                <input type="text" name="name" required class="form-control" id="name">
+                                <label for="title">العنوان*</label>
+                                <input type="text" name="title" required class="form-control" id="title">
                             </div>
                             <div class="form-group">
-                                <label for="name">رقم الحساب*</label>
-                                <input type="text" name="account_number" required class="form-control" id="account_number">
+                                <label for="note">الوصف النصى*</label>
+                                <textarea id="note" required class="form-control" name="note"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="image">الشعار</label>
+                                <label>موعد بداية العرض</label>
+                                <div class="input-group">
+                                    <input type="text" name="start_date" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="ti-calendar"></i></span>
+                                    </div>
+                                </div><!-- input-group -->
+                            </div>
+                            <div class="form-group">
+                                <label>موعد نهاية العرض</label>
+                                <div class="input-group">
+                                    <input type="text" name="end_date" class="form-control" placeholder="mm/dd/yyyy" id="datepicker">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="ti-calendar"></i></span>
+                                    </div>
+                                </div><!-- input-group -->
+                            </div>
+                            <div class="form-group">
+                                <label for="image">الصورة</label>
                                 <div class="card-box">
-                                    <input name="logo" id="input-file-now-custom-1 image" type="file" class="dropify"   />
+                                    <input name="image" id="input-file-now-custom-1 image" type="file" class="dropify"   />
                                 </div>
                             </div>
                             <div class="form-group text-right mb-0">
@@ -89,4 +110,8 @@
     <script src="{{asset('assets/libs/parsleyjs/parsley.min.js')}}"></script>
     <!-- validation init -->
     <script src="{{asset('assets/js/pages/form-validation.init.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-timepicker/bootstrap-timepicker.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')}}"></script>
+    <script src="{{asset('assets/libs/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+
 @endsection

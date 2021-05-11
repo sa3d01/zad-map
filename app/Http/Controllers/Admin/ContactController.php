@@ -19,6 +19,11 @@ class ContactController extends MasterController
     public function index()
     {
         $rows = $this->model->latest()->get();
+        foreach ($rows as $row){
+            $row->update([
+               'read'=>true
+            ]);
+        }
         return view('Dashboard.contact.index', compact('rows'));
     }
 
