@@ -32,6 +32,18 @@ class BankController extends MasterController
         $this->model->create($data);
         return redirect()->route('admin.bank.index')->with('created');
     }
+    public function edit($id):object
+    {
+        $bank=$this->model->find($id);
+        return view('Dashboard.bank.edit', compact('bank'));
+    }
+    public function update($id,Request $request)
+    {
+        $bank=$this->model->find($id);
+        $bank->update($request->all());
+        return redirect()->back()->with('updated');
+
+    }
     public function ban($id):object
     {
         $bank=$this->model->find($id);
