@@ -33,9 +33,21 @@
                                     </td>
                                     <td>{{$row->bank->name}}</td>
                                     <td>{{$row->amount}}</td>
-                                    <td>
-                                        <img class="card-img-top img-fluid" style="max-height: 100px;max-width: 100px" src="{{$row->image}}">
+                                    <td data-toggle="modal" data-target="#imgModal{{$row->id}}">
+                                        <img width="50px" height="50px" class="img_preview" src="{{ $row->image}}">
                                     </td>
+                                    <div id="imgModal{{$row->id}}" class="modal fade" role="img">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    <img data-toggle="modal" data-target="#imgModal{{$row->id}}" class="img-preview" src="{{ $row->image}}" style="max-height: 500px">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">إغلاق</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <td>
                                         <span class="badge @if($row->status=='pending') badge-warning @elseif($row->status=='accepted') badge-success @else badge-danger @endif">
                                             @if($row->status=='pending') معلق @elseif($row->status=='accepted') تم التأكيد @else مرفوض @endif
