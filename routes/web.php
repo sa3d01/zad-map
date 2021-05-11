@@ -27,7 +27,8 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
         Route::get('/password/reset/{token}','ResetPasswordController@showResetForm')->name('password.reset');
         Route::post('/password/reset','ResetPasswordController@reset')->name('password.update');
     });
-    Route::get('clear-notifications', 'NotificationController@clearAdminNotifications')->name('clear-notifications');
+    Route::get('clear-all-notifications', 'NotificationController@clearAdminNotifications')->name('clear-all-notifications');
+    Route::get('read-notification/{id}', 'NotificationController@readNotification')->name('read-notification');
 
 
     Route::get('/profile', 'AdminController@profile')->name('profile');

@@ -9,7 +9,7 @@
         <div class="dropdown-item noti-title">
             <h5 class="m-0">
                 <span class="float-right">
-                    <a href="{{route('admin.clear-notifications')}}" class="text-dark">
+                    <a href="{{route('admin.clear-all-notifications')}}" class="text-dark">
                         <small>حذف الكل</small>
                     </a>
                 </span>الإشعارات
@@ -20,7 +20,7 @@
         <div class="slimscroll noti-scroll">
             @foreach($notifications as $notification)
                 @if($notification->more_details['type']=='contact')
-                    <a href="javascript:void(0);" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
+                    <a href="{{route('admin.contact.index')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
                         <div class="notify-icon">
                             @php
                                 $contact=\App\Models\Contact::find($notification->more_details['contact_id']);

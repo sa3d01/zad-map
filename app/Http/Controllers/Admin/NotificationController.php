@@ -18,12 +18,20 @@ class NotificationController extends MasterController
 
     public function clearAdminNotifications()
     {
-        $unread_notifications_count=Notification::where(['type'=>'admin','read'=>'false'])->get();
-        foreach ($unread_notifications_count as $item){
-            $item->update([
+        $unread_notifications=Notification::where(['type'=>'admin','read'=>'false'])->get();
+        foreach ($unread_notifications as $unread_notification){
+            $unread_notification->update([
                'read'=>'true'
             ]);
         }
+        return redirect()->back();
+    }
+    public function readNotification($id)
+    {
+        $unread_notification=Notification::find($id);
+        $unread_notification->update([
+            'read'=>'true'
+        ]);
         return redirect()->back();
     }
     public function index()
