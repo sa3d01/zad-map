@@ -98,7 +98,7 @@
             </a>
             <ul class="nav-second-level nav" aria-expanded="false">
                 <li>
-                    <a href="javascript: void(0);">الإعدادات العامة</a>
+                    <a href="{{route('admin.settings.edit')}}">الإعدادات العامة</a>
                 </li>
                 <li>
                     <a href="javascript: void(0);" aria-expanded="false">الصفحات

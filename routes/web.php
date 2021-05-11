@@ -29,6 +29,8 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     });
     Route::get('clear-all-notifications', 'NotificationController@clearAdminNotifications')->name('clear-all-notifications');
     Route::get('read-notification/{id}', 'NotificationController@readNotification')->name('read-notification');
+    Route::get('settings', 'SettingController@showConfig')->name('settings.edit');
+    Route::put('settings', 'SettingController@updateConfing')->name('settings.update');
 
 
     Route::get('/profile', 'AdminController@profile')->name('profile');
