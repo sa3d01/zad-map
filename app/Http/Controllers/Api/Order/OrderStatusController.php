@@ -264,6 +264,12 @@ class OrderStatusController extends MasterController
         $order->update([
            'delivery_id'=>$delivery_request->delivery_id
         ]);
+        $other_requests=DeliveryRequest::where('order_id',$order->id)->where('delivery_id','!=',$delivery_request->delivery_id)->get();
+        foreach ($other_requests as $other_request){
+            $other_request->update([
+                'status'=>'rejected'
+            ]);
+        }
         $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
         $this->notify_user($order->delivery,$title, $order);
         $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
