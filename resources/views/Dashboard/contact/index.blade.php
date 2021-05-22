@@ -42,46 +42,43 @@
                                                     <div class="date">{{\Carbon\Carbon::parse($contact->created_at)->format('Y-M-d')}}</div>
                                                 </div>
                                             </li>
+                                            <div id="message">
+                                                <div class="header">
+                                                    <h4 class="page-title">
+                                                        <a
+                                                            class="icon circle-icon mdi mdi-close text-muted trigger-message-close">
+                                                        </a>
+                                                        النص كامل
+                                                        <span
+                                                            class="grey">
+                                    </span>
+                                                    </h4>
+                                                </div>
+                                                <div id="message-nano-wrapper" class="nano">
+                                                    <div class="nano-content">
+                                                        <ul class="message-container list-unstyled">
+                                                            <li class="sent">
+                                                                <div class="details">
+                                                                    <div class="left">
+                                                                        {{$contact->user->name}}
+                                                                    </div>
+                                                                    <div class="right">{{\Carbon\Carbon::parse($contact->created_at)->format('Y-M-d')}}</div>
+                                                                </div>
+                                                                <div class="message">
+                                                                    <p>{{$contact->message}}</p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endforeach
                                     </ul>
                                 </div>
                             </div>
                         </main>
-                        <div id="message">
-                            <div class="header">
-                                <h4 class="page-title">
-                                    <a
-                                        class="icon circle-icon mdi mdi-close text-muted trigger-message-close">
-                                    </a>
-                                    النص كامل
-                                    <span
-                                        class="grey">
-                                    </span>
-                                </h4>
-                            </div>
-                            <div id="message-nano-wrapper" class="nano">
-                                <div class="nano-content">
-                                    <ul class="message-container list-unstyled">
-                                        <li class="sent">
-                                            <div class="details">
-                                                <div class="left">
-                                                    You
-                                                </div>
-                                                <div class="right">March 6, 2014, 20:08 pm</div>
-                                            </div>
-                                            <div class="message">
-                                                <p>| The every winged bring, whose life. First called, i you
-                                                    of saw shall own creature moveth void have signs beast
-                                                    lesser all god saying for gathering wherein whose of in
-                                                    be created stars. Them whales upon life divide earth
-                                                    own.</p>
-                                            </div>
-                                        </li>
-                                    </ul>
 
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
