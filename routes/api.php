@@ -114,7 +114,7 @@ Route::group([
                 Route::get('/{status}/filter', 'OrderController@filteredOrders');
                 //new for user
                 Route::get('/{id}/delivery-request', 'OrderController@orderDeliveryRequest');
-                Route::post('/{order_id}/accept-delivery-request/{delivery_request_id}', 'OrderController@acceptDelivery');
+                Route::post('/{order_id}/accept-delivery-request/{delivery_request_id}', 'OrderStatusController@acceptDelivery');
                 //
                 Route::get('/{id}', 'OrderController@show');
                 Route::put('/{id}', 'OrderController@update');
