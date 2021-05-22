@@ -28,7 +28,7 @@ abstract class MasterController extends Controller
     {
         $orders=Order::whereIn('status',['new','pre_paid','in_progress','delivered_to_delivery'])->get();
         foreach ($orders as $order){
-            if ($order->deliver_at > Carbon::now()){
+            if (Carbon::parse($order->deliver_at)->format('Y-m-d') > Carbon::now()->format('Y-m-d')){
                 $order->update([
                     'status'=>'rejected'
                 ]);
