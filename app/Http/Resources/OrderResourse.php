@@ -33,7 +33,8 @@ class OrderResourse extends JsonResource
             $delivery=new Object_();
         }else{
             $delivery_model=User::find($this['delivery_id']);
-            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
+            $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
+//            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
             $delivery['id']=$delivery_model->id;
             $delivery['name']=$delivery_model->name;
             $delivery['image']=$delivery_model->image;
@@ -83,7 +84,7 @@ class OrderResourse extends JsonResource
             $discount=$promo_code->discount_percent*($this->price()+($delivery_price))/100;
         }
 
-        $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['provider_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['provider_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
+        $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
         $can_confirm=false;
 
         if (auth('api')->user()->type=='USER')
