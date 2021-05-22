@@ -267,6 +267,10 @@ class OrderStatusController extends MasterController
                 'status'=>'rejected'
             ]);
         }
+        $notifications=Notification::where('type','delivery_request')->where('order_id',$order->id)->get();
+        foreach ($notifications as $notification){
+            $notification->delete();
+        }
         $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
         $this->notify_user($order->delivery,$title, $order);
         $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
