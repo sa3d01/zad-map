@@ -230,9 +230,7 @@ class OrderStatusController extends MasterController
                 ->setDevicesToken($order->user->device['id'])
                 ->send();
         }
-
-        $status_arr=['in_progress','delivered_to_delivery'];
-        $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
+        $orders_q = Order::where('delivery_id' , auth('api')->id())->where('status','new');
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
@@ -249,8 +247,7 @@ class OrderStatusController extends MasterController
         $delivery_request->update([
             'status'=>'rejected'
         ]);
-        $status_arr=['in_progress','delivered_to_delivery'];
-        $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
+        $orders_q = Order::where('delivery_id' , auth('api')->id())->where('status','new');
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
