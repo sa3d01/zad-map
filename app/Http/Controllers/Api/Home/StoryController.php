@@ -27,6 +27,8 @@ class StoryController extends MasterController
                 if (auth('api')->user()->city_id != $user->city_id){
                     continue;
                 }
+            }else{
+                continue;
             }
             $arr['user']=[
                 'id'=>$user_id,
