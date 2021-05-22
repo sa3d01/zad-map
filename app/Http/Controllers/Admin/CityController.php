@@ -49,25 +49,25 @@ class CityController extends MasterController
 
     public function ban($id): object
     {
-        $bank = $this->model->find($id);
-        $bank->update(
+        $city = $this->model->find($id);
+        $city->update(
             [
                 'status' => 0,
             ]
         );
-        $bank->refresh();
+        $city->refresh();
         return redirect()->back()->with('updated');
     }
 
     public function activate($id): object
     {
-        $bank = $this->model->find($id);
-        $bank->update(
+        $city = $this->model->find($id);
+        $city->update(
             [
                 'status' => 1,
             ]
         );
-        $bank->refresh();
+        $city->refresh();
         return redirect()->back()->with('updated');
     }
 

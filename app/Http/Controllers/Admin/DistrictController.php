@@ -48,25 +48,26 @@ class DistrictController extends MasterController
 
     public function ban($id): object
     {
-        $bank = $this->model->find($id);
-        $bank->update(
+        $district = $this->model->find($id);
+        $district->update(
             [
                 'status' => 0,
             ]
         );
-        $bank->refresh();
+        $district->refresh();
+        $district->refresh();
         return redirect()->back()->with('updated');
     }
 
     public function activate($id): object
     {
-        $bank = $this->model->find($id);
-        $bank->update(
+        $district = $this->model->find($id);
+        $district->update(
             [
                 'status' => 1,
             ]
         );
-        $bank->refresh();
+        $district->refresh();
         return redirect()->back()->with('updated');
     }
 

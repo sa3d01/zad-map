@@ -41,6 +41,7 @@ class SliderController extends MasterController
             ]
         );
         $slider->refresh();
+        $slider->refresh();
         return redirect()->back()->with('updated');
     }
     public function activate($id):object
@@ -51,6 +52,7 @@ class SliderController extends MasterController
                 'status'=>1,
             ]
         );
+        $slider->refresh();
         $slider->refresh();
         return redirect()->back()->with('updated');
     }

@@ -35,6 +35,7 @@ class ProductController extends MasterController
             ]
         );
         $product->refresh();
+        $product->refresh();
         return redirect()->back()->with('updated');
     }
     public function activate($id):object
@@ -45,6 +46,7 @@ class ProductController extends MasterController
                 'status'=>1,
             ]
         );
+        $product->refresh();
         $product->refresh();
         return redirect()->back()->with('updated');
     }

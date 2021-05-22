@@ -41,6 +41,7 @@ class DeliveryController extends MasterController
             ]
         );
         $user->refresh();
+        $user->refresh();
         return redirect()->back()->with('updated');
     }
     public function accept($id)
@@ -52,6 +53,7 @@ class DeliveryController extends MasterController
                 'approved_at'=>Carbon::now()
             ]
         );
+        $user->refresh();
         $user->refresh();
         return redirect()->back()->with('updated');
     }

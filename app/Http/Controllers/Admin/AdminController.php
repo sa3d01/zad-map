@@ -11,9 +11,6 @@ class AdminController extends MasterController
     public function __construct(User $model)
     {
         $this->model = $model;
-//        $this->middleware('permission:view-admins', ['only' => ['index']]);
-//        $this->middleware('permission:add-admins', ['only' => ['create']]);
-//        $this->middleware('permission:edit-admins', ['only' => ['show','activate']]);
         parent::__construct();
     }
 

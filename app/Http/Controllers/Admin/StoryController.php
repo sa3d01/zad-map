@@ -32,6 +32,7 @@ class StoryController extends MasterController
             ]
         );
         $story->refresh();
+        $story->refresh();
         return redirect()->back()->with('updated');
     }
     public function accept($id)
@@ -43,6 +44,7 @@ class StoryController extends MasterController
                 'approved_at'=>Carbon::now()
             ]
         );
+        $story->refresh();
         $story->refresh();
         return redirect()->back()->with('updated');
     }
