@@ -76,6 +76,7 @@ abstract class MasterController extends Controller
     public function notify_provider($provider,$title, $order)
     {
         $this->fcmPush($title,$provider,$order);
+        $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;
         $notification['receiver_id'] = $provider->id;
@@ -85,6 +86,7 @@ abstract class MasterController extends Controller
     public function notify_user($user,$title, $order)
     {
         $this->fcmPush($title,$user,$order);
+        $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;
         $notification['receiver_id'] = $user->id;

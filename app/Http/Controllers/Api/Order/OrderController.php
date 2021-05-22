@@ -229,6 +229,7 @@ class OrderController extends MasterController
                'delivery_id'=>$delivery->id
             ]);
             $this->fcmPush($title,$delivery,$order);
+            $notification['type'] = 'delivery_request';
             $notification['title'] = $title;
             $notification['note'] = $title;
             $notification['receiver_id'] = $delivery->id;
