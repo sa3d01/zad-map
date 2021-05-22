@@ -21,6 +21,12 @@ class JwtTokenIsValid
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['message' => 'user not found'], 400);
+            }elseif ($user->banned==1){
+                $response = [
+                    'status' => 401,
+                    'message' => 'تم حظرك من قبل إدارة التطبيق ..',
+                ];
+                return response()->json($response, 401);
             }
         } catch (JWTException $e) {
             return response()->json(['message' => $e->getMessage()], 401);

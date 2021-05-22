@@ -18,6 +18,9 @@ class LoginController extends MasterController
         }else{
             $types=['PROVIDER','FAMILY'];
             $user = User::where('phone' , $request['phone'])->whereIn('type',$types)->first();
+            if (!$user) {
+                return $this->sendError('هذا الحساب غير موجود.');
+            }
             if ($user->approved != 1){
                 return $this->sendError('هذا الحساب غير مفعل من قبل الإدارة.');
             }
@@ -27,6 +30,13 @@ class LoginController extends MasterController
         }
         if (!$user->phone_verified_at) {
             return $this->sendError('هذا الحساب غير مفعل.',['phone_verified'=>false]);
+        }
+        if ($user->banned==1){
+            $response = [
+                'status' => 401,
+                'message' => 'تم حظرك من قبل إدارة التطبيق ..',
+            ];
+            return response()->json($response, 401);
         }
         if (auth('api')->attempt($credentials)) {
             if ($user['type']!='USER'){

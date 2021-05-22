@@ -26,7 +26,7 @@ class storeStoryRequest extends ApiMasterRequest
         return [
             'story_period_id' => 'required|numeric|exists:story_periods,id',
             'media_type' => 'required|in:image,video',
-            'media' => 'required|mimes:png,jpg,jpeg,mp4,mov,ogg,qt | max:20000',
+            'media' => 'required',
         ];
     }
 //    public function messages()
