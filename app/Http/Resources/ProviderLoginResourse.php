@@ -52,6 +52,8 @@ class ProviderLoginResourse extends JsonResource
                 ],
                 'location'=>$this->location,
                 'image' => $this->image,
+                'has_delivery'=> (int)$this->has_delivery,
+                'delivery_price'=> (int)$this->delivery_price,
                 'car' => $car_model,
                 'banks' => new BankCollection($this->banks),
             ],

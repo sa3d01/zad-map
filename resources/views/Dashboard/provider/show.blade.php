@@ -20,6 +20,12 @@
                             <li class="list-group-item"><strong>الحى : </strong><span>{{$user->district->name}}</span></li>
                             <li class="list-group-item"><strong>الرمز الخاص بالمسوق : </strong><span>{{$user->marketer_id??'ﻻ يوجد'}}</span></li>
                             <li class="list-group-item"><strong>تاريخ الانضمام : </strong><span>{{$user->created_at}}</span></li>
+                            @if($user->has_delivery==1)
+                                <li class="list-group-item"><strong>امكانية التوصيل : </strong><span>متاح</span></li>
+                                <li class="list-group-item"><strong>سعر التوصيل : </strong><span>{{$user->delivery_price}}</span></li>
+                            @else
+                                <li class="list-group-item"><strong>امكانية التوصيل : </strong><span>ﻻ يوجد</span></li>
+                            @endif
                             @if($user->approved==1)
                             <li class="list-group-item"><strong>تاريخ القبول : </strong><span>{{$user->approved_at}}</span></li>
                             @elseif($user->approved==-1)

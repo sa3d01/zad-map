@@ -18,7 +18,7 @@ class NotificationResource extends JsonResource
         return [
             'id'=> (int)$this->id,
             'type'=> $this->type,
-            'read'=> ($this->read == 'true') ? true : false,
+            'read'=> $this->read == 'true',
             'title'=> $this->title,
             'note'=> $this->note,
             'order_id'=>(int) $this->order_id??0,

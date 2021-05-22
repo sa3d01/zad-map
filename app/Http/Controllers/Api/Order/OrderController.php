@@ -8,8 +8,10 @@ use App\Http\Requests\Api\Order\RateOrderRequest;
 use App\Http\Requests\Api\Order\storeOrderRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResourse;
+use App\Http\Resources\ProviderResourse;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\DeliveryRequest;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -43,7 +45,8 @@ class OrderController extends MasterController
             if ($status=='in_progress'){
                 $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
             }elseif ($status=='new'){
-                $orders_q = Order::where(['deliver_by'=>'delivery','delivery_id'=>null,'status' => $status]);
+                $order_ids=DeliveryRequest::where(['delivery_id'=>auth('api')->id(),'status'=>'pending'])->pluck('order_id')->toArray();
+                $orders_q = Order::whereIn('id',$order_ids);
             }else{
                 $orders_q = Order::where(['delivery_id' => auth('api')->id(), 'status' => $status]);
             }
@@ -70,6 +73,36 @@ class OrderController extends MasterController
         return $this->sendResponse($orders);
     }
 
+    //for user
+    public function orderDeliveryRequest($id):object
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        $delivery_requests=DeliveryRequest::where(['order_id'=>$id,'status'=>'accepted'])->latest()->get();
+        $result=[];
+        foreach ($delivery_requests as $delivery_request){
+            $arr['id']=(int)$delivery_request->id;
+            $arr['delivery']=new ProviderResourse($delivery_request->delivery);
+            $arr['order']=new OrderResourse($delivery_request->order);
+            $arr['delivery_price']=(double)$delivery_request->delivery_price;
+            $result[]=$arr;
+        }
+        return $this->sendResponse($result);
+    }
+    //for delivery
+    public function deliveryRequest():object
+    {
+        $delivery_requests=DeliveryRequest::where(['delivery_id'=>auth('api')->id(),'status'=>'pending'])->latest()->get();
+        $result=[];
+        foreach ($delivery_requests as $delivery_request){
+            $arr['id']=(int)$delivery_request->id;
+            $arr['order']=new OrderResourse($delivery_request->order);
+            $result[]=$arr;
+        }
+        return $this->sendResponse($result);
+    }
     public function show($id): object
     {
         $order = Order::find($id);
@@ -191,11 +224,18 @@ class OrderController extends MasterController
         $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user['name'],$order->id);
         $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->get();
         foreach ($deliveries as $delivery){
+            $delivery_request=DeliveryRequest::create([
+               'order_id'=>$order->id,
+               'delivery_id'=>$delivery->id
+            ]);
             $this->fcmPush($title,$delivery,$order);
             $notification['title'] = $title;
             $notification['note'] = $title;
             $notification['receiver_id'] = $delivery->id;
             $notification['order_id'] = $order->id;
+            $notification['more_details']=[
+              'delivery_request_id'=> $delivery_request->id
+            ];
             Notification::create($notification);
         }
     }

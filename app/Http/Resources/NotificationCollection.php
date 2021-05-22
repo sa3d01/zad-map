@@ -19,7 +19,7 @@ class NotificationCollection extends ResourceCollection
         foreach ($this as $obj){
             $arr['id']=(int)$obj->id;
             $arr['type']=$obj->type;
-            $arr['read']=($obj->read == 'true') ? true : false;
+            $arr['read']=$obj->read == 'true';
             $arr['title']=$obj->title;
             $arr['note']=$obj->note;
             $arr['order_id']=(int)$obj->order_id??0;

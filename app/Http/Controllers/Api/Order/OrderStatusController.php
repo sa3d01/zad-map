@@ -5,11 +5,19 @@ namespace App\Http\Controllers\Api\Order;
 use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Order\CancelOrderRequest;
 use App\Http\Requests\Api\Order\PaymentOrderRequest;
+use App\Http\Resources\OrderCollection;
+use App\Http\Resources\OrderResourse;
 use App\Models\CancelOrder;
+use App\Models\DeliveryRequest;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderPay;
 use App\Models\Setting;
 use App\Models\Wallet;
+use Edujugon\PushNotification\PushNotification;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrderStatusController extends MasterController
 {
@@ -23,10 +31,10 @@ class OrderStatusController extends MasterController
 
     function completeOrder($order)
     {
-        $app_tax=Setting::value('app_tax');
         $order->update([
             'status'=>'completed'
         ]);
+        $app_tax=Setting::value('app_tax');
         $provider_wallet=Wallet::where('user_id',$order->provider_id)->latest()->first();
         if (!$provider_wallet){
             Wallet::create([
@@ -42,7 +50,10 @@ class OrderStatusController extends MasterController
         }
         if ($order->delivery_id!=null)
         {
-            $delivery_price=Setting::value('delivery_price');
+            $delivery_price=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery->id,'status'=>'accepted'])->latest()->value('delivery_price');
+            if (!$delivery_price){
+                return $this->sendError('some thing error');
+            }
             $delivery_wallet=Wallet::where('user_id',$order->delivery_id)->latest()->first();
             if (!$delivery_wallet){
                 Wallet::create([
@@ -57,6 +68,7 @@ class OrderStatusController extends MasterController
                 ]);
             }
         }
+        return true;
     }
     public function delivered($id):object
     {
@@ -101,7 +113,6 @@ class OrderStatusController extends MasterController
             'order_id' => $id,
             'reason' => $request['reason']
         ]);
-        //todo:notify
         if (auth('api')->user()->type=='USER'){
             $title = sprintf('لقد تم الغاء الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
             $this->notify_provider($order->provider,$title, $order);
@@ -121,27 +132,16 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (auth('api')->user()->type=='DELIVERY'){
-            if ($order->delivery_id != null || $order->deliver_by != 'delivery') {
-                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
-            }
-            $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->name,$order->id);
-            $this->notify_provider($order->provider,$title, $order);
-            $order->update([
-               'delivery_id'=>auth('api')->id()
-            ]);
-            $this->notify_user($order->user,'تمت الموافقة على طلب التوصيل من قبل '.auth('api')->user()->name, $order);
-        }else{
-            if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
-                return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
-            }
-            $order->update([
-                'status'=>'pre_paid'
-            ]);
-            $this->notify_user($order->user,'تمت الموافقة على طلبك من قبل '.auth('api')->user()->name, $order);
+        if ($order->provider_id != auth('api')->id() || $order->status != 'new') {
+            return $this->sendError("ﻻ يمكنك قبول هذا الطلب");
         }
+        $order->update([
+            'status'=>'pre_paid'
+        ]);
+        $this->notify_user($order->user,'تمت الموافقة على طلبك من قبل '.auth('api')->user()->name, $order);
         return $this->sendResponse([], 'تم قبول الطلب بنجاح');
     }
+
     public function payOrder($id,PaymentOrderRequest $request): object
     {
         $request->validated();
@@ -191,5 +191,85 @@ class OrderStatusController extends MasterController
             ]);
         }
         return $this->sendResponse([], 'تم تحديد أسلوب الدفع للطلب بنجاح');
+    }
+
+    public function acceptDeliveryRequest(Request $request):object
+    {
+        $order = Order::find($request['order_id']);
+        if (!$order || $order->status!='new') {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        $delivery_request=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>auth('api')->id(),'status'=>'pending'])->latest()->first();
+        if (!$delivery_request){
+            return $this->sendError('some thing error');
+        }
+        $delivery_request->update([
+            'delivery_price'=>$request['delivery_price'],
+            'status'=>'accepted'
+        ]);
+        $title = sprintf('يوجد لديك عرض سعر جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order->id);
+        $notification['title'] = $title;
+        $notification['note'] = $title;
+        $notification['receiver_id'] = $order->user->id;
+        $notification['order_id'] = $order->id;
+        Notification::create($notification);
+        if (in_array('id',$order->user->device)){
+            $push = new PushNotification('fcm');
+            $msg = [
+                'notification' => array('title' => $title, 'sound' => 'default'),
+                'data' => [
+                    'title' => $title,
+                    'body' => $title,
+                    'status' => $order->status,
+                    'type' => 'delivery_request',
+                    'order' => new OrderResourse($order),
+                ],
+                'priority' => 'high',
+            ];
+            $push->setMessage($msg)
+                ->setDevicesToken($order->user->device['id'])
+                ->send();
+        }
+
+        $status_arr=['in_progress','delivered_to_delivery'];
+        $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
+        $orders = new OrderCollection($orders_q->latest()->get());
+        return $this->sendResponse($orders);
+    }
+    public function rejectDeliveryRequest(Request $request):object
+    {
+        $order = Order::find($request['order_id']);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        $delivery_request=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>auth('api')->id(),'status'=>'pending'])->latest()->first();
+        if (!$delivery_request){
+            return $this->sendError('some thing error');
+        }
+        $delivery_request->update([
+            'status'=>'rejected'
+        ]);
+        $status_arr=['in_progress','delivered_to_delivery'];
+        $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
+        $orders = new OrderCollection($orders_q->latest()->get());
+        return $this->sendResponse($orders);
+    }
+    public function acceptDelivery($order_id,$delivery_request_id):object
+    {
+        $order=Order::find($order_id);
+        $delivery_request = DeliveryRequest::find($delivery_request_id);
+        if (!$delivery_request || $order->status!='new') {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        $order->update([
+           'delivery_id'=>$delivery_request->delivery_id
+        ]);
+        $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
+        $this->notify_user($order->delivery,$title, $order);
+        $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
+        $this->notify_provider($order->provider,$title, $order);
+        $orders_q = Order::where('user_id' , auth('api')->id())->where('status','new');
+        $orders = new OrderCollection($orders_q->latest()->get());
+        return $this->sendResponse($orders);
     }
 }

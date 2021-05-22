@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResourse;
+use App\Models\CancelOrder;
 use App\Models\Notification;
+use App\Models\Order;
+use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Resources\Json\JsonResource;
 use phpDocumentor\Reflection\Types\Object_;
@@ -15,17 +18,23 @@ abstract class MasterController extends Controller
 
     public function __construct()
     {
+        $orders=Order::whereIn('status',['new','pre_paid','in_progress','delivered_to_delivery'])->get();
+        foreach ($orders as $order){
+            if ($order->deliver_at > Carbon::now()){
+                $order->update([
+                   'status'=>'rejected'
+                ]);
+                CancelOrder::create([
+                    'user_id' => $order->user_id,
+                    'order_id' => $order->id,
+                    'reason' => 'انتهاء الوقت المحدد للتسليم'
+                ]);
+            }
+        }
     }
 
     public function sendResponse($result, $message = null)
     {
-//        try {
-//            if (count($result)==0){
-//                $result=new Object_();
-//            }
-//        }catch (\Exception $e){
-//
-//        }
         $response = [
             'status' => 200,
             'message' => $message ? $message : '',
@@ -36,13 +45,6 @@ abstract class MasterController extends Controller
 
     public function sendError($error,$data=[], $code = 400)
     {
-//        try {
-//            if (count($data)==0){
-//                $data=new Object_();
-//            }
-//        }catch (\Exception $e){
-//
-//        }
         $response = [
             'status' => $code,
             'message' => $error,

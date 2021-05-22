@@ -40,12 +40,6 @@
                             <li class="list-group-item"><strong>مزود الخدمة : </strong><span><a href="{{route('admin.provider.show',$product->user_id)}}"> {{$product->user->name}}</a></span></li>
                             <li class="list-group-item"><strong>التصنيف : </strong><span>{{$product->category->name}}</span></li>
                             <li class="list-group-item"><strong>السعر : </strong><span>{{$product->price}}</span></li>
-                            @if($product->has_delivery==1)
-                                <li class="list-group-item"><strong>امكانية التوصيل : </strong><span>متاح</span></li>
-                                <li class="list-group-item"><strong>سعر التوصيل : </strong><span>{{$product->delivery_price}}</span></li>
-                            @else
-                                <li class="list-group-item"><strong>امكانية التوصيل : </strong><span>ﻻ يوجد</span></li>
-                            @endif
                             <li class="list-group-item"><strong>تاريخ الإضافة : </strong><span>{{$product->created_at}}</span></li>
                         </ul>
                     </div>

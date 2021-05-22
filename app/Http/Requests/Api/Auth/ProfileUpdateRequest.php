@@ -31,6 +31,8 @@ class ProfileUpdateRequest extends ApiMasterRequest
             'district_id' => 'nullable|numeric|exists:drop_downs,id',
             'device.id' => 'required',
             'device.os' => 'required|in:android,ios',
+            'has_delivery' => 'nullable',
+            'delivery_price' => 'nullable|numeric',
             'location.lat' => 'nullable',
             'location.lng' => 'nullable',
             'location.address' => 'nullable',

@@ -27,6 +27,9 @@ class CreateUsersTable extends Migration
             $table->string('image')->nullable();
             $table->boolean('banned')->nullable()->default(false);
             $table->boolean('online')->nullable()->default(true);
+            //provider-delivery
+            $table->boolean('has_delivery')->nullable()->default(false);
+            $table->double('delivery_price')->default(0);
             //for provider
             $table->boolean('approved')->nullable()->default(false);
             $table->string('reject_reason')->nullable();

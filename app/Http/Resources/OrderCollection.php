@@ -28,10 +28,8 @@ class OrderCollection extends ResourceCollection
             }
             if ($obj['deliver_by']=='user') {
                 $delivery_price=0;
-            }elseif ($obj['deliver_by']=='delivery') {
-                $delivery_price=Setting::value('delivery_price');
             }else{
-                $delivery_price=$obj->orderItems->first()->cartItem->product->delivery_price;
+                $delivery_price=$obj->orderItems->first()->cartItem->product->user->delivery_price;
             }
             $promo_code = PromoCode::where('code', $obj->promo_code)->first();
             if ($promo_code) {

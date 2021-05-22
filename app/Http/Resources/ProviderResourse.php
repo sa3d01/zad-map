@@ -38,6 +38,8 @@ class ProviderResourse extends JsonResource
                 'id' => $this->district ? (int)$this->district->id : 0,
                 'name' => $this->district ? $this->district->name : "",
             ],
+            'has_delivery'=> (int)$this->has_delivery,
+            'delivery_price'=> (int)$this->delivery_price,
             'location' => $this->location,
             'image' => $this->image,
             'car' => $car_model,

@@ -34,7 +34,6 @@ class OrderResourse extends JsonResource
         }else{
             $delivery_model=User::find($this['delivery_id']);
             $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
-//            $provider_chat = Chat::where(['sender_id'=>$this['user_id'],'receiver_id'=>$this['delivery_id'],'order_id'=>$this['id']])->orWhere(['sender_id'=>$this['delivery_id'],'receiver_id'=>$this['user_id'],'order_id'=>$this['id']])->latest()->first();
             $delivery['id']=$delivery_model->id;
             $delivery['name']=$delivery_model->name;
             $delivery['image']=$delivery_model->image;
@@ -48,11 +47,8 @@ class OrderResourse extends JsonResource
         if ($this['deliver_by']=='user')
         {
             $delivery_price=0;
-        }elseif ($this['deliver_by']=='delivery')
-        {
-            $delivery_price=Setting::value('delivery_price');
         }else{
-            $delivery_price=$this->orderItems->first()->cartItem->product->delivery_price;
+            $delivery_price=$this->orderItems->first()->cartItem->product->user->delivery_price;
         }
         $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
         $delivery_payment_model['type']=$delivery_payment->type??"";

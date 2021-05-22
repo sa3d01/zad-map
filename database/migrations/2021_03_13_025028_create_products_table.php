@@ -20,8 +20,6 @@ class CreateProductsTable extends Migration
             $table->string('name')->nullable();
             $table->string('note')->nullable();
             $table->double('price')->default(0);
-            $table->boolean('has_delivery')->nullable()->default(false);
-            $table->double('delivery_price')->default(0);
             $table->json('images')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();

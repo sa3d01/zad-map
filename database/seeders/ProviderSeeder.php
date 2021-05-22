@@ -27,6 +27,8 @@ class ProviderSeeder extends Seeder
                 'city_id'=>1,
                 'district_id'=>4,
                 'approved'=>true,
+                'has_delivery'=>true,
+                'delivery_price'=>5,
                 'approved_at'=>Carbon::now()
             ]);
         }
@@ -41,6 +43,8 @@ class ProviderSeeder extends Seeder
                 'location->lng'=>'47.102714'.$i,
                 'city_id'=>1,
                 'district_id'=>4,
+                'has_delivery'=>true,
+                'delivery_price'=>5,
                 'approved'=>true,
                 'approved_at'=>Carbon::now()
             ]);
@@ -56,6 +60,8 @@ class ProviderSeeder extends Seeder
                 'location->lng'=>'47.102714'.$i,
                 'city_id'=>1,
                 'district_id'=>4,
+                'has_delivery'=>true,
+                'delivery_price'=>5,
                 'approved'=>true,
                 'approved_at'=>Carbon::now()
             ]);

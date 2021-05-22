@@ -43,7 +43,7 @@
                                         <td>{{$product->name}}</td>
                                         <td>{{\Illuminate\Support\Str::limit($product->note,20)}}</td>
                                         <td>{{$product->price}}</td>
-                                        <td>{{$product->delivery_price??'ﻻ يوجد توصيل'}}</td>
+                                        <td>{{$product->user->delivery_price??'ﻻ يوجد توصيل'}}</td>
                                         <td>
                                             <img class="card-img-top img-fluid" style="max-height: 100px;max-width: 100px" src="{{$product->images[0]}}">
                                         </td>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CancelOrder;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\Product;
@@ -25,6 +26,19 @@ abstract class MasterController extends Controller
 
     public function __construct()
     {
+        $orders=Order::whereIn('status',['new','pre_paid','in_progress','delivered_to_delivery'])->get();
+        foreach ($orders as $order){
+            if ($order->deliver_at > Carbon::now()){
+                $order->update([
+                    'status'=>'rejected'
+                ]);
+                CancelOrder::create([
+                    'user_id' => $order->user_id,
+                    'order_id' => $order->id,
+                    'reason' => 'انتهاء الوقت المحدد للتسليم'
+                ]);
+            }
+        }
         $this->middleware('auth:admin');
         $new_users_count=User::where('type','USER')->where('created_at','>',Carbon::now()->subDays(7))->count();
         $all_users_count=User::where('type','USER')->count();
@@ -86,12 +100,6 @@ abstract class MasterController extends Controller
         return view('Dashboard.' . $this->route . '.create');
     }
 
-//    public function store(Request $request)
-//    {
-//        $this->validate($request, $this->validation_func(1), $this->validation_msg());
-//        $this->model->create($request->all());
-//        return redirect('admin/' . $this->route . '')->with('created', 'تمت الاضافة بنجاح');
-//    }
 
     public function edit($id)
     {

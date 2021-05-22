@@ -14,7 +14,6 @@ class Setting extends Model
         'socials',
         'verify_period',
         'app_tax',
-        'delivery_price',
         'km_delivery_price',
     ];
     protected $casts = [

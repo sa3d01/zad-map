@@ -19,8 +19,6 @@ class Product extends Model
         'name',
         'note',
         'price',
-        'has_delivery',
-        'delivery_price',
         'images',
         'status',
         'deleted_at',

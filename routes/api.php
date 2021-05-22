@@ -112,6 +112,10 @@ Route::group([
                 Route::post('check_promo_code', 'OrderController@checkPromoCode');
                 Route::post('/', 'OrderController@store');
                 Route::get('/{status}/filter', 'OrderController@filteredOrders');
+                //new for user
+                Route::get('/{id}/delivery-request', 'OrderController@orderDeliveryRequest');
+                Route::post('/{order_id}/accept-delivery-request/{delivery_request_id}', 'OrderController@acceptDelivery');
+                //
                 Route::get('/{id}', 'OrderController@show');
                 Route::put('/{id}', 'OrderController@update');
                 Route::post('/{id}/cancel', 'OrderStatusController@cancelOrder');
@@ -120,6 +124,11 @@ Route::group([
                 Route::post('/{id}/delivered', 'OrderStatusController@delivered');
                 Route::post('/{id}/rate', 'OrderController@rate');
             });
+            //for delivery
+            Route::post('accept-delivery-request', 'OrderStatusController@acceptDeliveryRequest');
+            Route::post('reject-delivery-request', 'OrderStatusController@rejectDeliveryRequest');
+            Route::get('delivery-request', 'OrderController@deliveryRequest');
+
         });
         //Chat
         Route::group([

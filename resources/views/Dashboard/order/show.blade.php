@@ -114,11 +114,10 @@
                                         $delivery_price=0;
                                     }elseif ($order['deliver_by']=='delivery')
                                     {
-                                        $delivery_price=\App\Models\Setting::value('delivery_price');
+                                        $delivery_price=\App\Models\DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery->id])->value('delivery_price');
                                     }else{
-                                        $delivery_price=$order->orderItems->first()->cartItem->product->delivery_price;
+                                        $delivery_price=$order->orderItems->first()->cartItem->product->user->delivery_price;
                                     }
-
                                     $promo_code = \App\Models\PromoCode::where('code', $order->promo_code)->first();
                                     $discount=0;
                                     if ($promo_code){

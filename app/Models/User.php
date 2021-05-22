@@ -46,7 +46,8 @@ class User extends Authenticatable implements JWTSubject
         'marketer_id',
         'approved',
         'reject_reason',
-        'approved_at'
+        'has_delivery',
+        'delivery_price',
     ];
 
     protected $hidden = [

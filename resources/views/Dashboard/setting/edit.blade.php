@@ -36,10 +36,10 @@
                                 <label for="app_tax">عمولة التطبيق*</label>
                                 <input type="number" min="0" name="app_tax" required class="form-control" id="app_tax" value="{{$setting->app_tax}}">
                             </div>
-                            <div class="form-group">
-                                <label for="delivery_price">سعر التوصيل المبدأى للمندوب*</label>
-                                <input type="number" min="0" name="delivery_price" required class="form-control" id="delivery_price" value="{{$setting->delivery_price}}">
-                            </div>
+{{--                            <div class="form-group">--}}
+{{--                                <label for="delivery_price">سعر التوصيل المبدأى للمندوب*</label>--}}
+{{--                                <input type="number" min="0" name="delivery_price" required class="form-control" id="delivery_price" value="{{$setting->delivery_price}}">--}}
+{{--                            </div>--}}
                             <div class="form-group">
                                 <label for="km_delivery_price">سعر الكيلو ميتر الواحد فى عملية التوصيل*</label>
                                 <input type="number" min="0" name="km_delivery_price" required class="form-control" id="km_delivery_price" value="{{$setting->km_delivery_price}}">
