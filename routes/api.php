@@ -100,8 +100,8 @@ Route::group([
         ], function () {
             Route::group(['prefix' => 'notifications'], function () {
                 Route::get('/', 'NotificationController@index');
-                Route::get('/{id}', 'NotificationController@show');
                 Route::get('/read-all', 'NotificationController@readAll');
+                Route::get('/{id}', 'NotificationController@show');
             });
         });
         //Order
