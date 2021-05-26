@@ -52,6 +52,13 @@ class VerifyController extends MasterController
             $user->update(['phone_verified_at' => $now]);
         });
         if ($user['type']!='USER'){
+            if ($user->approved==0){
+                $response = [
+                    'status' => 401,
+                    'message' => 'يرجى انتظار موافقة إدارة التطبيق ..',
+                ];
+                return response()->json($response, 401);
+            }
             return $this->sendResponse(new ProviderLoginResourse($user));
         }else{
             return $this->sendResponse(new UserLoginResourse($user));
