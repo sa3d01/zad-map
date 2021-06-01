@@ -37,12 +37,6 @@ class LoginController extends MasterController
                 'message' => 'تم حظرك من قبل إدارة التطبيق ..',
             ];
             return response()->json($response, 401);
-        }elseif ($user->approved==0){
-            $response = [
-                'status' => 401,
-                'message' => 'يرجى انتظار موافقة إدارة التطبيق ..',
-            ];
-            return response()->json($response, 401);
         }
         if (auth('api')->attempt($credentials)) {
             if ($user['type']!='USER'){
