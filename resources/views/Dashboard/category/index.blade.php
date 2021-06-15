@@ -20,7 +20,9 @@
                             <tr>
                                 <th>الإسم</th>
                                 <th>الصورة</th>
-                                <th>عدد المنتجات</th>
+                                <th>عدد الخدمات المجانية</th>
+                                <th>سعر إضافة خدمة</th>
+                                <th>عدد الخدمات المضافة</th>
                                 <th>الحالة</th>
                                 <th>العمليات المتاحة</th>
                             </tr>
@@ -44,6 +46,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <td>{{$row->free_products}}</td>
+                                    <td>{{$row->product_price}}</td>
                                     <td>{{$row->products->count()}}</td>
                                     <td>
                                         <span class="badge @if($row->status==1) badge-success @else badge-danger @endif">
