@@ -68,7 +68,6 @@ class NotificationController extends MasterController
                 ->setDevicesToken($usersTokens)
                 ->send()
                 ->getFeedback();
-            dd($feed);
             $this->model->create([
                 'receivers'=>$usersIds,
                 'admin_notify_type'=>$type,
