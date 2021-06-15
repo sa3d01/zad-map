@@ -55,7 +55,7 @@ class NotificationController extends MasterController
                 }
             }
             $push = new PushNotification('fcm');
-            $push->setMessage([
+            $feed=$push->setMessage([
                 'notification' => array('title'=>$data['note'], 'sound' => 'default'),
                 'data' => [
                     'title' => $data['note'],
@@ -66,7 +66,9 @@ class NotificationController extends MasterController
                 'priority' => 'high',
             ])
                 ->setDevicesToken($usersTokens)
-                ->send();
+                ->send()
+                ->getFeedback();
+            dd($feed);
             $this->model->create([
                 'receivers'=>$usersIds,
                 'admin_notify_type'=>$type,
