@@ -30,6 +30,10 @@
                                     <input name="image" id="input-file-now-custom-1 image" type="file" class="dropify" data-default-file="{{$category->image}}"  />
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="name">عدد المنتجات المجانية*</label>
+                                <input type="number" name="free_products" value="{{$category->free_products}}" required class="form-control" id="free_products">
+                            </div>
                             <div class="form-group text-right mb-0">
                                 <button class="btn btn-primary waves-effect waves-light mr-1" type="submit">
                                     تعديل

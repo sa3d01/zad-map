@@ -13,6 +13,7 @@
                         <div class="card-body">
                             <h4 class="card-title">{{$category->name}}</h4>
                             <p class="card-text">ID : {{$category->id}}</p>
+                            <p class="card-text">عدد المنتجات المجانية : {{$category->free_products}}</p>
                         </div>
                     </div>
                 </div>
