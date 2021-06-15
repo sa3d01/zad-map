@@ -146,9 +146,9 @@ class User extends Authenticatable implements JWTSubject
         try {
             if ($this->attributes['image'])
                 return asset($dest) . '/' . $this->attributes['image'];
-            return asset('media/images/default.jpeg');
+            return asset('media/images/default.png');
         } catch (\Exception $e) {
-            return asset('media/images/default.jpeg');
+            return asset('media/images/default.png');
         }
     }
 }
