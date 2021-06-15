@@ -57,6 +57,10 @@ class ProviderLoginResourse extends JsonResource
                 'car' => $car_model,
                 'banks' => new BankCollection($this->banks),
             ],
+            "settings" => [
+                'approved' => $this->approved,
+                'banned' => $this->banned,
+            ],
             "access_token" => [
                 'token' => $token,
                 'token_type' => 'Bearer',

@@ -21,9 +21,9 @@ class LoginController extends MasterController
             if (!$user) {
                 return $this->sendError('هذا الحساب غير موجود.');
             }
-            if ($user->approved != 1){
-                return $this->sendError('هذا الحساب غير مفعل من قبل الإدارة.');
-            }
+//            if ($user->approved != 1){
+//                return $this->sendError('هذا الحساب غير مفعل من قبل الإدارة.');
+//            }
         }
         if (!$user) {
             return $this->sendError('هذا الحساب غير موجود.');
@@ -32,11 +32,7 @@ class LoginController extends MasterController
             return $this->sendError('هذا الحساب غير مفعل.',['phone_verified'=>false]);
         }
         if ($user->banned==1){
-            $response = [
-                'status' => 401,
-                'message' => 'تم حظرك من قبل إدارة التطبيق ..',
-            ];
-            return response()->json($response, 401);
+            return $this->sendError('تم حظرك من قبل إدارة التطبيق ..');
         }
         if (auth('api')->attempt($credentials)) {
             if ($user['type']!='USER'){
