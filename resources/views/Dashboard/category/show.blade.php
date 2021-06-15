@@ -14,6 +14,7 @@
                             <h4 class="card-title">{{$category->name}}</h4>
                             <p class="card-text">ID : {{$category->id}}</p>
                             <p class="card-text">عدد المنتجات المجانية : {{$category->free_products}}</p>
+                            <p class="card-text">سعر إضافة منتج : {{$category->product_price}}</p>
                         </div>
                     </div>
                 </div>
