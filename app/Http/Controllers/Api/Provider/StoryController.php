@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Provider\Story\storeStoryRequest;
 use App\Models\Story;
 use App\Models\StoryPeriod;
-use Carbon\Carbon;
 
 class StoryController extends MasterController
 {
@@ -30,13 +29,13 @@ class StoryController extends MasterController
         }
         return $this->sendResponse($results);
     }
-    public function store(storeStoryRequest $request):object
+
+    public function store(storeStoryRequest $request): object
     {
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         Story::create($data);
-        return $this->sendResponse([]," تم الارسال بنجاح .. يرجى انتظار موافقة الإدارة");
+        return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة الإدارة");
 
     }
-
 }
