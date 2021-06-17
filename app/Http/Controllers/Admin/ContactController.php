@@ -61,4 +61,9 @@ class ContactController extends MasterController
         ]);
         return redirect()->back()->with('success','تم الارسال بنجاح');
     }
+    public function delete($id)
+    {
+        $this->model->find($id)->delete();
+        return redirect()->back()->with('deleted', 'تم الحذف بنجاح');
+    }
 }
