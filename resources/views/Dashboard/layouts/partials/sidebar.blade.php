@@ -66,6 +66,7 @@
                 <li><a href="{{route('admin.orders.list','in_progress')}}">طلبات جارية</a></li>
                 <li><a href="{{route('admin.orders.list','completed')}}">طلبات مكتملة</a></li>
                 <li><a href="{{route('admin.orders.list','rejected')}}">طلبات مرفوضة</a></li>
+                <li><a href="{{route('admin.rate.index')}}">تقييمات العملاء</a></li>
             </ul>
         </li>
 

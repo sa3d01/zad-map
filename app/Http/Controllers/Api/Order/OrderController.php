@@ -218,11 +218,21 @@ class OrderController extends MasterController
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة مزود الخدمة");
     }
 
+    public function hasDeliveries($city_id)
+    {
+        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->where('city_id',$city_id)->count();
+        if ($deliveries>0)
+        {
+            return $this->sendResponse([], "");
+        }
+        return $this->sendError("لا يوجد مندوبين توصيل بمدينتك !");
+    }
+
     public function notify_deliveries($order)
     {
         $user = auth('api')->user();
         $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user['name'],$order->id);
-        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->get();
+        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->where('city_id',$user->city_id)->get();
         foreach ($deliveries as $delivery){
             $delivery_request=DeliveryRequest::create([
                'order_id'=>$order->id,

@@ -69,6 +69,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
     Route::get('orders/{status}', 'OrderController@list')->name('orders.list');
     Route::resource('order', 'OrderController');
+    Route::resource('rate', 'RateController');
 
     Route::resource('notification', 'NotificationController');
     Route::post('reply-contact/{id}', 'ContactController@replyContact')->name('contact.reply');
