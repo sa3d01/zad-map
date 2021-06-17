@@ -71,6 +71,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::resource('order', 'OrderController');
 
     Route::resource('notification', 'NotificationController');
+    Route::post('reply-contact/{id}', 'ContactController@replyContact')->name('contact.reply');
     Route::resource('contact', 'ContactController');
 
     Route::resource('bank', 'BankController');
