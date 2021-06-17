@@ -72,7 +72,7 @@
                                             <a href="#" data-toggle="modal" data-target="#repliesModal{{$row->id}}">
                                                  <i class="fa fa-mail-bulk mr-1"></i>
                                             </a>
-                                            <form class="delete" data-id="{{$row->id}}" method="POST" action="{{ route('admin.contact.destroy',[$row->id]) }}">
+                                            <form class="delete" data-destroy="{{$row->id}}" data-id="{{$row->id}}" method="POST" action="{{ route('admin.contact.destroy',[$row->id]) }}">
                                                 @csrf
                                                 {{ method_field('DELETE') }}
                                                 <i class="fa fa-archive mr-1"></i>
@@ -180,7 +180,7 @@
                 closeOnConfirm: false,
                 closeOnCancel: false,
                 preConfirm: () => {
-                    $("form[data-id='" + id + "']").submit();
+                    $("form[data-destroy='" + id + "']").submit();
                 },
                 allowOutsideClick: () => !Swal.isLoading()
             })
