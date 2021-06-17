@@ -55,6 +55,7 @@ class ContactController extends MasterController
             'title' => $data['title'],
             'note' => $data['note'],
             'more_details'=>[
+                'type'=>'admin_reply',
                 'contact_id'=>$id
             ]
         ]);

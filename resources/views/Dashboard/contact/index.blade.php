@@ -122,7 +122,7 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            @foreach(\App\Models\Notification::where('more_details->contact_id',$row->id)->latest()->get() as $reply)
+                                                            @foreach(\App\Models\Notification::where('more_details->type','admin_reply')->where('more_details->contact_id',$row->id)->latest()->get() as $reply)
                                                                 <tr>
                                                                     <td>
                                                                         {{$reply->note}}
@@ -132,7 +132,6 @@
                                                             @endforeach
                                                             </tbody>
                                                         </table>
-
                                                     </div>
                                                 </div>
                                             </div>
