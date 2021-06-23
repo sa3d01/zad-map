@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Validator;
@@ -51,8 +52,20 @@ class ProductController extends MasterController
     {
         $category=Category::find($request['category_id']);
         $user_category_products=Product::where(['category_id'=>$request['category_id'],'user_id'=>auth('api')->id()])->count();
+
+
+        $wallet=Wallet::where('user_id',auth('api')->id())->latest()->first();
+        if (!$wallet){
+            $wallet=Wallet::create([
+                'user_id'=>auth('api')->id(),
+                'profits'=>0,
+                'debtors'=>0
+            ]);
+        }
         if ($user_category_products+1 > $category->free_products ){
-            return $this->sendError("تخطيت الحد المجانى لهذا التصنيف");
+            if ($wallet->profits < $category->product_price){
+                return $this->sendError('يرجي شحن المحفظه بقيمة السلعة المطلوب اضافتها آولا: '.$category->product_price.' ريال ');
+            }
         }
         $data = $request->validated();
         $data['user_id'] = auth()->id();

@@ -47,11 +47,10 @@
                                     </div>
                                     <td>
                                         <div class="button-list">
-                                           <form class="reject" data-href="{{ route('admin.story.reject',[$row->id]) }}" data-id="{{$row->id}}">
-                                                @csrf
+                                           <a class="reject" href="" data-href="{{ route('admin.story.reject',[$row->id]) }}" data-id="{{$row->id}}">
                                                 <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>رفض</span> </button>
-                                           </form>
-                                            <form class="accept" data-id="{{$row->id}}" data-href="{{ route('admin.story.accept',[$row->id]) }}">
+                                           </a>
+                                            <form method="POST" class="accept" data-id="{{$row->id}}" action="{{ route('admin.story.accept',[$row->id]) }}">
                                                 @csrf
                                                 <button class="btn btn-success waves-effect waves-light"> <i class="fa fa-user-clock mr-1"></i> <span>قبول</span> </button>
                                             </form>
@@ -99,13 +98,15 @@
                 preConfirm: (reject_reason) => {
                     $.ajax({
                         url: $(this).data('href'),
+                        sync:true,
                         type:'GET',
-                        data: {reject_reason}
+                        data: {reject_reason},
+                        success: function(){
+                            location.reload(true);
+                        }
                     })
                 },
                 allowOutsideClick: () => !Swal.isLoading()
-            }).then(() => {
-                location.reload(true);
             })
         });
         $(document).on('click', '.accept', function (e) {
@@ -121,14 +122,9 @@
                 closeOnConfirm: false,
                 closeOnCancel: false,
                 preConfirm: () => {
-                    $.ajax({
-                        url: $(this).data('href'),
-                        type:'GET',
-                    })
+                    $(this).submit();
                 },
                 allowOutsideClick: () => !Swal.isLoading()
-            }).then(() => {
-                location.reload(true);
             })
         });
     </script>

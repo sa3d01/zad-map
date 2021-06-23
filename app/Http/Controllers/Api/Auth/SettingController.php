@@ -90,7 +90,6 @@ class SettingController extends MasterController
             ]);
             $image=$user->image;
         }elseif ($request['type']=='transfer') {
-            $user = auth('api')->user();
             $file=$request->file('image');
             $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
             $file->move('media/images/transfer/', $filename);

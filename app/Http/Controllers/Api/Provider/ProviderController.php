@@ -9,6 +9,7 @@ use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProviderResourse;
 use App\Http\Resources\WalletResource;
 use App\Models\Category;
+use App\Models\Notification;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Wallet;
@@ -56,6 +57,26 @@ class ProviderController extends MasterController
         $data['type'] = 'transfer';
         WalletPay::create($data);
         $wallet=Wallet::where('user_id',auth('api')->id())->latest()->first();
+       if (!$wallet){
+           $wallet=Wallet::create([
+               'user_id'=>auth('api')->id(),
+               'profits'=>0,
+               'debtors'=>0
+           ]);
+       }
+       $wallet->update([
+           'profits'=>$wallet->profits+ $request['amount'],
+       ]);
+       Notification::create([
+           'receiver_id'=>1,
+           'type'=>'admin',
+           'title'=>'حوالة بنكية جديدة',
+           'note'=>'حوالة بنكية جديدة',
+           'more_details'=>[
+               'type'=>'wallet',
+               'user_id'=>auth('api')->id()
+           ]
+       ]);
         return $this->sendResponse(new WalletResource($wallet));
    }
 

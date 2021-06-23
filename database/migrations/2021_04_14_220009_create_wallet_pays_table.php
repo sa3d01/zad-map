@@ -18,7 +18,7 @@ class CreateWalletPaysTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('bank_id')->nullable();
             $table->integer('amount')->nullable();
-            $table->enum('type',['cache','transfer'])->default('transfer');
+            $table->string('type')->nullable();
             $table->char('image')->nullable();
             $table->enum('status',['pending','rejected','accepted'])->default('pending');
             $table->timestamps();

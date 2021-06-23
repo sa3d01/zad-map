@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Bank;
-use App\Models\Category;
 use App\Models\Contact;
 use App\Models\Notification;
-use App\Models\User;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 
@@ -21,19 +18,19 @@ class ContactController extends MasterController
     public function index()
     {
         $rows = $this->model->latest()->get();
-        foreach ($rows as $row){
+        foreach ($rows as $row) {
             $row->update([
-               'read'=>true
+                'read' => true
             ]);
         }
         return view('Dashboard.contact.index', compact('rows'));
     }
 
-    public function replyContact($id,Request $request)
+    public function replyContact($id, Request $request)
     {
         $data['title'] = 'رسالة إدارية';
         $data['note'] = $request['note'];
-        $contact=Contact::find($id);
+        $contact = Contact::find($id);
         $push = new PushNotification('fcm');
         $push->setMessage([
             'notification' => array('title' => $data['note'], 'sound' => 'default'),
@@ -54,13 +51,14 @@ class ContactController extends MasterController
             'type' => 'app',
             'title' => $data['title'],
             'note' => $data['note'],
-            'more_details'=>[
-                'type'=>'admin_reply',
-                'contact_id'=>$id
+            'more_details' => [
+                'type' => 'admin_reply',
+                'contact_id' => $id
             ]
         ]);
-        return redirect()->back()->with('success','تم الارسال بنجاح');
+        return redirect()->back()->with('success', 'تم الارسال بنجاح');
     }
+
     public function delete($id)
     {
         $this->model->find($id)->delete();

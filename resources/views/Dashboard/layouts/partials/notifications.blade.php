@@ -21,23 +21,24 @@
             @foreach($notifications as $notification)
                 @if($notification->more_details['type']=='contact')
                     <a href="{{route('admin.contact.index')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
-                        <div class="notify-icon">
+                        <div class="notify-icon bg-primary">
                             @php
                                 $contact=\App\Models\Contact::find($notification->more_details['contact_id']);
                             @endphp
-                            <img src="{{$contact->user->image}}" class="img-fluid rounded-circle" alt="" /> </div>
+                            <i class="mdi mdi-mailbox"></i>
+                        </div>
                         <p class="notify-details">{{$notification->title}}</p>
                         <p class="text-muted mb-0 user-msg">
-                            <small>{{$notification->note}}</small>
+                            <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
                         </p>
                     </a>
                 @else
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                    <a href="{{route('admin.wallet-pay.index')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
                         <div class="notify-icon bg-primary">
-                            <i class="mdi mdi-comment-account-outline"></i>
+                            <i class="mdi mdi-bank-transfer"></i>
                         </div>
-                        <p class="notify-details">Caleb Flakelar commented on Admin
-                            <small class="text-muted">1 min ago</small>
+                        <p class="notify-details">{{$notification->note}}
+                            <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
                         </p>
                     </a>
                 @endif

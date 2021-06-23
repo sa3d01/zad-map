@@ -65,7 +65,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
     Route::get('story/binned', 'StoryController@binned')->name('story.binned');
     Route::get('story/{id}/reject', 'StoryController@reject')->name('story.reject');
-    Route::get('story/{id}/accept', 'StoryController@accept')->name('story.accept');
+    Route::post('story/{id}/accept', 'StoryController@accept')->name('story.accept');
 
     Route::get('orders/{status}', 'OrderController@list')->name('orders.list');
     Route::resource('order', 'OrderController');

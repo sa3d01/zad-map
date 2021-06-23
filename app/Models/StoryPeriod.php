@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class StoryPeriod extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'story_period',
+        'story_price',
+    ];
 }

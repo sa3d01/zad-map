@@ -21,9 +21,6 @@ class LoginController extends MasterController
             if (!$user) {
                 return $this->sendError('هذا الحساب غير موجود.');
             }
-//            if ($user->approved != 1){
-//                return $this->sendError('هذا الحساب غير مفعل من قبل الإدارة.');
-//            }
         }
         if (!$user) {
             return $this->sendError('هذا الحساب غير موجود.');
