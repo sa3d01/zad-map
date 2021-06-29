@@ -26,7 +26,7 @@
                             <tbody>
                             @foreach($rows as $row)
                                 <tr>
-                                    <td><a href="{{route('admin.provider.show',$row->user_id)}}">{{$row->user->name}}</a></td>
+                                    <td><a href="{{route('admin.provider.show',['provider'=>$row->user_id])}}">{{$row->user->name}}</a></td>
                                     <td>{{$row->storyPeriod->story_period}} أيام </td>
                                     <td>{{$row->storyPeriod->story_price}} ريال </td>
                                     <td>{{$row->created_at}}</td>
