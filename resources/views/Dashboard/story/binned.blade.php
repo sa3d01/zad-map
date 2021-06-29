@@ -26,7 +26,7 @@
                             <tbody>
                             @foreach($rows as $row)
                                 <tr>
-                                    <td>{{$row->user->name}}</td>
+                                    <td>{{$row->user??$row->user->name}}</td>
                                     <td>{{$row->storyPeriod->story_period}} أيام </td>
                                     <td>{{$row->storyPeriod->story_price}} ريال </td>
                                     <td>{{$row->created_at}}</td>
