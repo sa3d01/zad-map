@@ -1,13 +1,35 @@
 <div id="sidebar-menu">
     <ul class="metismenu" id="side-menu">
-        <li class="menu-title">محتويات النظام</li>
         <li>
             <a href="{{route('admin.home')}}">
                 <i class="mdi mdi-view-dashboard"></i>
                 <span> الرئيسية </span>
             </a>
         </li>
-
+        <li class="menu-title">الصلاحيات</li>
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-controller-classic"></i>
+                <span> إدارة الصلاحيات </span>
+                <span class="menu-arrow"></span>
+            </a>
+            <ul class="nav-second-level" aria-expanded="false">
+                <li><a href="{{route('admin.roles.create')}}">إضافة صلاحية جديدة</a></li>
+                <li><a href="{{route('admin.roles.index')}}">عرض الكل</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="javascript: void(0);">
+                <i class="mdi mdi-office-building"></i>
+                <span> الإدارة </span>
+                <span class="menu-arrow"></span>
+            </a>
+            <ul class="nav-second-level" aria-expanded="false">
+                <li><a href="{{route('admin.admins.create')}}">إضافة مدير جديدة</a></li>
+                <li><a href="{{route('admin.admins.index')}}">عرض الكل</a></li>
+            </ul>
+        </li>
+        <li class="menu-title">أعضاء النظام</li>
         <li>
             <a href="{{route('admin.user.index')}}">
                 <i class="mdi mdi-human"></i>
@@ -39,7 +61,7 @@
                 <li><a href="{{route('admin.delivery.index')}}"> عرض الكل</a></li>
             </ul>
         </li>
-
+        <li class="menu-title">محتويات النظام</li>
         <li>
             <a href="{{route('admin.product.index')}}">
                 <i class="mdi mdi-battlenet"></i>
