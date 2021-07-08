@@ -21,6 +21,7 @@ class Product extends Model
         'price',
         'images',
         'status',
+        'count',
         'deleted_at',
     ];
     protected $dates = [

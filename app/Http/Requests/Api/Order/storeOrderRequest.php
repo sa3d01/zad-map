@@ -25,7 +25,7 @@ class storeOrderRequest extends ApiMasterRequest
     {
         return [
             'deliver_by' => 'required|in:user,provider,delivery',
-            'deliver_at' => 'required|date|after:today',
+            'deliver_at' => 'required|date|after:yesterday',
             'promo_code' => 'nullable|max:100',
             'address' => 'nullable|max:200',
         ];

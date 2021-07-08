@@ -37,6 +37,7 @@ class ProductResource extends JsonResource
     {
         return [
             'id'=> (int)$this->id,
+            'count'=> (int)$this->count,
             'name'=> $this->name,
             'note'=> $this->note,
             'category'=>[
