@@ -13,6 +13,28 @@ class CategoryController extends MasterController
 {
     protected $model;
 
+    function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+        if (($lat1 == $lat2) && ($lon1 == $lon2)) {
+            return 0;
+        }
+        else {
+            $theta = $lon1 - $lon2;
+            $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $unit = strtoupper($unit);
+
+            if ($unit == "K") {
+                return ($miles * 1.609344);
+            } else if ($unit == "N") {
+                return ($miles * 0.8684);
+            } else {
+                return $miles;
+            }
+        }
+    }
+
     public function __construct(Category $model)
     {
         $this->model = $model;
@@ -42,8 +64,18 @@ class CategoryController extends MasterController
         if (request()->has('city_id')){
             $providers_q->where('city_id',request()->input('city_id'));
         }
-        $data=$providers_q->get();
-        return $this->sendResponse(new ProviderCollection($data));
+        $providers=$providers_q->get();
+        if (request()->has('lat') && request()->has('lng')){
+            foreach ($providers as $provider){
+                $provider_lat=$provider->location['lat'];
+                $provider_lng=$provider->location['lng'];
+                $distance=$this->distance(request()->input('lat'), request()->input('lng'), $provider_lat, $provider_lng, "K");
+                return $distance;
+            }
+        }
+
+
+        return $this->sendResponse(new ProviderCollection($providers));
     }
     public function products($category_id,$provider_id):object
     {
