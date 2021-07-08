@@ -65,13 +65,18 @@ class CategoryController extends MasterController
             $providers_q->where('city_id',request()->input('city_id'));
         }
         $providers=$providers_q->get();
+        $providers_arr=[];
         if (request()->has('lat') && request()->has('lng')){
             foreach ($providers as $provider){
                 $provider_lat=$provider->location['lat'];
                 $provider_lng=$provider->location['lng'];
                 $distance=$this->distance(request()->input('lat'), request()->input('lng'), $provider_lat, $provider_lng, "K");
-                return $distance;
+                if ($distance<15)
+                {
+                    $providers_arr[]=$provider->id;
+                }
             }
+            $providers=User::whereIn('id',$providers_arr)->get();
         }
 
 
