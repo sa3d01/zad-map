@@ -143,6 +143,9 @@
                     <a href="{{route('admin.bank.index')}}">الحسابات البنكية</a>
                 </li>
                 <li>
+                    <a href="{{route('admin.story_period.index')}}">أسعار إضافة حالات</a>
+                </li>
+                <li>
                     <a href="{{route('admin.slider.index')}}">الإعلانات</a>
                 </li>
 
