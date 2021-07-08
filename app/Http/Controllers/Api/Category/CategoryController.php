@@ -52,7 +52,7 @@ class CategoryController extends MasterController
         }
         return $this->sendResponse($results);
     }
-    public function providers($category_id):object
+    public function providers($category_id)
     {
         $category=Category::find($category_id);
         $provider_ids=$category->products->pluck('user_id');
