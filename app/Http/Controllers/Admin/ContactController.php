@@ -12,6 +12,7 @@ class ContactController extends MasterController
     public function __construct(Contact $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:contacts');
         parent::__construct();
     }
 

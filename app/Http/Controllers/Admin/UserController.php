@@ -9,6 +9,7 @@ class UserController extends MasterController
     public function __construct(User $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:users');
         parent::__construct();
     }
 

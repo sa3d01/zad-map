@@ -14,6 +14,7 @@ class StoryController extends MasterController
     public function __construct(Story $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:providers');
         parent::__construct();
     }
 

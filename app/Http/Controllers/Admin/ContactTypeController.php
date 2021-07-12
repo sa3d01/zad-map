@@ -13,6 +13,7 @@ class ContactTypeController extends MasterController
     public function __construct(ContactType $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:settings');
         parent::__construct();
     }
 

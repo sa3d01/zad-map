@@ -9,6 +9,7 @@ class WalletPayController extends MasterController
     public function __construct(WalletPay $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:wallet_pays');
         parent::__construct();
     }
 

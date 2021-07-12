@@ -13,6 +13,7 @@ class SettingController extends MasterController
     public function __construct(Setting $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:settings');
         parent::__construct();
     }
 

@@ -10,6 +10,7 @@ class SliderController extends MasterController
     public function __construct(Slider $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:sliders');
         parent::__construct();
     }
 

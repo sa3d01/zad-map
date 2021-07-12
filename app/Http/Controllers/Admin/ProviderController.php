@@ -12,6 +12,7 @@ class ProviderController extends MasterController
     public function __construct(User $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:providers');
         parent::__construct();
     }
 

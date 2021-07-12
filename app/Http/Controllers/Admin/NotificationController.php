@@ -13,6 +13,7 @@ class NotificationController extends MasterController
     public function __construct(Notification $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:notifications');
         parent::__construct();
     }
 

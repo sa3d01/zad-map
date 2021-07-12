@@ -11,6 +11,7 @@ class CategoryController extends MasterController
     public function __construct(Category $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:categories');
         parent::__construct();
     }
 

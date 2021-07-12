@@ -10,23 +10,19 @@ class RoleController extends MasterController
 {
     function __construct(Role $model)
     {
-//        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
-//        $this->middleware('permission:role-create', ['only' => ['create','store']]);
-//        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-//        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+//        $this->middleware('permission:roles');
         parent::__construct();
-
     }
 
     public function index()
     {
-        $rows = Role::orderBy('id','DESC')->latest()->get();
+        $rows = Role::where('guard_name','admin')->orderBy('id','DESC')->latest()->get();
         return view('Dashboard.role.index', compact('rows'));
     }
 
     public function create()
     {
-        $permission = Permission::get();
+        $permission = Permission::all();
         return view('Dashboard.role.create',compact('permission'));
     }
 
@@ -37,7 +33,11 @@ class RoleController extends MasterController
             'permission' => 'required',
         ]);
         $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($request->input('permission'));
+        foreach ($request['permission'] as $permission_id){
+            $permission=Permission::find($permission_id);
+            $role->givePermissionTo($permission);
+        }
+       // $role->syncPermissions($request->input('permission'));
         return redirect()->route('admin.roles.index')
             ->with('success','Role created successfully');
     }
@@ -70,8 +70,8 @@ class RoleController extends MasterController
         $role = Role::find($id);
         $role->name = $request->input('name');
         $role->save();
-        $role->syncPermissions($request->input('permission'));
-        return redirect()->route('Dashboard.role.index')
+        $role->syncPermissions(Permission::whereIn('id',$request['permission'])->pluck('name'));
+        return redirect()->route('admin.roles.index')
             ->with('success','Role updated successfully');
     }
 

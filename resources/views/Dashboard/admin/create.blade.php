@@ -45,10 +45,10 @@
                                        placeholder="Password" class="form-control" id="passWord2">
                             </div>
                             <div class="form-group">
-                                <label for="permission"> الأدوار </label>
+                                <label for="permission"> الدور </label>
                                 <div class="control-group">
                                     @foreach($roles as $value)
-                                        <input type="checkbox" name="roles" value="{{$value->id}}">{{$value->name}}<br>
+                                        <input type="radio" name="role" value="{{$value->id}}">{{$value->name}}<br>
                                     @endforeach
                                 </div>
                             </div>

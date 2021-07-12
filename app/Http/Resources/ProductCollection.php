@@ -33,7 +33,7 @@ class ProductCollection extends ResourceCollection
         $data = [];
         foreach ($this as $obj) {
             $arr['id'] = (int)$obj->id;
-            $arr['available_count']= (int)$obj->count;
+            $arr['available_count']= (int)$obj->available_count;
             $arr['name'] = $obj->name;
             $arr['note'] = $obj->note??"";
             $arr['image'] = $obj->images[0];

@@ -29,7 +29,7 @@ class storeProductRequest extends ApiMasterRequest
             'note' => 'required',
             'price' => 'required|numeric',
             'images' => 'required',
-            'count' => 'required',
+            'available_count' => 'required',
         ];
     }
 }

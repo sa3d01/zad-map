@@ -10,6 +10,7 @@ class RateController extends MasterController
     public function __construct(Rate $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:orders');
         parent::__construct();
     }
 

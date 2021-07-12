@@ -10,6 +10,7 @@ class DistrictController extends MasterController
     public function __construct(DropDown $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:settings');
         parent::__construct();
     }
 

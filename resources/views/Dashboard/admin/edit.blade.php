@@ -47,10 +47,10 @@
                                        placeholder="Password" class="form-control" id="passWord2">
                             </div>
                             <div class="form-group">
-                                <label for="permission"> الصلاحيات </label>
+                                <label for="permission"> الدور </label>
                                 <div class="control-group">
                                     @foreach($roles as $value)
-                                        <input type="checkbox" name="permission" value="{{$value->id}}" @if(in_array($value->id, $userRole)) checked @endif>
+                                        <input type="radio" name="role" value="{{$value->id}}" @if(in_array($value->id, $userRole)) checked @endif>
                                             {{$value->name}}
                                         <br>
                                     @endforeach

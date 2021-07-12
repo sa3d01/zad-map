@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,10 +11,7 @@ class AdminsController extends MasterController
 {
     function __construct(User $model)
     {
-//        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index','store']]);
-//        $this->middleware('permission:role-create', ['only' => ['create','store']]);
-//        $this->middleware('permission:role-edit', ['only' => ['edit','update']]);
-//        $this->middleware('permission:role-delete', ['only' => ['destroy']]);
+//        $this->middleware('permission:admins');
         parent::__construct();
 
     }
@@ -27,7 +23,7 @@ class AdminsController extends MasterController
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = Role::where('guard_name','admin')->get();
         return view('Dashboard.admin.create',compact('roles'));
     }
 
@@ -37,12 +33,13 @@ class AdminsController extends MasterController
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'password' => 'required',
-            'roles' => 'required'
+            'role' => 'required'
         ]);
         $input = $request->all();
         $input['type']='ADMIN';
         $user = User::create($input);
-        $user->assignRole($request->input('roles'));
+        $role=Role::findById($request['role']);
+        $user->syncRoles($role);
         return redirect()->route('admin.admins.index')
             ->with('success','Admin created successfully');
     }
@@ -56,7 +53,7 @@ class AdminsController extends MasterController
     public function edit($id)
     {
         $user = User::find($id);
-        $roles = Role::all();
+        $roles = Role::where('guard_name','admin')->get();
         $userRole = $user->roles->pluck('id')->toArray();
         return view('Dashboard.admin.edit',compact('user','roles','userRole'));
     }
@@ -66,14 +63,14 @@ class AdminsController extends MasterController
         $this->validate($request, [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$id,
-            'roles' => 'required'
+            'role' => 'required'
         ]);
         $input = $request->all();
-
         $user = User::find($id);
         $user->update($input);
         DB::table('model_has_roles')->where('model_id',$id)->delete();
-        $user->assignRole($request->input('roles'));
+        $role=Role::findById($request['role']);
+        $user->syncRoles($role);
         return redirect()->route('admin.admins.index')
             ->with('success','User updated successfully');
     }

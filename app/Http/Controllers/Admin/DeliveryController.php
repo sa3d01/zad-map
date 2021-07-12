@@ -12,6 +12,7 @@ class DeliveryController extends MasterController
     public function __construct(User $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:deliveries');
         parent::__construct();
     }
 

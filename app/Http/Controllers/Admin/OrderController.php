@@ -9,6 +9,7 @@ class OrderController extends MasterController
     public function __construct(Order $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:orders');
         parent::__construct();
     }
     public function getStatusArabic($status):string

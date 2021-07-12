@@ -11,6 +11,7 @@ class StoryPeriodController extends MasterController
     public function __construct(StoryPeriod $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:story_periods');
         parent::__construct();
     }
 

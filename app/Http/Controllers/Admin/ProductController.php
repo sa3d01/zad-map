@@ -12,6 +12,7 @@ class ProductController extends MasterController
     public function __construct(Product $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:products');
         parent::__construct();
     }
 

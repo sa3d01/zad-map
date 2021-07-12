@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->double('price')->default(0);
             $table->json('images')->nullable();
             $table->boolean('status')->default(true);
-            $table->unsignedInteger('count')->default(1);
+            $table->unsignedInteger('available_count')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

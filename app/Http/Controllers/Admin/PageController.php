@@ -10,6 +10,7 @@ class PageController extends MasterController
     public function __construct(Page $model)
     {
         $this->model = $model;
+//        $this->middleware('permission:pages');
         parent::__construct();
     }
 
