@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Notification;
 use App\Models\Story;
 use App\Models\Wallet;
 use App\Models\WalletPay;
@@ -56,7 +57,6 @@ class StoryController extends MasterController
             'profits' => $wallet->profits - $story->storyPeriod->story_price,
             'debtors' => $wallet->debtors + $story->storyPeriod->story_price,
         ]);
-        $story->refresh();
         $push = new PushNotification('fcm');
         $message = 'تم قبول حالتك';
         $usersTokens = [];
@@ -77,13 +77,12 @@ class StoryController extends MasterController
             ->setDevicesToken($usersTokens)
             ->send()
             ->getFeedback();
-        $this->model->create([
+        Notification::create([
             'receiver_id' => $story->user_id,
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
         ]);
-        $story->refresh();
         return redirect()->back()->with('updated');
     }
 
