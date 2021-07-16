@@ -16,8 +16,8 @@
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><strong>الهاتف : </strong><span>{{$user->phone}}</span></li>
-                            <li class="list-group-item"><strong>المدينة : </strong><span>{{$user->city->name}}</span></li>
-                            <li class="list-group-item"><strong>الحى : </strong><span>{{$user->district->name}}</span></li>
+                            <li class="list-group-item"><strong>المدينة : </strong><span>{{$user->city?$user->city->name:''}}</span></li>
+                            <li class="list-group-item"><strong>الحى : </strong><span>{{$user->district?$user->district->name:''}}</span></li>
                             <li class="list-group-item"><strong>الرمز الخاص بالمسوق : </strong><span>{{$user->marketer_id??'ﻻ يوجد'}}</span></li>
                             <li class="list-group-item"><strong>تاريخ الانضمام : </strong><span>{{$user->created_at}}</span></li>
                             @if($user->has_delivery==1)

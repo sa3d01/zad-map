@@ -26,7 +26,7 @@
                                 <tr>
                                     <td>{{$row->name}}</td>
                                     <td>{{$row->phone}}</td>
-                                    <td>{{$row->city->name}}</td>
+                                    <td>{{$row->city?$row->city->name:''}}</td>
                                     <td>
                                         <div class="button-list">
                                             <a href="{{route('admin.delivery.show',$row->id)}}">
