@@ -16,6 +16,7 @@ class CartCollection extends ResourceCollection
         foreach ($this as $obj) {
             $product = Product::find($obj['product_id']);
             $arr['id'] = (int)$product->id;
+            $arr['available_count'] = (int)$product->available_count;
             $arr['cart_item_id'] = (int)$obj->id;
             $arr['count'] = (int)$obj->count;
             $arr['provider']['id'] = $product->user_id;
