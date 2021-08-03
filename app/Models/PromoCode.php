@@ -15,4 +15,7 @@ class PromoCode extends Model
         'end_date',
         'count_of_uses',
     ];
+    protected $casts = [
+        'end_date' => 'datetime',
+    ];
 }
