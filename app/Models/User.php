@@ -111,6 +111,7 @@ class User extends Authenticatable implements JWTSubject
     public function feedbacks(){
         $feedbacks=[];
         foreach ($this->rates as $rate){
+            $arr['rate']=(int)$rate->rate;
             $arr['feedback']=$rate->feedback;
             $arr['user']['id']=$rate->user->id;
             $arr['user']['name']=$rate->user->name;

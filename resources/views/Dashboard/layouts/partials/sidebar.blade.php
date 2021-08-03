@@ -114,6 +114,13 @@
         </li>
 
         <li>
+            <a href="{{route('admin.promo_code.index')}}">
+                <i class="mdi mdi-qrcode"></i>
+                <span> إدارة أكواد الخصم </span>
+            </a>
+        </li>
+
+        <li>
             <a href="javascript: void(0);">
                 <i class="mdi mdi-share-variant"></i>
                 <span> إعدادات أخرى </span>

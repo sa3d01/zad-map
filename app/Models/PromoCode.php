@@ -9,6 +9,7 @@ class PromoCode extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'marketer_id',
         'discount_percent',
         'code',
         'end_date',

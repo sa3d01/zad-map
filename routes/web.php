@@ -101,6 +101,7 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
     Route::post('slider/{id}/activate', 'SliderController@activate')->name('slider.activate');
 
     Route::resource('story_period', 'StoryPeriodController');
+    Route::resource('promo_code', 'PromoCodeController');
 
     Route::resource('wallet-pay', 'WalletPayController');
     Route::post('wallet-pay/{id}/reject', 'WalletPayController@reject')->name('wallet-pay.reject');

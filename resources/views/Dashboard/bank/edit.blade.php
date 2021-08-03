@@ -29,6 +29,10 @@
                                 <input value="{{$bank->account_number}}" type="text" name="account_number" required class="form-control" id="account_number">
                             </div>
                             <div class="form-group">
+                                <label for="account_name">اسم صاحب الحساب*</label>
+                                <input value="{{$bank->account_name}}" type="text" name="account_name" required class="form-control" id="account_name">
+                            </div>
+                            <div class="form-group">
                                 <label for="image">الشعار</label>
                                 <div class="card-box">
                                     <input name="logo" id="input-file-now-custom-1 image" type="file" class="dropify"  data-default-file="{{$bank->logo}}" />

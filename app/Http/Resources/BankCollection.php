@@ -14,6 +14,7 @@ class BankCollection extends ResourceCollection
             $arr['logo'] = $obj->logo;
             $arr['name'] = $obj->name;
             $arr['account_number'] = $obj->account_number;
+            $arr['account_name'] = $obj->account_name;
             $data[] = $arr;
         }
         return $data;

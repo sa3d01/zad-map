@@ -25,8 +25,12 @@
                                 <input type="text" name="name" required class="form-control" id="name">
                             </div>
                             <div class="form-group">
-                                <label for="name">رقم الحساب*</label>
+                                <label for="account_number">رقم الحساب*</label>
                                 <input type="text" name="account_number" required class="form-control" id="account_number">
+                            </div>
+                            <div class="form-group">
+                                <label for="account_name">اسم صاحب الحساب*</label>
+                                <input type="text" name="account_name" required class="form-control" id="account_name">
                             </div>
                             <div class="form-group">
                                 <label for="image">الشعار</label>

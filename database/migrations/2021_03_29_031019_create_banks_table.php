@@ -18,7 +18,8 @@ class CreateBanksTable extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->char('logo')->nullable();
             $table->char('name')->nullable();
-            $table->char('account_number')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('account_name')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });
