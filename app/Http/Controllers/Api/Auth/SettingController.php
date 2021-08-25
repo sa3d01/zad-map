@@ -44,7 +44,7 @@ class SettingController extends MasterController
                 $this->updateBankData($request->validated(),$user);
             }
             $user->update($data);
-            return $this->sendResponse(new ProviderLoginResourse($user));
+            return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         }
         $user->update($data);
         return $this->sendResponse(new UserLoginResourse($user));

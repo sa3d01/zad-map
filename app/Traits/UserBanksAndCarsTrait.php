@@ -41,6 +41,7 @@ trait UserBanksAndCarsTrait
                 'user_id' =>$user->id,
                 'name' => $bank['name'],
                 'account_number' => $bank['account_number'],
+                'account_name' => $bank['account_name'],
             ]);
             $bank->refresh();
         }
