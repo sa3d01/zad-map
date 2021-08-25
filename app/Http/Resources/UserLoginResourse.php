@@ -17,29 +17,29 @@ class UserLoginResourse extends JsonResource
     public function toArray($request)
     {
         $token = auth('api')->login(User::find($this->id));
-        $devices[]=$this->normal_user->devices;
+        $devices[]=$this->devices;
         $devices[]=$request['device.id'];
-        $this->normal_user->update([
-            'devices' => $devices,
-            'last_login_at' => Carbon::now(),
-            'last_ip' => $request->ip(),
-        ]);
+//        $this->update([
+//            'devices' => $devices,
+//            'last_login_at' => Carbon::now(),
+//            'last_ip' => $request->ip(),
+//        ]);
         return [
             "user" => [
                 'id' => (int)$this->id,
                 'type' => $request['type'],
-                'name' => $this->normal_user->name,
+                'name' => $this->name,
                 'phone' => $this->phone ?? "",
                 'city' => [
-                    'id' => $this->normal_user->city ? (int)$this->normal_user->city->id : 0,
-                    'name' => $this->normal_user->city ? $this->city->normal_user->name : "",
+                    'id' => $this->city ? (int)$this->city->id : 0,
+                    'name' => $this->city ? $this->city->name : "",
                 ],
                 'district' => [
-                    'id' => $this->normal_user->district ? (int)$this->normal_user->district->id : 0,
-                    'name' => $this->normal_user->district ? $this->normal_user->district->name : "",
+                    'id' => $this->district ? (int)$this->district->id : 0,
+                    'name' => $this->district ? $this->district->name : "",
                 ],
-                'location'=>$this->normal_user->location,
-                'image' => $this->normal_user->image,
+                'location'=>$this->location,
+                'image' => $this->image,
             ],
             "access_token" => [
                 'token' => $token,
