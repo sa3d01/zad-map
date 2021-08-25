@@ -34,7 +34,7 @@ class UserLoginResourse extends JsonResource
                 'phone' => $this->phone ?? "",
                 'city' => [
                     'id' => $normal_user->city ? (int)$normal_user->city->id : 0,
-                    'name' => $normal_user->city ? $this->city->normal_user->name : "",
+                    'name' => $normal_user->city ? $normal_user->city->name : "",
                 ],
                 'district' => [
                     'id' => $normal_user->district ? (int)$normal_user->district->id : 0,
