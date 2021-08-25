@@ -19,11 +19,16 @@ class RegisterController extends MasterController
     public function register(UserRegisterationRequest $request): object
     {
         $data = $request->validated();
-        $data['district_id'] = $this->getDistrictId($request['district']);
-        $user = User::create($data);
+
+        $user=User::where('phone',$request['phone'])->first();
+        if (!$user)
+        {
+            $user = User::create($data);
+        }
         $user->refresh();
         $this->createPhoneVerificationCodeForUser($user);
         $data['user_id'] = $user->id;
+        $data['district_id'] = $this->getDistrictId($request['district']);
         $data['type'] = request()->header('user_type');
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];

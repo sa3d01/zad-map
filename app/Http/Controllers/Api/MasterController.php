@@ -55,7 +55,7 @@ abstract class MasterController extends Controller
 
     function fcmPush($title,$user,$order)
     {
-        if (in_array('id',$user->device)){
+        if ($user->devices!=null){
             $push = new PushNotification('fcm');
             $msg = [
                 'notification' => array('title' => $title, 'sound' => 'default'),
@@ -69,7 +69,7 @@ abstract class MasterController extends Controller
                 'priority' => 'high',
             ];
             $push->setMessage($msg)
-                ->setDevicesToken($user->device['id'])
+                ->setDevicesToken($user->devices)
                 ->send();
         }
     }
@@ -79,7 +79,7 @@ abstract class MasterController extends Controller
         $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;
-        $notification['receiver_id'] = $provider->id;
+        $notification['receiver_id'] = $provider->user_id;
         $notification['order_id'] = $order->id;
         Notification::create($notification);
     }
@@ -89,7 +89,7 @@ abstract class MasterController extends Controller
         $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;
-        $notification['receiver_id'] = $user->id;
+        $notification['receiver_id'] = $user->user_id;
         $notification['order_id'] = $order->id;
         Notification::create($notification);
     }

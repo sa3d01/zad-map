@@ -11,6 +11,7 @@ use App\Http\Resources\OrderResourse;
 use App\Http\Resources\ProviderResourse;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Delivery;
 use App\Models\DeliveryRequest;
 use App\Models\Notification;
 use App\Models\Order;
@@ -151,13 +152,13 @@ class OrderController extends MasterController
                 ]);
             }
         }
-        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->normal_user->name,$order->id);
         if ($order->deliver_by=='delivery') {
             if ($order->delivery_id!=null){
-                $this->notify_provider($order->provider,$title, $order);
+                $this->notify_provider($order->provider->provider,$title, $order);
             }
         }else{
-            $this->notify_provider($order->provider,$title, $order);
+            $this->notify_provider($order->provider->provider,$title, $order);
         }
         return $this->sendResponse(new OrderResourse($order));
     }
@@ -206,8 +207,9 @@ class OrderController extends MasterController
             }
             //check deliver by
             if ($order->deliver_by!='delivery'){
-                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->name,$order->id);
-                $this->notify_provider(User::find($provider_id),$title, $order);
+                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->normal_user->name,$order->id);
+                $provider=User::find($provider_id);
+                $this->notify_provider($provider->provider,$title, $order);
             }else{
                 $this->notify_deliveries($order);
             }
@@ -220,7 +222,7 @@ class OrderController extends MasterController
 
     public function hasDeliveries($city_id)
     {
-        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->where('city_id',$city_id)->count();
+        $deliveries=Delivery::where('online',1)->where('devices','!=',null)->where('city_id',$city_id)->count();
         if ($deliveries>0)
         {
             return $this->sendResponse([], "");
@@ -231,14 +233,16 @@ class OrderController extends MasterController
     public function notify_deliveries($order)
     {
         $user = auth('api')->user();
-        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user['name'],$order->id);
-        $deliveries=User::whereType('DELIVERY')->where('online',1)->where('device','!=',null)->where('city_id',$user->city_id)->get();
+        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user->normal_user->name,$order->id);
+
+        $deliveries=Delivery::where('online',1)->where('device','!=',null)->where('city_id',$user->normal_user->city_id)->pluck('user_id')->toArray();
+        $deliveries=User::whereIn('id',$deliveries)->get();
         foreach ($deliveries as $delivery){
             $delivery_request=DeliveryRequest::create([
                'order_id'=>$order->id,
                'delivery_id'=>$delivery->id
             ]);
-            $this->fcmPush($title,$delivery,$order);
+            $this->fcmPush($title,$delivery->delivery,$order);
             $notification['type'] = 'delivery_request';
             $notification['title'] = $title;
             $notification['note'] = $title;
