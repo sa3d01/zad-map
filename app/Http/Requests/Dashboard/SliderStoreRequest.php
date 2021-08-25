@@ -28,7 +28,7 @@ class SliderStoreRequest extends FormRequest
             'link' => 'nullable|max:400',
             'start_date' => 'required|date|after:yesterday',
             'end_date' => 'required||after:today',
-            'image' => 'required|image',
+            'image' => 'required',
         ];
     }
 
