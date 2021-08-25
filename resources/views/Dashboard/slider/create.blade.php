@@ -28,8 +28,8 @@
                                 <input type="text" name="title" required class="form-control" id="title">
                             </div>
                             <div class="form-group">
-                                <label for="note">الوصف النصى*</label>
-                                <textarea id="note" required class="form-control" name="note"></textarea>
+                                <label for="link">الرابط</label>
+                                <input type="url" name="link" required class="form-control" id="link">
                             </div>
                             <div class="form-group">
                                 <label>موعد بداية العرض</label>
