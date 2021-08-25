@@ -27,6 +27,7 @@ class WalletPayRequest extends ApiMasterRequest
             'bank_id' => 'required|numeric|exists:banks,id',
             'amount' => 'required|numeric',
             'image' => 'required|image',
+            'user_type' => 'nullable',
         ];
     }
 }

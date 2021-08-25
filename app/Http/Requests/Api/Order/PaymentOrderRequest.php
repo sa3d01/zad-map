@@ -28,6 +28,7 @@ class PaymentOrderRequest extends ApiMasterRequest
             'provider.image' => 'nullable',
             'delivery.type' => 'nullable|in:transfer,cache',
             'delivery.image' => 'nullable',
+            'user_type' => 'nullable',
         ];
     }
 }

@@ -26,6 +26,7 @@ class ChatRequest extends ApiMasterRequest
         return [
             'message' => 'required|max:250',
             'receiver_id' => 'required|exists:users,id',
+            'user_type' => 'nullable',
             'order_id' => 'nullable|exists:orders,id',
         ];
     }

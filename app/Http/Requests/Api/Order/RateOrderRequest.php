@@ -28,6 +28,7 @@ class RateOrderRequest extends ApiMasterRequest
             'provider.feedback' => 'nullable|max:150',
             'delivery.rate' => 'nullable|integer',
             'delivery.feedback' => 'nullable|max:150',
+            'user_type' => 'nullable',
         ];
     }
 }

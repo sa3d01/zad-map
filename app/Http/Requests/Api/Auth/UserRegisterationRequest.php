@@ -25,6 +25,7 @@ class UserRegisterationRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'user_type' => 'nullable',
             'type' => 'nullable|string|max:110',
             'name' => 'required|string|max:110',
             'email' => 'email:rfc,dns|max:90|unique:users',

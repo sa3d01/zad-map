@@ -24,6 +24,7 @@ class PasswordUpdateRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'user_type' => 'nullable',
             'old_password' => 'required|string|max:90',
             'new_password' => 'required|string|max:90',
         ];

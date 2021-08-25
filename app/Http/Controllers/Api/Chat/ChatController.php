@@ -35,7 +35,7 @@ class ChatController extends MasterController
     }
     public function getConversations()
     {
-        $chat_ids = Chat::where(['sender_id'=> auth('api')->id(),'sender_type'=>request()->header('user_type')])->orWhere(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('user_type')])->pluck('room')->unique();
+        $chat_ids = Chat::where(['sender_id'=> auth('api')->id(),'sender_type'=>request()->input('user_type')])->orWhere(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->input('user_type')])->pluck('room')->unique();
         $all_chats = Chat::whereIn('room', $chat_ids)->latest()->get();
         $rooms=[];
         $unique_chat_ids=[];
@@ -65,7 +65,7 @@ class ChatController extends MasterController
     {
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
-        $data['sender_type'] = request()->header('user_type');
+        $data['sender_type'] = request()->input('user_type');
         $sender=auth('api')->user();
         $receiver=User::find($request['receiver_id']);
 

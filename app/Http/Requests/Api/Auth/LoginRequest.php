@@ -25,6 +25,7 @@ class LoginRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'user_type' => 'nullable',
             'type' => 'nullable|string|max:110',
             'phone' => 'required|string|max:90|exists:users',
             'password' => 'required|string|min:6|max:20',

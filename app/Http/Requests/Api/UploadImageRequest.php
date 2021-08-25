@@ -24,6 +24,7 @@ class UploadImageRequest extends ApiMasterRequest
         return [
             'type' => 'required|in:avatar,insurance_image,identity_image,drive_image,transfer',
             'image' => 'required|image',
+            'user_type' => 'nullable',
         ];
     }
 }

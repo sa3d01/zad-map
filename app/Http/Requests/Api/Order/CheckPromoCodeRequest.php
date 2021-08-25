@@ -26,6 +26,7 @@ class CheckPromoCodeRequest extends ApiMasterRequest
         return [
             'promo_code' => 'required|max:20',
             'total_price' => 'required|max:20',
+            'user_type' => 'nullable',
         ];
     }
 }

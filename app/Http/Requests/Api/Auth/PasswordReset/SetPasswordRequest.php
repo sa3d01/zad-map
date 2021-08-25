@@ -24,6 +24,7 @@ class SetPasswordRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'user_type' => 'nullable',
             'phone' => 'required|string|max:90|exists:users',
             'code' => 'required|numeric|max:99999',
             'password' => 'required|string|max:10',

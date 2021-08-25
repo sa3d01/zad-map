@@ -23,7 +23,8 @@ class ContactRequest extends ApiMasterRequest
     {
         return [
             'contact_type_id' => 'required|numeric|exists:contact_types,id',
-            'message'=>'required'
+            'message'=>'required',
+            'user_type' => 'nullable',
         ];
     }
 }

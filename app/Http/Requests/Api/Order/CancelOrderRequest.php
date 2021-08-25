@@ -25,6 +25,7 @@ class CancelOrderRequest extends ApiMasterRequest
     {
         return [
             'reason' => 'required',
+            'user_type' => 'nullable',
         ];
     }
 }
