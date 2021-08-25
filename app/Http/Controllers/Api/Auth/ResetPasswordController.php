@@ -66,9 +66,9 @@ class ResetPasswordController extends MasterController
             $passwordResetObject->update(['verified' => Carbon::now()]);
             $user->update(['password' => $request['password']]);
         });
-        if (request()->header('userType')=='USER'){
+        if (request()->input('user_type')=='USER'){
             return $this->sendResponse(new UserLoginResourse($user));
-        }elseif (request()->header('userType')=='PROVIDER'){
+        }elseif (request()->input('user_type')=='PROVIDER'){
             return $this->sendResponse(new ProviderLoginResourse($user));
         }else{
             return $this->sendResponse(new DeliveryLoginResourse($user));
