@@ -19,7 +19,6 @@ class RegisterController extends MasterController
     public function register(UserRegisterationRequest $request): object
     {
         $data = $request->validated();
-
         $user=User::where('phone',$request['phone'])->first();
         if (!$user)
         {
@@ -29,24 +28,24 @@ class RegisterController extends MasterController
         $this->createPhoneVerificationCodeForUser($user);
         $data['user_id'] = $user->id;
         $data['district_id'] = $this->getDistrictId($request['district']);
-        $data['type'] = request()->header('user_type');
+        $data['type'] = request()->input('user_type');
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];
-        if (request()->header('user_type') == 'USER') {
+        if (request()->input('user_type') == 'USER') {
             NormalUser::create($data);
-        } elseif (request()->header('user_type') == 'PROVIDER' || request()->header('user_type') == 'FAMILY') {
+        } elseif (request()->input('user_type') == 'PROVIDER' || request()->input('user_type') == 'FAMILY') {
             Provider::create($data);
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
+                $this->updateBankData($request->validated(), $user, request()->input('user_type'));
             }
             $user->update($request->validated());
-        } elseif (request()->header('user_type') == 'DELIVERY') {
+        } elseif (request()->input('user_type') == 'DELIVERY') {
             Delivery::create($data);
             if ($request['car']) {
                 $this->updateCarData($request->validated(), $user);
             }
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
+                $this->updateBankData($request->validated(), $user, request()->input('user_type'));
             }
             $user->update($request->validated());
         } else {

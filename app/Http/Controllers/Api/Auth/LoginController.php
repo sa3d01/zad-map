@@ -18,14 +18,14 @@ class LoginController extends MasterController
         if (!$user) {
             return $this->sendError('هذا الحساب غير موجود.');
         }
-        if (request()->header('user_type')=='USER'){
+        if (request()->input('user_type')=='USER'){
             if (!$user->normal_user) {
                 return $this->sendError('هذا الحساب غير موجود.');
             }
             if ($user->normal_user->banned==1){
                 return $this->sendError('تم حظرك من قبل إدارة التطبيق ..');
             }
-        }elseif (request()->header('user_type')=='DELIVERY'){
+        }elseif (request()->input('user_type')=='DELIVERY'){
             if (!$user->delivery) {
                 return $this->sendError('هذا الحساب غير موجود.');
             }
@@ -44,9 +44,9 @@ class LoginController extends MasterController
             return $this->sendError('هذا الحساب غير مفعل.',['phone_verified'=>false]);
         }
         if (auth('api')->attempt($credentials)) {
-            if (request()->header('user_type')=='PROVIDER' || request()->header('user_type')=='FAMILY'){
+            if (request()->input('user_type')=='PROVIDER' || request()->input('user_type')=='FAMILY'){
                 return $this->sendResponse(new ProviderLoginResourse($user));
-            }elseif (request()->header('user_type')=='DELIVERY'){
+            }elseif (request()->input('user_type')=='DELIVERY'){
                 return $this->sendResponse(new DeliveryLoginResourse($user));
             }else{
                 return $this->sendResponse(new UserLoginResourse($user));
@@ -59,11 +59,11 @@ class LoginController extends MasterController
     {
         $user = auth('api')->user();
 
-        if (request()->header('user_type')=='PROVIDER' || request()->header('user_type')=='FAMILY'){
+        if (request()->input('user_type')=='PROVIDER' || request()->input('user_type')=='FAMILY'){
             $user->provider->update([
                 'devices'=>null
             ]);
-        }elseif (request()->header('user_type')=='DELIVERY'){
+        }elseif (request()->input('user_type')=='DELIVERY'){
             $user->delivery->update([
                 'devices'=>null
             ]);
