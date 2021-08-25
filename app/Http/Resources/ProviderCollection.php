@@ -22,6 +22,7 @@ class ProviderCollection extends ResourceCollection
             $arr['name'] = $obj->name;
             $arr['location'] = $obj->location;
             $arr['image'] = $obj->image;
+            $arr['online'] = $obj->online;
             $data[] = $arr;
         }
         return $data;

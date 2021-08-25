@@ -47,7 +47,7 @@ class SettingController extends MasterController
             return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         }
         $user->update($data);
-        return $this->sendResponse(new UserLoginResourse($user));
+        return $this->sendResponse(new UserLoginResourse($user),'تم التعديل بنجاح');
     }
 
     public function updatePassword(PasswordUpdateRequest $request): object
