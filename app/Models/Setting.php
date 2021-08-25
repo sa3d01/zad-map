@@ -15,6 +15,7 @@ class Setting extends Model
         'verify_period',
         'app_tax',
         'km_delivery_price',
+        'slider_title',
     ];
     protected $casts = [
         'socials' => 'json',

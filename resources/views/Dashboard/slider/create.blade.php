@@ -23,10 +23,10 @@
                         <form method="POST" action="{{route('admin.slider.store')}}" enctype="multipart/form-data" data-parsley-validate novalidate>
                             @csrf
                             @method('POST')
-                            <div class="form-group">
-                                <label for="title">العنوان*</label>
-                                <input type="text" name="title" required class="form-control" id="title">
-                            </div>
+{{--                            <div class="form-group">--}}
+{{--                                <label for="title">العنوان*</label>--}}
+{{--                                <input type="text" name="title" required class="form-control" id="title">--}}
+{{--                            </div>--}}
                             <div class="form-group">
                                 <label for="link">الرابط</label>
                                 <input type="url" name="link" required class="form-control" id="link">

@@ -18,7 +18,7 @@ class AddToSettingsTable extends Migration
             $table->string('email')->nullable();
             $table->json('socials')->nullable();
             $table->integer('km_delivery_price')->default(1);
-//            $table->string('km_delivery_price')->nullable();
+            $table->string('slider_title')->nullable();
         });
     }
 

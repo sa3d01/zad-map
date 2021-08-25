@@ -45,6 +45,10 @@
                                 <input type="number" min="0" name="km_delivery_price" required class="form-control" id="km_delivery_price" value="{{$setting->km_delivery_price}}">
                             </div>
                             <div class="form-group">
+                                <label for="slider_title">عنوان الاعلانات*</label>
+                                <input type="text" name="slider_title" required class="form-control" id="slider_title" value="{{$setting->slider_title}}">
+                            </div>
+                            <div class="form-group">
                                 <label for="snap">رابط سناب شات*</label>
                                 <input type="url" name="socials[snap]" required class="form-control" id="snap" value="{{$setting->socials['snap']}}">
                             </div>

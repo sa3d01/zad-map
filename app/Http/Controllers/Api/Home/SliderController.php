@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Home;
 
 use App\Http\Controllers\Api\MasterController;
+use App\Models\Setting;
 use App\Models\Slider;
 use Carbon\Carbon;
 
@@ -16,6 +17,7 @@ class SliderController extends MasterController
         parent::__construct();
     }
     public function index(){
+        $settings=Setting::first();
         $data=Slider::all()->filter(function($slider) {
             $start_date=Carbon::createFromTimestamp($slider->start_date);
             $end_date=Carbon::createFromTimestamp($slider->end_date);
@@ -26,7 +28,7 @@ class SliderController extends MasterController
         $results=[];
         foreach ($data as $datum){
             $result['id']=$datum->id;
-            $result['title']=$datum->title;
+            $result['title']=$settings->slider_title??"";
 //            $result['note']=$datum->note;
             $result['link']=$datum->link??"";
             $result['image']=$datum->image;
