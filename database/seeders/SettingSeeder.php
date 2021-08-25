@@ -46,6 +46,10 @@ class SettingSeeder extends Seeder
             'note'=>'نص عن عمولة التطبيق',
         ]);
         Setting::create([
+            'verify_period'=>1,
+            'app_tax'=>40,
+            'km_delivery_price'=>2,
+            'slider_title'=>'لإعلاناتكم هنا تواصل معنا',
             'mobile'=>'+9665xxxxxxxx',
             'email'=>'info@zad-map.com',
             'socials'=>[

@@ -6,11 +6,15 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Auth\PasswordUpdateRequest;
 use App\Http\Requests\Api\Auth\ProfileUpdateRequest;
 use App\Http\Requests\Api\UploadImageRequest;
+use App\Http\Resources\DeliveryLoginResourse;
 use App\Http\Resources\ProviderLoginResourse;
 use App\Http\Resources\UserLoginResourse;
 use App\Models\Bank;
 use App\Models\Car;
+use App\Models\Delivery;
 use App\Models\DropDown;
+use App\Models\NormalUser;
+use App\Models\Provider;
 use App\Traits\UserBanksAndCarsTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Hash;
@@ -35,19 +39,33 @@ class SettingController extends MasterController
         $user = auth('api')->user();
         $data=$request->validated();
         $data['district_id'] = $this->getDistrictId($request['district']);
+        $data['user_id'] = $user->id;
         $data['last_ip'] = $request->ip();
-        if ($user['type']!='USER'){
+        $data['devices'] = $request['device.id'];
+        if (request()->header('user_type') == 'USER') {
+            $user->normal_user->update($data);
+            return $this->sendResponse(new UserLoginResourse($user),'تم التعديل بنجاح :)');
+        } elseif (request()->header('user_type') == 'PROVIDER' || request()->header('user_type') == 'FAMILY') {
+            if ($request['banks']) {
+                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
+            }
             if ($request['car']){
                 $this->updateCarData($request->validated(),$user);
             }
-            if ($request['banks']){
-                $this->updateBankData($request->validated(),$user);
-            }
-            $user->update($data);
+            $user->provider->update($data);
             return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
+        } elseif (request()->header('user_type') == 'DELIVERY') {
+            if ($request['banks']) {
+                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
+            }
+            if ($request['car']){
+                $this->updateCarData($request->validated(),$user);
+            }
+            $user->delivery->update($data);
+            return $this->sendResponse(new DeliveryLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
+        } else {
+            return $this->sendError('تأكد من اختيار نوع المستخدم');
         }
-        $user->update($data);
-        return $this->sendResponse(new UserLoginResourse($user),'تم التعديل بنجاح');
     }
 
     public function updatePassword(PasswordUpdateRequest $request): object
@@ -57,10 +75,12 @@ class SettingController extends MasterController
             $user->update([
                 'password' => $request['new_password'],
             ]);
-            if ($user['type']!='USER'){
+            if (request()->header('user_type')=='USER'){
+                return $this->sendResponse(new UserLoginResourse($user));
+            }elseif (request()->header('user_type')=='PROVIDER'){
                 return $this->sendResponse(new ProviderLoginResourse($user));
             }else{
-                return $this->sendResponse(new UserLoginResourse($user));
+                return $this->sendResponse(new DeliveryLoginResourse($user));
             }
         }
         return $this->sendError('كلمة المرور غير صحيحة.');
@@ -69,26 +89,52 @@ class SettingController extends MasterController
     public function updateOnlineStatus(): object
     {
         $user = auth('api')->user();
-        if ($user['online']==1){
-            $user->update([
-                'online' => 0,
-            ]);
+        if (request()->header('user_type')=='PROVIDER'){
+            if ($user->provider->online==1){
+                $user->provider->update([
+                    'online' => 0,
+                ]);
+            }else{
+                $user->provider->update([
+                    'online' => 1,
+                ]);
+            }
+            return $this->sendResponse(new ProviderLoginResourse($user));
         }else{
-            $user->update([
-                'online' => 1,
-            ]);
+            if ($user->delivery->online==1){
+                $user->delivery->update([
+                    'online' => 0,
+                ]);
+            }else{
+                $user->delivery->update([
+                    'online' => 1,
+                ]);
+            }
+            return $this->sendResponse(new DeliveryLoginResourse($user));
         }
-        return $this->sendResponse(new ProviderLoginResourse($user));
     }
 
     public function uploadImage(UploadImageRequest $request):object
     {
         if ($request['type']=='avatar'){
             $user = auth('api')->user();
-            $user->update([
-                'image'=>$request->file('image')
-            ]);
-            $image=$user->image;
+            if (request()->header('user_type')=='PROVIDER'){
+                $user->provider->update([
+                    'image'=>$request->file('image')
+                ]);
+                $image=$user->provider->image;
+            }elseif (request()->header('user_type')=='DELIVERY'){
+                $user->delivery->update([
+                    'image'=>$request->file('image')
+                ]);
+                $image=$user->delivery->image;
+            }else{
+                $user->normal_user->update([
+                    'image'=>$request->file('image')
+                ]);
+                $image=$user->normal_user->image;
+            }
+
         }elseif ($request['type']=='transfer') {
             $file=$request->file('image');
             $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();

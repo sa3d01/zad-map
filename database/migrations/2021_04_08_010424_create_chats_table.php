@@ -18,7 +18,9 @@ class CreateChatsTable extends Migration
             $table->integer('room')->nullable();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('sender_id')->nullable();
+            $table->string('sender_type')->nullable();
             $table->unsignedBigInteger('receiver_id')->nullable();
+            $table->string('receiver_type')->nullable();
             $table->text('message')->nullable();
             $table->boolean('read')->default(false);
             $table->timestamps();

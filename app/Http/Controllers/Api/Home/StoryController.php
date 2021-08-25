@@ -24,17 +24,44 @@ class StoryController extends MasterController
         foreach ($users_stories as $user_id=>$stories_of_user){
             $user=User::find($user_id);
             if (auth('api')->check()){
-                if (auth('api')->user()->city_id != $user->city_id){
-                    continue;
+                if (request()->header('user_type')=='USER'){
+                    if (auth('api')->user()->normal_user->city_id != $user->normal_user->city_id){
+                        continue;
+                    }
+                }elseif (request()->header('user_type')=='DELIVERY'){
+                    if (auth('api')->user()->delivery->city_id != $user->delivery->city_id){
+                        continue;
+                    }
+                }else{
+                    if (auth('api')->user()->provider->city_id != $user->provider->city_id){
+                        continue;
+                    }
                 }
             }else{
                 continue;
             }
-            $arr['user']=[
-                'id'=>$user_id,
-                'name'=>$user->name,
-                'image'=>$user->image,
-            ];
+
+
+            if (request()->header('user_type')=='USER'){
+                $arr['user']=[
+                    'id'=>$user_id,
+                    'name'=>$user->normal_user->name,
+                    'image'=>$user->normal_user->image,
+                ];
+            }elseif (request()->header('user_type')=='DELIVERY'){
+                $arr['user']=[
+                    'id'=>$user_id,
+                    'name'=>$user->delivery->name,
+                    'image'=>$user->delivery->image,
+                ];
+            }else{
+                $arr['user']=[
+                    'id'=>$user_id,
+                    'name'=>$user->provider->name,
+                    'image'=>$user->provider->image,
+                ];
+            }
+
             $stories_data=$stories_of_user->filter(function($story) {
                 $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
                 $endTime=Carbon::parse($story->approved_at)->addDays($story->storyPeriod->story_period)->format('Y-M-d');

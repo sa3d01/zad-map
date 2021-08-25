@@ -21,12 +21,12 @@ class DistrictSeeder extends Seeder
         ]);
         DropDown::create([
             'class'=>'District',
-            'name'=>'البحر',
+            'name'=>'الريان',
             'parent_id'=>2,
         ]);
         DropDown::create([
             'class'=>'District',
-            'name'=>'الكفار',
+            'name'=>'المريكبات',
             'parent_id'=>3,
         ]);
     }

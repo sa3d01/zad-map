@@ -18,11 +18,11 @@ class ProviderCollection extends ResourceCollection
         foreach ($this as $obj) {
             $arr['id'] = (int)$obj->id;
             $arr['rating'] = (double)$obj->averageRate();
-            $arr['type'] = $obj->type;
-            $arr['name'] = $obj->name;
-            $arr['location'] = $obj->location;
-            $arr['image'] = $obj->image;
-            $arr['online'] = $obj->online;
+            $arr['type'] = $obj->provider->type;
+            $arr['name'] = $obj->provider->name;
+            $arr['location'] = $obj->provider->location;
+            $arr['image'] = $obj->provider->image;
+            $arr['online'] = $obj->provider->online;
             $data[] = $arr;
         }
         return $data;

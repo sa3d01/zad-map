@@ -10,6 +10,7 @@ trait UserPasswordResetTrait
     protected function createPasswordResetCodeForUser($user)
     {
         $data = [
+            'user_type' => request()->header('user_type'),
             'phone' => $user->phone,
             'token' => 2021,//rand(1111, 9999),
             'expires_at' => Carbon::now()->addMinutes(10),

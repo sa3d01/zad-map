@@ -35,7 +35,7 @@ class ChatController extends MasterController
     }
     public function getConversations()
     {
-        $chat_ids = Chat::where('sender_id', auth('api')->id())->orWhere('receiver_id', auth('api')->id())->pluck('room')->unique();
+        $chat_ids = Chat::where(['sender_id'=> auth('api')->id(),'sender_type'=>request()->header('user_type')])->orWhere(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('user_type')])->pluck('room')->unique();
         $all_chats = Chat::whereIn('room', $chat_ids)->latest()->get();
         $rooms=[];
         $unique_chat_ids=[];
@@ -65,11 +65,21 @@ class ChatController extends MasterController
     {
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
+        $data['sender_type'] = request()->header('user_type');
         $sender=auth('api')->user();
         $receiver=User::find($request['receiver_id']);
+
+        if ($receiver->normal_user){
+            $data['receiver_type']='USER';
+        }elseif ($receiver->delivery){
+            $data['receiver_type']='DELIVERY';
+        }else{
+            $data['receiver_type']=$receiver->provider->type;
+        }
+
         if ($request['order_id']){
             $order=Order::find($request['order_id']);
-            if ($sender->type=='PROVIDER' || $receiver->type=='PROVIDER'){
+            if ($data['sender_type']=='PROVIDER' || $data['receiver_type']=='PROVIDER'){
                 $data['room']=$request['order_id'].$order->provider_id;
             }else{
                 $data['room']=$request['order_id'].$order->delivery_id;
@@ -84,7 +94,14 @@ class ChatController extends MasterController
             $data['room']=$pre_msg->room;
         }
         $message = Chat::create($data);
-        $this->notify_receiver($message->receiver,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->name, $message);
+
+        if ($receiver->normal_user){
+            $this->notify_receiver($message->receiver->normal_user,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->normal_user->name, $message);
+        }elseif ($receiver->delivery){
+            $this->notify_receiver($message->receiver->delivery,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->delivery->name, $message);
+        }else{
+            $this->notify_receiver($message->receiver->provider,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->provider->name, $message);
+        }
         $messages = Chat::where('room', $message->room)->latest()->get();
         return $this->sendResponse(MessageResource::collection($messages));
     }
@@ -101,16 +118,46 @@ class ChatController extends MasterController
             }
             $arr['id'] = (int)$message->id;
             $arr['message'] = $message->message;
-            $arr['sender'] =[
-                'id'=>$message->sender_id,
-                'name'=>$message->sender->name,
-                'image'=>$message->sender->image,
-            ];
-            $arr['receiver'] =[
-                'id'=>$message->receiver_id,
-                'name'=>$message->receiver->name,
-                'image'=>$message->receiver->image,
-            ];
+
+            if ($message->sender->normal_user){
+                $arr['sender'] =[
+                    'id'=>$message->sender_id,
+                    'name'=>$message->sender->normal_user->name,
+                    'image'=>$message->sender->normal_user->image,
+                ];
+            }elseif ($message->sender->delivery){
+                $arr['sender'] =[
+                    'id'=>$message->sender_id,
+                    'name'=>$message->sender->delivery->name,
+                    'image'=>$message->sender->delivery->image,
+                ];
+            }else{
+                $arr['sender'] =[
+                    'id'=>$message->sender_id,
+                    'name'=>$message->sender->provider->name,
+                    'image'=>$message->sender->provider->image,
+                ];
+            }
+
+            if ($message->receiver->normal_user){
+                $arr['receiver'] =[
+                    'id'=>$message->receiver_id,
+                    'name'=>$message->receiver->normal_user->name,
+                    'image'=>$message->receiver->normal_user->image,
+                ];
+            }elseif ($message->receiver->delivery){
+                $arr['receiver'] =[
+                    'id'=>$message->receiver_id,
+                    'name'=>$message->receiver->delivery->name,
+                    'image'=>$message->receiver->delivery->image,
+                ];
+            }else{
+                $arr['receiver'] =[
+                    'id'=>$message->receiver_id,
+                    'name'=>$message->receiver->provider->name,
+                    'image'=>$message->receiver->provider->image,
+                ];
+            }
             $arr['by_me'] = $message->sender_id==auth('api')->id();
             $arr['send_from'] = Carbon::parse($message->created_at)->diffForHumans();
             $data['chats'][] = $arr;
@@ -135,7 +182,7 @@ class ChatController extends MasterController
             'priority' => 'high',
         ];
         $push->setMessage($msg)
-            ->setDevicesToken($user->device['id'])
+            ->setDevicesToken($user->devices)
             ->send();
     }
 }

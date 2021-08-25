@@ -35,8 +35,6 @@ class UserSeeder extends Seeder
             'email' => 'admin@admin.com',
             'phone' => '0500000000',
             'password' => "secret",
-            'approved' => 1,
-            'approved_at' => Carbon::now(),
             'remember_token' => Str::random(10),
         ]);
         $user->assignRole(UserRole::of(UserRole::ROLE_SUPER_ADMIN));

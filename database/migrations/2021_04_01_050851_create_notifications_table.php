@@ -16,6 +16,7 @@ class CreateNotificationsTable extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('receiver_id')->nullable();
+            $table->string('receiver_type')->nullable();
             $table->foreignId('order_id')->nullable();
             $table->string('title')->nullable();
             $table->string('note')->nullable();

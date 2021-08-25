@@ -19,8 +19,6 @@ class SliderSeeder extends Seeder
             Slider::create([
                 'start_date'=>Carbon::now()->timestamp,
                 'end_date'=>Carbon::now()->addDays(7)->timestamp,
-                'title'=>'عنوان',
-                'note'=>'تفاصيل',
                 'image'=>'default.png',
             ]);
         }

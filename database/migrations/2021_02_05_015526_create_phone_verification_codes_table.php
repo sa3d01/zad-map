@@ -16,6 +16,7 @@ class CreatePhoneVerificationCodesTable extends Migration
         Schema::create('phone_verification_codes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable();
+            $table->string('user_type')->nullable();
             $table->string('phone');
             $table->string('code');
             $table->string('expires_at')->nullable();

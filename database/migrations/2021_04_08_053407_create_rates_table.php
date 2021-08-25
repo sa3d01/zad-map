@@ -18,6 +18,7 @@ class CreateRatesTable extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('rated_id')->nullable();
+            $table->enum('rated_type',['delivery','provider'])->nullable();
             $table->integer('rate')->nullable();
             $table->string('feedback')->nullable();
             $table->timestamps();

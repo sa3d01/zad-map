@@ -26,6 +26,7 @@ class VerifyPhoneRequest extends ApiMasterRequest
         return [
             'phone' => 'required|string|max:90|exists:users',
             'code' => 'required|numeric|max:9999',
+            'type' => 'nullable',
         ];
     }
 }

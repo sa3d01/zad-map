@@ -35,11 +35,11 @@ class OrderResourse extends JsonResource
             $delivery_model=User::find($this['delivery_id']);
             $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
             $delivery['id']=$delivery_model->id;
-            $delivery['name']=$delivery_model->name;
-            $delivery['image']=$delivery_model->image;
-            $delivery['location']=$delivery_model->location;
-            $delivery['city']=$this->getCityData($delivery_model);
-            $delivery['district']=$this->getDistrictData($delivery_model);
+            $delivery['name']=$delivery_model->delivery->name;
+            $delivery['image']=$delivery_model->delivery->image;
+            $delivery['location']=$delivery_model->delivery->location;
+            $delivery['city']=$this->getCityData($delivery_model->delivery);
+            $delivery['district']=$this->getDistrictData($delivery_model->delivery);
             $delivery['phone']=$delivery_model->phone;
             $delivery['rating']=(double)$delivery_model->averageRate();
             $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->id);
@@ -48,7 +48,7 @@ class OrderResourse extends JsonResource
         {
             $delivery_price=0;
         }else{
-            $delivery_price=$this->orderItems->first()->cartItem->product->user->delivery_price;
+            $delivery_price=$this->orderItems->first()->cartItem->product->user->provider->delivery_price;
         }
         $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
         $delivery_payment_model['type']=$delivery_payment->type??"";
@@ -83,7 +83,7 @@ class OrderResourse extends JsonResource
         $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
         $can_confirm=false;
 
-        if (auth('api')->user()->type=='USER')
+        if (request()->header('user_type')=='USER')
         {
             if ($this['delivery_id']!=null){
                 if ($this['status']=='delivered_to_delivery'){
@@ -94,7 +94,7 @@ class OrderResourse extends JsonResource
                     $can_confirm=true;
                 }
             }
-        }elseif (auth('api')->user()->type=='DELIVERY')
+        }elseif (request()->header('user_type')=='DELIVERY')
         {
             if ($this['status']=='in_progress'){
                 $can_confirm=true;
@@ -104,20 +104,20 @@ class OrderResourse extends JsonResource
             'id' => (int)$this['id'],
             'user' => [
                 'id' => $this['user_id'],
-                'name' => $this->user->name,
-                'image' => $this->user->image,
+                'name' => $this->user->normal_user->name,
+                'image' => $this->user->normal_user->image,
                 'phone' => $this->user->phone,
-                'location' => $this->user->location,
-                'city'=>$this->getCityData($this->user),
-                'district'=>$this->getDistrictData($this->user)
+                'location' => $this->user->normal_user->location,
+                'city'=>$this->getCityData($this->user->normal_user),
+                'district'=>$this->getDistrictData($this->user->normal_user)
             ],
             'provider' => [
                 'id' => $this['provider_id'],
-                'name' => $this->provider->name,
-                'image' => $this->provider->image,
-                'location' => $this->provider->location,
-                'city'=>$this->getCityData($this->provider),
-                'district'=>$this->getDistrictData($this->provider),
+                'name' => $this->provider->provider->name,
+                'image' => $this->provider->provider->image,
+                'location' => $this->provider->provider->location,
+                'city'=>$this->getCityData($this->provider->provider),
+                'district'=>$this->getDistrictData($this->provider->provider),
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
                 'room' => $provider_chat?$provider_chat->room:(int)($this['id'].$this['provider_id']),

@@ -7,6 +7,7 @@ use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProviderCollection;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Provider;
 use App\Models\User;
 
 class CategoryController extends MasterController
@@ -56,7 +57,7 @@ class CategoryController extends MasterController
     {
         $category=Category::find($category_id);
         $provider_ids=$category->products->pluck('user_id');
-        $providers_q=User::whereIn('id',$provider_ids);
+        $providers_q=Provider::whereIn('user_id',$provider_ids);
         $providers_q=$providers_q->where(['approved'=>1,'banned'=>0]);
         if (request()->has('name')){
             $providers_q->where('name',request()->input('name'));
@@ -73,19 +74,17 @@ class CategoryController extends MasterController
                 $distance=$this->distance(request()->input('lat'), request()->input('lng'), $provider_lat, $provider_lng, "K");
                 if ($distance<15)
                 {
-                    $providers_arr[]=$provider->id;
+                    $providers_arr[]=$provider->user_id;
                 }
             }
             $providers=User::whereIn('id',$providers_arr)->get();
         }
-
-
         return $this->sendResponse(new ProviderCollection($providers));
     }
     public function products($category_id,$provider_id):object
     {
         $provider=User::find($provider_id);
-        $category=User::find($category_id);
+        $category=Category::find($category_id);
         if (!$provider || !$category){
             return $this->sendError('توجد مشكلة بالبيانات');
         }

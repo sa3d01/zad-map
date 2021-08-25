@@ -20,5 +20,8 @@ class ContactTypeSeeder extends Seeder
         ContactType::create([
            'name'=>'اقتراح'
         ]);
+        ContactType::create([
+           'name'=>'طلب إضافة إعلان'
+        ]);
     }
 }

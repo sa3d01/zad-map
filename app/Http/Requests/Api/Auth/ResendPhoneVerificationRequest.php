@@ -25,6 +25,7 @@ class ResendPhoneVerificationRequest extends ApiMasterRequest
     {
         return [
             'phone' => 'required|string|max:90|exists:users',
+            'type' => 'nullable',
         ];
     }
 

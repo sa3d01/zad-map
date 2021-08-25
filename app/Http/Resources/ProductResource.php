@@ -46,7 +46,7 @@ class ProductResource extends JsonResource
             ],
             'provider'=>[
                 'id'=>$this->user_id,
-                'name'=>$this->user->name,
+                'name'=>$this->user->provider->name,
             ],
             'images'=>$this->images,
             'price'=> (double)$this->price,

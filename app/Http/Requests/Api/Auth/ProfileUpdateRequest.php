@@ -24,6 +24,7 @@ class ProfileUpdateRequest extends ApiMasterRequest
     public function rules()
     {
         return [
+            'type' => 'nullable|string|max:110',
             'name' => 'nullable|string|max:110',
             'phone' => 'nullable|string|max:90|unique:users,phone,' . \request()->user()->id,
             'email' => 'nullable|email:rfc,dns|max:90|unique:users,email,' . \request()->user()->id,

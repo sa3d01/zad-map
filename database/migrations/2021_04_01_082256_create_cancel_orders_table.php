@@ -16,6 +16,7 @@ class CreateCancelOrdersTable extends Migration
         Schema::create('cancel_orders', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_type')->nullable();
             $table->unsignedBigInteger('order_id')->nullable();
             $table->text('reason')->nullable();
             $table->timestamps();

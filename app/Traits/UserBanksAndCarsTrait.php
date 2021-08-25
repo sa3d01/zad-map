@@ -30,7 +30,7 @@ trait UserBanksAndCarsTrait
         ]);
     }
 
-    protected function updateBankData($request,$user)
+    protected function updateBankData($request,$user,$user_type)
     {
         $banks=$user->banks();
         foreach ($banks as $bank){
@@ -39,6 +39,7 @@ trait UserBanksAndCarsTrait
         foreach ($request['banks'] as $bank) {
             $bank=Bank::create([
                 'user_id' =>$user->id,
+                'user_type' =>$user_type,
                 'name' => $bank['name'],
                 'account_number' => $bank['account_number'],
                 'account_name' => $bank['account_name'],

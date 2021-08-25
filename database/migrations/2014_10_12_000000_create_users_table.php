@@ -21,24 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('phone')->unique()->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->json('location')->nullable();
-            $table->foreignId('city_id')->nullable();
-            $table->foreignId('district_id')->nullable();
+
             $table->string('image')->nullable();
-            $table->boolean('banned')->nullable()->default(false);
-            $table->boolean('online')->nullable()->default(true);
-            //provider-delivery
-            $table->boolean('has_delivery')->nullable()->default(false);
-            $table->double('delivery_price')->default(0);
-            //for provider
-            $table->boolean('approved')->nullable()->default(false);
-            $table->string('reject_reason')->nullable();
-            $table->timestamp('approved_at')->nullable();
-            $table->string('marketer_id')->nullable();
-            //id and os
-            $table->json('device')->nullable();
-            $table->string('last_ip')->nullable();
-            $table->timestamp('last_login_at')->nullable();
+
+
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
