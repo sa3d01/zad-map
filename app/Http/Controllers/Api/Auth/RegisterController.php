@@ -32,14 +32,26 @@ class RegisterController extends MasterController
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];
         if (request()->header('userType') == 'USER') {
+            $normalUser=NormalUser::where('user_id',$user->id)->first();
+            if ($normalUser){
+                return $this->sendError('هذا الحساب موجود بالفعل');
+            }
             NormalUser::create($data);
         } elseif (request()->header('userType') == 'PROVIDER' || request()->header('userType') == 'FAMILY') {
+            $normalUser=Provider::where('user_id',$user->id)->first();
+            if ($normalUser){
+                return $this->sendError('هذا الحساب موجود بالفعل');
+            }
             Provider::create($data);
             if ($request['banks']) {
                 $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             $user->update($request->validated());
         } elseif (request()->header('userType') == 'DELIVERY') {
+            $normalUser=Delivery::where('user_id',$user->id)->first();
+            if ($normalUser){
+                return $this->sendError('هذا الحساب موجود بالفعل');
+            }
             Delivery::create($data);
             if ($request['car']) {
                 $this->updateCarData($request->validated(), $user);
