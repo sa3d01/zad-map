@@ -24,23 +24,24 @@ class RegisterController extends MasterController
         $user->refresh();
         $this->createPhoneVerificationCodeForUser($user);
         $data['user_id'] = $user->id;
+        $data['type'] = request()->header('user_type');
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];
-        if ($request['type'] == 'USER') {
+        if (request()->header('user_type') == 'USER') {
             NormalUser::create($data);
-        } elseif ($request['type'] == 'PROVIDER' || $request['type'] == 'FAMILY') {
+        } elseif (request()->header('user_type') == 'PROVIDER' || request()->header('user_type') == 'FAMILY') {
             Provider::create($data);
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, $request['type']);
+                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
             }
             $user->update($request->validated());
-        } elseif ($request['type'] == 'DELIVERY') {
+        } elseif (request()->header('user_type') == 'DELIVERY') {
             Delivery::create($data);
             if ($request['car']) {
                 $this->updateCarData($request->validated(), $user);
             }
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, $request['type']);
+                $this->updateBankData($request->validated(), $user, request()->header('user_type'));
             }
             $user->update($request->validated());
         } else {
