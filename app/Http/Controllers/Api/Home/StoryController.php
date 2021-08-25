@@ -24,11 +24,11 @@ class StoryController extends MasterController
         foreach ($users_stories as $user_id=>$stories_of_user){
             $user=User::find($user_id);
             if (auth('api')->check()){
-                if (request()->input('user_type')=='USER'){
+                if (request()->header('userType')=='USER'){
                     if (auth('api')->user()->normal_user->city_id != $user->normal_user->city_id){
                         continue;
                     }
-                }elseif (request()->input('user_type')=='DELIVERY'){
+                }elseif (request()->header('userType')=='DELIVERY'){
                     if (auth('api')->user()->delivery->city_id != $user->delivery->city_id){
                         continue;
                     }
@@ -42,13 +42,13 @@ class StoryController extends MasterController
             }
 
 
-            if (request()->input('user_type')=='USER'){
+            if (request()->header('userType')=='USER'){
                 $arr['user']=[
                     'id'=>$user_id,
                     'name'=>$user->normal_user->name,
                     'image'=>$user->normal_user->image,
                 ];
-            }elseif (request()->input('user_type')=='DELIVERY'){
+            }elseif (request()->header('userType')=='DELIVERY'){
                 $arr['user']=[
                     'id'=>$user_id,
                     'name'=>$user->delivery->name,

@@ -42,21 +42,21 @@ class SettingController extends MasterController
         $data['user_id'] = $user->id;
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];
-        if (request()->input('user_type') == 'USER') {
+        if (request()->header('userType') == 'USER') {
             $user->normal_user->update($data);
             return $this->sendResponse(new UserLoginResourse($user),'تم التعديل بنجاح :)');
-        } elseif (request()->input('user_type') == 'PROVIDER' || request()->input('user_type') == 'FAMILY') {
+        } elseif (request()->header('userType') == 'PROVIDER' || request()->header('userType') == 'FAMILY') {
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->input('user_type'));
+                $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             if ($request['car']){
                 $this->updateCarData($request->validated(),$user);
             }
             $user->provider->update($data);
             return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
-        } elseif (request()->input('user_type') == 'DELIVERY') {
+        } elseif (request()->header('userType') == 'DELIVERY') {
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->input('user_type'));
+                $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             if ($request['car']){
                 $this->updateCarData($request->validated(),$user);
@@ -75,9 +75,9 @@ class SettingController extends MasterController
             $user->update([
                 'password' => $request['new_password'],
             ]);
-            if (request()->input('user_type')=='USER'){
+            if (request()->header('userType')=='USER'){
                 return $this->sendResponse(new UserLoginResourse($user));
-            }elseif (request()->input('user_type')=='PROVIDER'){
+            }elseif (request()->header('userType')=='PROVIDER'){
                 return $this->sendResponse(new ProviderLoginResourse($user));
             }else{
                 return $this->sendResponse(new DeliveryLoginResourse($user));
@@ -89,7 +89,7 @@ class SettingController extends MasterController
     public function updateOnlineStatus(): object
     {
         $user = auth('api')->user();
-        if (request()->input('user_type')=='PROVIDER'){
+        if (request()->header('userType')=='PROVIDER'){
             if ($user->provider->online==1){
                 $user->provider->update([
                     'online' => 0,
@@ -118,12 +118,12 @@ class SettingController extends MasterController
     {
         if ($request['type']=='avatar'){
             $user = auth('api')->user();
-            if (request()->input('user_type')=='PROVIDER'){
+            if (request()->header('userType')=='PROVIDER'){
                 $user->provider->update([
                     'image'=>$request->file('image')
                 ]);
                 $image=$user->provider->image;
-            }elseif (request()->input('user_type')=='DELIVERY'){
+            }elseif (request()->header('userType')=='DELIVERY'){
                 $user->delivery->update([
                     'image'=>$request->file('image')
                 ]);

@@ -83,7 +83,7 @@ class OrderResourse extends JsonResource
         $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
         $can_confirm=false;
 
-        if (request()->header('user_type')=='USER')
+        if (request()->header('userType')=='USER')
         {
             if ($this['delivery_id']!=null){
                 if ($this['status']=='delivered_to_delivery'){
@@ -94,7 +94,7 @@ class OrderResourse extends JsonResource
                     $can_confirm=true;
                 }
             }
-        }elseif (request()->header('user_type')=='DELIVERY')
+        }elseif (request()->header('userType')=='DELIVERY')
         {
             if ($this['status']=='in_progress'){
                 $can_confirm=true;

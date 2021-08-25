@@ -36,13 +36,13 @@ class OrderController extends MasterController
     {
         $user = auth('api')->user();
         $status_arr=[$status,'delivered_to_delivery'];
-        if (request()->input('user_type') == 'USER') {
+        if (request()->header('userType') == 'USER') {
             if ($status=='in_progress'){
                 $orders_q = Order::where('user_id' , auth('api')->id())->whereIn('status',$status_arr);
             }else{
                 $orders_q = Order::where(['user_id' => auth('api')->id(), 'status' => $status]);
             }
-        }elseif(request()->input('user_type') =='DELIVERY') {
+        }elseif(request()->header('userType') =='DELIVERY') {
             if ($status=='in_progress'){
                 $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
             }elseif ($status=='new'){

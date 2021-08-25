@@ -53,9 +53,9 @@ class VerifyController extends MasterController
             $user->update(['phone_verified_at' => $now]);
         });
 
-        if (request()->input('user_type')=='PROVIDER' || request()->input('user_type')=='FAMILY'){
+        if (request()->header('userType')=='PROVIDER' || request()->header('userType')=='FAMILY'){
             return $this->sendResponse(new ProviderLoginResourse($user));
-        }elseif (request()->input('user_type')=='DELIVERY'){
+        }elseif (request()->header('userType')=='DELIVERY'){
             return $this->sendResponse(new DeliveryLoginResourse($user));
         }else{
             return $this->sendResponse(new UserLoginResourse($user));
