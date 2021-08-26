@@ -119,20 +119,23 @@ class SettingController extends MasterController
         if ($request['type']=='avatar'){
             $user = auth('api')->user();
             if (request()->header('userType')=='PROVIDER'){
-                $user->provider->update([
+                $provider=Provider::where('user_id',$user->id)->first();
+                $provider->update([
                     'image'=>$request->file('image')
                 ]);
-                $image=$user->provider->image;
+                $image=$provider->image;
             }elseif (request()->header('userType')=='DELIVERY'){
-                $user->delivery->update([
+                $delivery=Delivery::where('user_id',$user->id)->first();
+                $delivery->update([
                     'image'=>$request->file('image')
                 ]);
-                $image=$user->delivery->image;
+                $image=$delivery->image;
             }else{
-                $user->normal_user->update([
+                $normal_user=NormalUser::where('user_id',$user->id)->first();
+                $normal_user->normal_user->update([
                     'image'=>$request->file('image')
                 ]);
-                $image=$user->normal_user->image;
+                $image=$normal_user->normal_user->image;
             }
 
         }elseif ($request['type']=='transfer') {
