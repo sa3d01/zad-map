@@ -37,7 +37,7 @@ class ProviderLoginResourse extends JsonResource
                 'online' => $provider->online,
                 'rating' => (double)$this->averageRate(),
                 'feedBacks' => $this->feedbacks(),
-                'type' => $request['type'],
+                'type' => $provider['type'],
                 'name' => $provider->name,
                 'phone' => $this->phone ?? "",
                 'city' => [
