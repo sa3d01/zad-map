@@ -16,6 +16,7 @@ class CreateWalletPaysTable extends Migration
         Schema::create('wallet_pays', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
+            $table->string('user_type')->nullable();
             $table->unsignedBigInteger('bank_id')->nullable();
             $table->integer('amount')->nullable();
             $table->string('type')->nullable();

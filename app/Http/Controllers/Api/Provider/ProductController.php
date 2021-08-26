@@ -53,11 +53,11 @@ class ProductController extends MasterController
         $category=Category::find($request['category_id']);
         $user_category_products=Product::where(['category_id'=>$request['category_id'],'user_id'=>auth('api')->id()])->count();
 
-
         $wallet=Wallet::where('user_id',auth('api')->id())->latest()->first();
         if (!$wallet){
             $wallet=Wallet::create([
                 'user_id'=>auth('api')->id(),
+                'user_type'=>\request()->header('userType'),
                 'profits'=>0,
                 'debtors'=>0
             ]);

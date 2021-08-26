@@ -12,7 +12,7 @@ class WalletPay extends Model
 
     private $route='wallet_pay';
     private $images_link='media/images/transfer/';
-    protected $fillable = ['user_id','amount','type','bank_id','image','status'];
+    protected $fillable = ['user_id','user_type','amount','type','bank_id','image','status'];
 
     public function user():object
     {

@@ -43,7 +43,7 @@ class DeliveryLoginResourse extends JsonResource
                 'online' => $delivery->online,
                 'rating' => (double)$this->averageRate(),
                 'feedBacks' => $this->feedbacks(),
-                'type' => $request['type'],
+                'type' => 'DELIVERY',
                 'name' => $delivery->name,
                 'phone' => $this->phone ?? "",
                 'city' => [
@@ -59,7 +59,7 @@ class DeliveryLoginResourse extends JsonResource
                 'has_delivery'=> 0,
                 'delivery_price'=> 0,
                 'car' => $car_model,
-                'banks' => new BankCollection($delivery->banks),
+                'banks' => new BankCollection($delivery->user->banks),
             ],
             "settings" => [
                 'approved' => $delivery->approved,
