@@ -19,11 +19,16 @@ class UserLoginResourse extends JsonResource
     {
         $normal_user=NormalUser::where('user_id',$this->id)->first();
         $token = auth('api')->login(User::find($this->id));
-        if ($normal_user->devices!=null){
-            $devices=array_merge((array)$request['device.id'],$normal_user->devices);
+
+        $devices[]=$request['device.id'];
+        if ($normal_user->devices!=null && is_array($normal_user->devices)){
+            $old_devices=$normal_user->devices;
+        }elseif ($normal_user->devices!=null){
+            $old_devices=$normal_user->devices;
         }else{
-            $devices[]=$request['device.id'];
+            $old_devices=[];
         }
+        $devices=array_merge($devices,$old_devices);
 
         $normal_user->update([
             'devices' => $devices,

@@ -23,11 +23,17 @@ class ProviderLoginResourse extends JsonResource
     {
         $provider=Provider::where('user_id',$this->id)->first();
         $token = auth('api')->login(User::find($this->id));
-        if ($provider->devices!=null){
-            $devices=array_merge((array)$request['device.id'],$provider->devices);
+
+        $devices[]=$request['device.id'];
+        if ($provider->devices!=null && is_array($provider->devices)){
+            $old_devices=$provider->devices;
+        }elseif ($provider->devices!=null){
+            $old_devices=$provider->devices;
         }else{
-            $devices[]=$request['device.id'];
+            $old_devices=[];
         }
+        $devices=array_merge($devices,$old_devices);
+
         $provider->update([
             'devices' => $devices,
             'last_login_at' => Carbon::now(),

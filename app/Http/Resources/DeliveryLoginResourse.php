@@ -29,11 +29,15 @@ class DeliveryLoginResourse extends JsonResource
         } else {
             $car_model = new CarResourse($car);
         }
-        if ($delivery->devices!=null){
-            $devices=array_merge((array)$request['device.id'],$delivery->devices);
+        $devices[]=$request['device.id'];
+        if ($delivery->devices!=null && is_array($delivery->devices)){
+            $old_devices=$delivery->devices;
+        }elseif ($delivery->devices!=null){
+            $old_devices=$delivery->devices;
         }else{
-            $devices[]=$request['device.id'];
+            $old_devices=[];
         }
+        $devices=array_merge($devices,$old_devices);
 
         $delivery->update([
             'devices' => $devices,
