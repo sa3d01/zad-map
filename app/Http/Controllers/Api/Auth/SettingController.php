@@ -132,12 +132,11 @@ class SettingController extends MasterController
                 $image=$delivery->image;
             }else{
                 $normal_user=NormalUser::where('user_id',$user->id)->first();
-                $normal_user->normal_user->update([
+                $normal_user->update([
                     'image'=>$request->file('image')
                 ]);
-                $image=$normal_user->normal_user->image;
+                $image=$normal_user->image;
             }
-
         }elseif ($request['type']=='transfer') {
             $file=$request->file('image');
             $filename = Str::random(10) . '.' . $file->getClientOriginalExtension();
