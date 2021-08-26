@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Delivery;
+use App\Models\Notification;
 use App\Models\User;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
@@ -9,7 +11,7 @@ use Illuminate\Http\Request;
 
 class DeliveryController extends MasterController
 {
-    public function __construct(User $model)
+    public function __construct(Delivery $model)
     {
         $this->model = $model;
 //        $this->middleware('permission:deliveries');
@@ -18,13 +20,13 @@ class DeliveryController extends MasterController
 
     public function index()
     {
-        $rows = $this->model->where('type', 'DELIVERY')->where('approved', 1)->latest()->get();
+        $rows = $this->model->where('approved', 1)->latest()->get();
         return view('Dashboard.delivery.index', compact('rows'));
     }
 
     public function binned()
     {
-        $rows = $this->model->where('type', 'DELIVERY')->where('approved', 0)->latest()->get();
+        $rows = $this->model->where('approved', 0)->latest()->get();
         return view('Dashboard.delivery.binned', compact('rows'));
     }
 
@@ -47,10 +49,10 @@ class DeliveryController extends MasterController
         $push = new PushNotification('fcm');
         $message = 'تم رفض انضمامك للسبب التالي :' . $request['reject_reason'];
         $usersTokens = [];
-        if ($user->device['id'] != 'null') {
-            $usersTokens[] = $user->device['id'];
+        if ($user->devices != null) {
+            $usersTokens = $user->devices;
         }
-        $feed = $push->setMessage([
+        $push->setMessage([
             'notification' => array('title' => $message, 'sound' => 'default'),
             'data' => [
                 'title' => $message,
@@ -63,7 +65,7 @@ class DeliveryController extends MasterController
             ->setDevicesToken($usersTokens)
             ->send()
             ->getFeedback();
-        $this->model->create([
+        Notification::create([
             'receiver_id' => $id,
             'admin_notify_type' => 'single',
             'title' => $message,
@@ -86,11 +88,11 @@ class DeliveryController extends MasterController
         $push = new PushNotification('fcm');
         $message = 'تم قبول انضمامك :)';
         $usersTokens = [];
-        if ($user->device['id'] != 'null') {
-            $usersTokens[] = $user->device['id'];
+        if ($user->devices != 'null') {
+            $usersTokens = $user->devices;
         }
 
-        $feed = $push->setMessage([
+        $push->setMessage([
             'notification' => array('title' => $message, 'sound' => 'default'),
             'data' => [
                 'title' => $message,
@@ -103,7 +105,7 @@ class DeliveryController extends MasterController
             ->setDevicesToken($usersTokens)
             ->send()
             ->getFeedback();
-        $this->model->create([
+        Notification::create([
             'receiver_id' => $id,
             'admin_notify_type' => 'single',
             'title' => $message,

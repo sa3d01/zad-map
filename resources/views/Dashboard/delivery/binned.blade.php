@@ -25,7 +25,7 @@
                             @foreach($rows as $row)
                                 <tr>
                                     <td>{{$row->name}}</td>
-                                    <td>{{$row->phone}}</td>
+                                    <td>{{$row->user->phone}}</td>
                                     <td>{{$row->city?$row->city->name:''}}</td>
                                     <td>
                                         <div class="button-list">
