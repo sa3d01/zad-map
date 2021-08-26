@@ -29,9 +29,12 @@ class DeliveryLoginResourse extends JsonResource
         } else {
             $car_model = new CarResourse($car);
         }
-        $devices=[];
-        $devices[]=$delivery->devices;
-        $devices[]=$request['device.id'];
+        if ($delivery->devices!=null){
+            $devices=array_merge((array)$request['device.id'],$delivery->devices);
+        }else{
+            $devices[]=$request['device.id'];
+        }
+
         $delivery->update([
             'devices' => $devices,
             'last_login_at' => Carbon::now(),

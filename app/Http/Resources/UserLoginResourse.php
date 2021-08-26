@@ -19,8 +19,12 @@ class UserLoginResourse extends JsonResource
     {
         $normal_user=NormalUser::where('user_id',$this->id)->first();
         $token = auth('api')->login(User::find($this->id));
-        $devices[]=$normal_user->devices;
-        $devices[]=$request['device.id'];
+        if ($normal_user->devices!=null){
+            $devices=array_merge((array)$request['device.id'],$normal_user->devices);
+        }else{
+            $devices[]=$request['device.id'];
+        }
+
         $normal_user->update([
             'devices' => $devices,
             'last_login_at' => Carbon::now(),
