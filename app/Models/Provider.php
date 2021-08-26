@@ -98,4 +98,14 @@ class Provider extends Model
             return asset('media/images/default.png');
         }
     }
+
+
+    public function getTypeString():string
+    {
+        if ($this['type']=='PROVIDER'){
+            return 'مقدم خدمة';
+        }else{
+            return 'أسرة منتجة';
+        }
+    }
 }

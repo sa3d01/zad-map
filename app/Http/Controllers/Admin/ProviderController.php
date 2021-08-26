@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Notification;
+use App\Models\Provider;
 use App\Models\User;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
@@ -9,7 +11,7 @@ use Illuminate\Http\Request;
 
 class ProviderController extends MasterController
 {
-    public function __construct(User $model)
+    public function __construct(Provider $model)
     {
         $this->model = $model;
 //        $this->middleware('permission:providers');
@@ -18,8 +20,7 @@ class ProviderController extends MasterController
 
     public function index()
     {
-        $types = ['PROVIDER', 'FAMILY'];
-        $rows = $this->model->whereIn('type', $types)->where('approved', 1)->latest()->get();
+        $rows = Provider::where('approved', 1)->latest()->get();
         return view('Dashboard.provider.index', compact('rows'));
     }
 
@@ -32,8 +33,7 @@ class ProviderController extends MasterController
 
     public function binned()
     {
-        $types = ['PROVIDER', 'FAMILY'];
-        $rows = $this->model->whereIn('type', $types)->where('approved', 0)->latest()->get();
+        $rows = Provider::where('approved', 0)->latest()->get();
         return view('Dashboard.provider.binned', compact('rows'));
     }
 
@@ -45,21 +45,21 @@ class ProviderController extends MasterController
 
     public function reject($id, Request $request): object
     {
-        $user = $this->model->find($id);
-        $user->update(
+        $provider = $this->model->find($id);
+        $provider->update(
             [
                 'approved' => -1,
                 'reject_reason' => $request['reject_reason'],
             ]
         );
-        $user->refresh();
+        $provider->refresh();
         $push = new PushNotification('fcm');
         $message = 'تم رفض انضمامك للسبب التالي :' . $request['reject_reason'];
-        $usersTokens = [];
-        if ($user->device['id'] != 'null') {
-            $usersTokens[] = $user->device['id'];
+        $providersTokens = [];
+        if ($provider->devices != null) {
+            $providersTokens = $provider->devices;
         }
-        $feed = $push->setMessage([
+        $push->setMessage([
             'notification' => array('title' => $message, 'sound' => 'default'),
             'data' => [
                 'title' => $message,
@@ -69,37 +69,37 @@ class ProviderController extends MasterController
             ],
             'priority' => 'high',
         ])
-            ->setDevicesToken($usersTokens)
+            ->setDevicesToken($providersTokens)
             ->send()
             ->getFeedback();
-        $this->model->create([
+        Notification::create([
             'receiver_id' => $id,
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
         ]);
-        $user->refresh();
+        $provider->refresh();
         return redirect()->back()->with('updated');
     }
 
     public function accept($id)
     {
-        $user = $this->model->find($id);
-        $user->update(
+        $provider = $this->model->find($id);
+        $provider->update(
             [
                 'approved' => 1,
                 'approved_at' => Carbon::now()
             ]
         );
-        $user->refresh();
+        $provider->refresh();
         $push = new PushNotification('fcm');
         $message = 'تم قبول انضمامك :)';
-        $usersTokens = [];
-        if ($user->device['id'] != 'null') {
-            $usersTokens[] = $user->device['id'];
+        $providersTokens = [];
+        if ($provider->devices != null) {
+            $providersTokens = $provider->devices;
         }
 
-        $feed = $push->setMessage([
+        $push->setMessage([
             'notification' => array('title' => $message, 'sound' => 'default'),
             'data' => [
                 'title' => $message,
@@ -109,16 +109,16 @@ class ProviderController extends MasterController
             ],
             'priority' => 'high',
         ])
-            ->setDevicesToken($usersTokens)
+            ->setDevicesToken($providersTokens)
             ->send()
             ->getFeedback();
-        $this->model->create([
+        Notification::create([
             'receiver_id' => $id,
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
         ]);
-        $user->refresh();
+        $provider->refresh();
         return redirect()->back()->with('updated');
     }
 
