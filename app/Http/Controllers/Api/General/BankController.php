@@ -20,7 +20,7 @@ class BankController extends MasterController
     public function index()
     {
         $admins = User::where('type', 'ADMIN')->pluck('id');
-        $banks = Bank::whereIn('user_id', $admins)->get();
+        $banks = Bank::whereIn('user_id', $admins)->whereStatus(1)->get();
         return $this->sendResponse(new BankCollection($banks));
     }
 

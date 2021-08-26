@@ -71,6 +71,7 @@ class OrderStatusController extends MasterController
         }
         return true;
     }
+
     public function delivered($id):object
     {
         $order = Order::find($id);
@@ -96,6 +97,7 @@ class OrderStatusController extends MasterController
             return $this->sendError("ﻻ يمكنك تأكيد استلام هذا الطلب");
         }
     }
+
     public function cancelOrder($id, CancelOrderRequest $request): object
     {
         $request->validated();
@@ -127,6 +129,7 @@ class OrderStatusController extends MasterController
         }
         return $this->sendResponse([], 'تم الغاء الطلب بنجاح');
     }
+
     public function acceptOrder($id): object
     {
         $order = Order::find($id);
@@ -237,6 +240,7 @@ class OrderStatusController extends MasterController
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
+
     public function rejectDeliveryRequest(Request $request):object
     {
         $order = Order::find($request['order_id']);
@@ -254,6 +258,7 @@ class OrderStatusController extends MasterController
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
+
     public function acceptDelivery($order_id,$delivery_request_id):object
     {
         $order=Order::find($order_id);

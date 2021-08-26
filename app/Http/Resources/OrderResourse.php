@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Chat;
+use App\Models\Delivery;
 use App\Models\OrderPay;
 use App\Models\PromoCode;
 use App\Models\Rate;
@@ -32,17 +33,17 @@ class OrderResourse extends JsonResource
         if ($this['delivery_id']==null){
             $delivery=new Object_();
         }else{
-            $delivery_model=User::find($this['delivery_id']);
+            $delivery_model=Delivery::where('user_id',$this['delivery_id'])->first();
             $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
-            $delivery['id']=$delivery_model->id;
-            $delivery['name']=$delivery_model->delivery->name;
-            $delivery['image']=$delivery_model->delivery->image;
-            $delivery['location']=$delivery_model->delivery->location;
-            $delivery['city']=$this->getCityData($delivery_model->delivery);
-            $delivery['district']=$this->getDistrictData($delivery_model->delivery);
-            $delivery['phone']=$delivery_model->phone;
-            $delivery['rating']=(double)$delivery_model->averageRate();
-            $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->id);
+            $delivery['id']=$delivery_model->user_id;
+            $delivery['name']=$delivery_model->name;
+            $delivery['image']=$delivery_model->image;
+            $delivery['location']=$delivery_model->location;
+            $delivery['city']=$this->getCityData($delivery_model);
+            $delivery['district']=$this->getDistrictData($delivery_model);
+            $delivery['phone']=$delivery_model->user->phone;
+            $delivery['rating']=(double)$delivery_model->user->averageRate();
+            $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->user_id);
         }
         if ($this['deliver_by']=='user')
         {

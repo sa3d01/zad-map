@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Order\CheckPromoCodeRequest;
 use App\Http\Requests\Api\Order\RateOrderRequest;
 use App\Http\Requests\Api\Order\storeOrderRequest;
+use App\Http\Resources\DeliveryResourse;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResourse;
 use App\Http\Resources\ProviderResourse;
@@ -20,7 +21,6 @@ use App\Models\PromoCode;
 use App\Models\Rate;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OrderController extends MasterController
 {
@@ -34,76 +34,75 @@ class OrderController extends MasterController
 
     public function filteredOrders($status): object
     {
-        $user = auth('api')->user();
-        $status_arr=[$status,'delivered_to_delivery'];
+        $status_arr = [$status, 'delivered_to_delivery'];
         if (request()->header('userType') == 'USER') {
-            if ($status=='in_progress'){
-                $orders_q = Order::where('user_id' , auth('api')->id())->whereIn('status',$status_arr);
-            }else{
+            if ($status == 'in_progress') {
+                $orders_q = Order::where('user_id', auth('api')->id())->whereIn('status', $status_arr);
+            } else {
                 $orders_q = Order::where(['user_id' => auth('api')->id(), 'status' => $status]);
             }
-        }elseif(request()->header('userType') =='DELIVERY') {
-            if ($status=='in_progress'){
-                $orders_q = Order::where('delivery_id' , auth('api')->id())->whereIn('status',$status_arr);
-            }elseif ($status=='new'){
-                $order_ids=DeliveryRequest::where(['delivery_id'=>auth('api')->id(),'status'=>'pending'])->pluck('order_id')->toArray();
-                $orders_q = Order::whereIn('id',$order_ids);
-            }else{
+        } elseif (request()->header('userType') == 'DELIVERY') {
+            if ($status == 'in_progress') {
+                $orders_q = Order::where('delivery_id', auth('api')->id())->whereIn('status', $status_arr);
+            } elseif ($status == 'new') {
+                $order_ids = DeliveryRequest::where(['delivery_id' => auth('api')->id(), 'status' => 'pending'])->pluck('order_id')->toArray();
+                $orders_q = Order::whereIn('id', $order_ids);
+            } else {
                 $orders_q = Order::where(['delivery_id' => auth('api')->id(), 'status' => $status]);
             }
-        }else {
-            if ($status=='completed'){
-                $orders_q = Order::where('provider_id' , auth('api')->id())->whereIn('status',$status_arr);
-            }elseif ($status=='new'){
-                $orders_q=Order::where('provider_id' , auth('api')->id())->where('status',$status)->latest()->get();
-                $orders=$orders_q->filter(function($order) {
-                    if ($order->deliver_by=='delivery') {
-                        if ($order->delivery_id!=null){
+        } else {
+            if ($status == 'completed') {
+                $orders_q = Order::where('provider_id', auth('api')->id())->whereIn('status', $status_arr);
+            } elseif ($status == 'new') {
+                $orders_q = Order::where('provider_id', auth('api')->id())->where('status', $status)->latest()->get();
+                $orders = $orders_q->filter(function ($order) {
+                    if ($order->deliver_by == 'delivery') {
+                        if ($order->delivery_id != null) {
                             return $order;
                         }
-                    }else{
+                    } else {
                         return $order;
                     }
                 });
                 return $this->sendResponse(new OrderCollection($orders));
-            }else{
+            } else {
                 $orders_q = Order::where(['provider_id' => auth('api')->id(), 'status' => $status]);
             }
         }
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);
     }
-
     //for user
-    public function orderDeliveryRequest($id):object
+    public function orderDeliveryRequest($id): object
     {
         $order = Order::find($id);
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        $delivery_requests=DeliveryRequest::where(['order_id'=>$id,'status'=>'accepted'])->latest()->get();
-        $result=[];
-        foreach ($delivery_requests as $delivery_request){
-            $arr['id']=(int)$delivery_request->id;
-            $arr['delivery']=new ProviderResourse($delivery_request->delivery);
-            $arr['order']=new OrderResourse($delivery_request->order);
-            $arr['delivery_price']=(double)$delivery_request->delivery_price;
-            $result[]=$arr;
+        $delivery_requests = DeliveryRequest::where(['order_id' => $id, 'status' => 'accepted'])->latest()->get();
+        $result = [];
+        foreach ($delivery_requests as $delivery_request) {
+            $arr['id'] = (int)$delivery_request->id;
+            $arr['delivery'] = new DeliveryResourse($delivery_request->delivery);
+            $arr['order'] = new OrderResourse($delivery_request->order);
+            $arr['delivery_price'] = (double)$delivery_request->delivery_price;
+            $result[] = $arr;
         }
         return $this->sendResponse($result);
     }
     //for delivery
-    public function deliveryRequest():object
+    public function deliveryRequest(): object
     {
-        $delivery_requests=DeliveryRequest::where(['delivery_id'=>auth('api')->id(),'status'=>'pending'])->latest()->get();
-        $result=[];
-        foreach ($delivery_requests as $delivery_request){
-            $arr['id']=(int)$delivery_request->id;
-            $arr['order']=new OrderResourse($delivery_request->order);
-            $result[]=$arr;
+        $delivery_requests = DeliveryRequest::where(['delivery_id' => auth('api')->id(), 'status' => 'pending'])->latest()->get();
+        $result = [];
+        foreach ($delivery_requests as $delivery_request) {
+            $arr['id'] = (int)$delivery_request->id;
+            $arr['order'] = new OrderResourse($delivery_request->order);
+            $result[] = $arr;
         }
         return $this->sendResponse($result);
     }
+
     public function show($id): object
     {
         $order = Order::find($id);
@@ -122,10 +121,9 @@ class OrderController extends MasterController
         if ($order->user_id != auth('api')->id() || $order->status != 'new') {
             return $this->sendError("ﻻ يمكنك تعديل هذا الطلب");
         }
-        if (\request()->input('deliver_at'))
-        {
+        if (\request()->input('deliver_at')) {
             $order->update([
-                'deliver_at'=>\request()->input('deliver_at')
+                'deliver_at' => \request()->input('deliver_at')
             ]);
         }
         foreach (\request()->input('cart') as $obj) {
@@ -143,22 +141,22 @@ class OrderController extends MasterController
             foreach ($old_order_items as $old_order_item) {
                 $old_order_item->delete();
             }
-            if ($obj['count']==0){
+            if ($obj['count'] == 0) {
                 $cartItem->delete();
-            }else{
+            } else {
                 OrderItem::create([
                     'order_id' => $order->id,
                     'cart_item_id' => $cartItem->id,
                 ]);
             }
         }
-        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->normal_user->name,$order->id);
-        if ($order->deliver_by=='delivery') {
-            if ($order->delivery_id!=null){
-                $this->notify_provider($order->provider->provider,$title, $order);
+        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ', $order->user->normal_user->name, $order->id);
+        if ($order->deliver_by == 'delivery') {
+            if ($order->delivery_id != null) {
+                $this->notify_provider($order->provider->provider, $title, $order);
             }
-        }else{
-            $this->notify_provider($order->provider->provider,$title, $order);
+        } else {
+            $this->notify_provider($order->provider->provider, $title, $order);
         }
         return $this->sendResponse(new OrderResourse($order));
     }
@@ -171,8 +169,8 @@ class OrderController extends MasterController
         } elseif (Carbon::parse($promo_code->end_date) < Carbon::now()) {
             return $this->sendError("هذا الكود غير صالح");
         } else {
-            $new_price=($request['total_price'])-($promo_code->discount_percent*$request['total_price']/100);
-            return $this->sendResponse(['total_price'=>(double)$request['total_price'],'new_price'=>$new_price], "تم التأكد من صحة الكود");
+            $new_price = ($request['total_price']) - ($promo_code->discount_percent * $request['total_price'] / 100);
+            return $this->sendResponse(['total_price' => (double)$request['total_price'], 'new_price' => $new_price], "تم التأكد من صحة الكود");
         }
     }
 
@@ -206,11 +204,11 @@ class OrderController extends MasterController
                 ]);
             }
             //check deliver by
-            if ($order->deliver_by!='delivery'){
-                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ',$order->user->normal_user->name,$order->id);
-                $provider=User::find($provider_id);
-                $this->notify_provider($provider->provider,$title, $order);
-            }else{
+            if ($order->deliver_by != 'delivery') {
+                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ', $order->user->normal_user->name, $order->id);
+                $provider = User::find($provider_id);
+                $this->notify_provider($provider->provider, $title, $order);
+            } else {
                 $this->notify_deliveries($order);
             }
         }
@@ -222,9 +220,8 @@ class OrderController extends MasterController
 
     public function hasDeliveries($city_id)
     {
-        $deliveries=Delivery::where('online',1)->where('devices','!=',null)->where('city_id',$city_id)->count();
-        if ($deliveries>0)
-        {
+        $deliveries = Delivery::where('online', 1)->where('devices', '!=', null)->where('city_id', $city_id)->count();
+        if ($deliveries > 0) {
             return $this->sendResponse([], "");
         }
         return $this->sendError("لا يوجد مندوبين توصيل بمدينتك !");
@@ -233,59 +230,59 @@ class OrderController extends MasterController
     public function notify_deliveries($order)
     {
         $user = auth('api')->user();
-        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user->normal_user->name,$order->id);
+        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ', $user->normal_user->name, $order->id);
 
-        $deliveries=Delivery::where('online',1)->where('devices','!=',null)->where('city_id',$user->normal_user->city_id)->pluck('user_id')->toArray();
-        $deliveries=User::whereIn('id',$deliveries)->get();
-        foreach ($deliveries as $delivery){
-            $delivery_request=DeliveryRequest::create([
-               'order_id'=>$order->id,
-               'delivery_id'=>$delivery->id
+        $deliveries = Delivery::where('online', 1)->where('devices', '!=', null)->where('city_id', $user->normal_user->city_id)->pluck('user_id')->toArray();
+        $deliveries = User::whereIn('id', $deliveries)->get();
+        foreach ($deliveries as $delivery) {
+            $delivery_request = DeliveryRequest::create([
+                'order_id' => $order->id,
+                'delivery_id' => $delivery->id
             ]);
-            $this->fcmPush($title,$delivery->delivery,$order);
+            $this->fcmPush($title, $delivery->delivery, $order);
             $notification['type'] = 'delivery_request';
             $notification['title'] = $title;
             $notification['note'] = $title;
             $notification['receiver_id'] = $delivery->id;
             $notification['order_id'] = $order->id;
-            $notification['more_details']=[
-              'delivery_request_id'=> $delivery_request->id
+            $notification['more_details'] = [
+                'delivery_request_id' => $delivery_request->id
             ];
             Notification::create($notification);
         }
     }
 
-    public function rate($id,RateOrderRequest $request):object
+    public function rate($id, RateOrderRequest $request): object
     {
         $request->validated();
         $order = Order::find($id);
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (auth('api')->user()->type!='USER' || $order->status!='completed'){
+        if (auth('api')->user()->type != 'USER' || $order->status != 'completed') {
             return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
-        }else{
-            if ($request['provider']){
+        } else {
+            if ($request['provider']) {
                 Rate::Create([
-                    'user_id'=>auth('api')->id(),
-                    'order_id'=>$order->id,
-                    'rated_id'=>$order->provider_id,
-                    'rate'=>$request['provider']['rate'],
-                    'feedback'=>$request['provider']['feedback'],
+                    'user_id' => auth('api')->id(),
+                    'order_id' => $order->id,
+                    'rated_id' => $order->provider_id,
+                    'rate' => $request['provider']['rate'],
+                    'feedback' => $request['provider']['feedback'],
                 ]);
-                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
-                $this->notify_provider($order->provider,$title, $order);
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $order->user->name, $order->id);
+                $this->notify_provider($order->provider, $title, $order);
             }
-            if ($request['delivery']){
+            if ($request['delivery']) {
                 Rate::Create([
-                    'user_id'=>auth('api')->id(),
-                    'order_id'=>$order->id,
-                    'rated_id'=>$order->delivery_id,
-                    'rate'=>$request['delivery']['rate'],
-                    'feedback'=>$request['delivery']['feedback'],
+                    'user_id' => auth('api')->id(),
+                    'order_id' => $order->id,
+                    'rated_id' => $order->delivery_id,
+                    'rate' => $request['delivery']['rate'],
+                    'feedback' => $request['delivery']['feedback'],
                 ]);
-                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
-                $this->notify_provider($order->delivery,$title, $order);
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $order->user->name, $order->id);
+                $this->notify_provider($order->delivery, $title, $order);
             }
         }
         return $this->sendResponse([], 'تم التقييم بنجاح');
