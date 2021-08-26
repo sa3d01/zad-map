@@ -43,6 +43,7 @@ class ProviderController extends MasterController
         if (!$wallet){
             $wallet=Wallet::create([
                 'user_id'=>auth('api')->id(),
+                'user_type'=>\request()->header('userType'),
                 'profits'=>0,
                 'debtors'=>0
             ]);
@@ -54,12 +55,14 @@ class ProviderController extends MasterController
    {
         $data = $request->validated();
         $data['user_id'] = auth('api')->id();
+        $data['user_type']=\request()->header('userType');
         $data['type'] = 'transfer';
         WalletPay::create($data);
         $wallet=Wallet::where('user_id',auth('api')->id())->latest()->first();
        if (!$wallet){
            $wallet=Wallet::create([
                'user_id'=>auth('api')->id(),
+               'user_type'=>\request()->header('userType'),
                'profits'=>0,
                'debtors'=>0
            ]);
