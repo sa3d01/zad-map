@@ -101,4 +101,9 @@ class User extends Authenticatable implements JWTSubject
         }
         return $this->rates()->sum('rate') / $this->rates()->count('rate');
     }
+
+    public function banks(): object
+    {
+        return $this->hasMany(Bank::class);
+    }
 }

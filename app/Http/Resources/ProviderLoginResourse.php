@@ -53,7 +53,7 @@ class ProviderLoginResourse extends JsonResource
                 'has_delivery'=> (int)$provider->has_delivery,
                 'delivery_price'=> (int)$provider->delivery_price,
                 'car' => new Object_(),
-                'banks' => new BankCollection($provider->user->banks),
+                'banks' => new BankCollection($this->banks),
             ],
             "settings" => [
                 'approved' => $provider->approved,
