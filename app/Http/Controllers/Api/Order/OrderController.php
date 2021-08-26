@@ -235,7 +235,7 @@ class OrderController extends MasterController
         $user = auth('api')->user();
         $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ',$user->normal_user->name,$order->id);
 
-        $deliveries=Delivery::where('online',1)->where('device','!=',null)->where('city_id',$user->normal_user->city_id)->pluck('user_id')->toArray();
+        $deliveries=Delivery::where('online',1)->where('devices','!=',null)->where('city_id',$user->normal_user->city_id)->pluck('user_id')->toArray();
         $deliveries=User::whereIn('id',$deliveries)->get();
         foreach ($deliveries as $delivery){
             $delivery_request=DeliveryRequest::create([
