@@ -49,6 +49,7 @@ class CategoryController extends MasterController
             $result['name']=$datum->name;
             $result['image']=$datum->image;
             $result['free_products']=$datum->free_products;
+            $result['product_price']=$datum->product_price;
             $results[]=$result;
         }
         return $this->sendResponse($results);
