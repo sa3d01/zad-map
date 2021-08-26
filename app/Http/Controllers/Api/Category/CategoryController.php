@@ -88,6 +88,6 @@ class CategoryController extends MasterController
         if (!$provider || !$category){
             return $this->sendError('توجد مشكلة بالبيانات');
         }
-        return $this->sendResponse(new ProductCollection(Product::where(['user_id'=>$provider_id,'category_id'=>$category_id])->get()));
+        return $this->sendResponse(new ProductCollection(Product::where(['user_id'=>$provider->user_id,'category_id'=>$category_id])->get()));
     }
 }
