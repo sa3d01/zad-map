@@ -56,7 +56,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($user->banks as $key=>$bank)
+                                @foreach($user->user->banks as $key=>$bank)
                                     <tr>
                                         <td>{{$key}}</td>
                                         <td>{{$bank->name}}</td>
@@ -89,7 +89,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($user->products as $key=>$product)
+                                @foreach($user->user->products as $key=>$product)
                                     <tr>
                                         <td>{{$product->id}}</td>
                                         <td>{{$product->category->name}}</td>

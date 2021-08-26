@@ -50,7 +50,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($user->banks as $key=>$bank)
+                                @foreach($user->user->banks as $key=>$bank)
                                     <tr>
                                         <td>{{$key}}</td>
                                         <td>{{$bank->name}}</td>
@@ -76,34 +76,34 @@
                                     <tbody>
                                     <tr>
                                         <td>نوع السيارة</td>
-                                        <td>{{$user->car->brand}}</td>
+                                        <td>{{$user->user->car->brand}}</td>
                                     </tr>
                                     <tr>
                                         <td>سنة الصنع</td>
-                                        <td>{{$user->car->year}}</td>
+                                        <td>{{$user->user->car->year}}</td>
                                     </tr>
                                     <tr>
                                         <td>اللون</td>
-                                        <td>{{$user->car->color}}</td>
+                                        <td>{{$user->user->car->color}}</td>
                                     </tr>
                                     <tr>
                                         <td>رقم لوحة السيارة</td>
-                                        <td>{{$user->car->identity}}</td>
+                                        <td>{{$user->user->car->identity}}</td>
                                     </tr>
                                     <tr>
                                         <td>تاريخ انتهاء التأمين</td>
-                                        <td>{{$user->car->end_insurance_date}}</td>
+                                        <td>{{$user->user->car->end_insurance_date}}</td>
                                     </tr>
                                     <tr>
                                         <td>صورة التأمين</td>
-                                        <td data-toggle="modal" data-target="#insuranceModal{{$user->car->id}}">
-                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->insurance_image}}">
+                                        <td data-toggle="modal" data-target="#insuranceModal{{$user->user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->user->car->insurance_image}}">
                                         </td>
-                                        <div id="insuranceModal{{$user->car->id}}" class="modal fade" role="img">
+                                        <div id="insuranceModal{{$user->user->car->id}}" class="modal fade" role="img">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
-                                                        <img data-toggle="modal" data-target="#insuranceModal{{$user->car->id}}" class="img-preview" src="{{$user->car->insurance_image}}" style="max-height: 500px">
+                                                        <img data-toggle="modal" data-target="#insuranceModal{{$user->user->car->id}}" class="img-preview" src="{{$user->user->car->insurance_image}}" style="max-height: 500px">
                                                     </div>
                                                 </div>
                                             </div>
@@ -111,14 +111,14 @@
                                     </tr>
                                     <tr>
                                         <td>صورة رخصة القيادة</td>
-                                        <td data-toggle="modal" data-target="#driveModal{{$user->car->id}}">
-                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->drive_image}}">
+                                        <td data-toggle="modal" data-target="#driveModal{{$user->user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->user->car->drive_image}}">
                                         </td>
-                                        <div id="driveModal{{$user->car->id}}" class="modal fade" role="img">
+                                        <div id="driveModal{{$user->user->car->id}}" class="modal fade" role="img">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
-                                                        <img data-toggle="modal" data-target="#driveModal{{$user->car->id}}" class="img-preview" src="{{$user->car->drive_image}}" style="max-height: 500px">
+                                                        <img data-toggle="modal" data-target="#driveModal{{$user->user->car->id}}" class="img-preview" src="{{$user->user->car->drive_image}}" style="max-height: 500px">
                                                     </div>
                                                 </div>
                                             </div>
@@ -126,14 +126,14 @@
                                     </tr>
                                     <tr>
                                         <td>صورة رخصة السيارة</td>
-                                        <td data-toggle="modal" data-target="#identityModal{{$user->car->id}}">
-                                            <img width="50px" height="50px" class="img_preview" src="{{$user->car->identity_image}}">
+                                        <td data-toggle="modal" data-target="#identityModal{{$user->user->car->id}}">
+                                            <img width="50px" height="50px" class="img_preview" src="{{$user->user->car->identity_image}}">
                                         </td>
-                                        <div id="identityModal{{$user->car->id}}" class="modal fade" role="img">
+                                        <div id="identityModal{{$user->user->car->id}}" class="modal fade" role="img">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-body">
-                                                        <img data-toggle="modal" data-target="#identityModal{{$user->car->id}}" class="img-preview" src="{{$user->car->identity_image}}" style="max-height: 500px">
+                                                        <img data-toggle="modal" data-target="#identityModal{{$user->user->car->id}}" class="img-preview" src="{{$user->user->car->identity_image}}" style="max-height: 500px">
                                                     </div>
                                                 </div>
                                             </div>
