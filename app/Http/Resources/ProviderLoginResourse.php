@@ -53,7 +53,7 @@ class ProviderLoginResourse extends JsonResource
                 'has_delivery'=> (int)$provider->has_delivery,
                 'delivery_price'=> (int)$provider->delivery_price,
                 'car' => new Object_(),
-                'banks' => new BankCollection($provider->banks),
+                'banks' => new BankCollection($provider->user->banks),
             ],
             "settings" => [
                 'approved' => $provider->approved,
@@ -63,7 +63,6 @@ class ProviderLoginResourse extends JsonResource
                 'token' => $token,
                 'token_type' => 'Bearer',
             ],
-
         ];
     }
 }

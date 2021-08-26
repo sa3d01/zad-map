@@ -87,8 +87,8 @@ class User extends Authenticatable implements JWTSubject
             $arr['rate'] = (int)$rate->rate;
             $arr['feedback'] = $rate->feedback;
             $arr['user']['id'] = $rate->user->id;
-            $arr['user']['name'] = $rate->user->name;
-            $arr['user']['image'] = $rate->user->image;
+            $arr['user']['name'] = $rate->user->normal_user->name;
+            $arr['user']['image'] = $rate->user->normal_user->image;
             $feedbacks[] = $arr;
         }
         return $feedbacks;
