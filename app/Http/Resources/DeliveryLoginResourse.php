@@ -37,7 +37,6 @@ class DeliveryLoginResourse extends JsonResource
             'last_login_at' => Carbon::now(),
             'last_ip' => $request->ip(),
         ]);
-
         return [
             "user" => [
                 'id' => (int)$this->id,
