@@ -28,7 +28,7 @@ class ProviderLoginResourse extends JsonResource
         if ($provider->devices!=null && is_array($provider->devices)){
             $old_devices=$provider->devices;
         }elseif ($provider->devices!=null){
-            $old_devices=$provider->devices;
+            $old_devices=(array)$provider->devices;
         }else{
             $old_devices=[];
         }

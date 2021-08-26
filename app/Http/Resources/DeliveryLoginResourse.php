@@ -33,7 +33,7 @@ class DeliveryLoginResourse extends JsonResource
         if ($delivery->devices!=null && is_array($delivery->devices)){
             $old_devices=$delivery->devices;
         }elseif ($delivery->devices!=null){
-            $old_devices=$delivery->devices;
+            $old_devices=(array)$delivery->devices;
         }else{
             $old_devices=[];
         }

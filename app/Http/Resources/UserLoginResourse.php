@@ -24,7 +24,7 @@ class UserLoginResourse extends JsonResource
         if ($normal_user->devices!=null && is_array($normal_user->devices)){
             $old_devices=$normal_user->devices;
         }elseif ($normal_user->devices!=null){
-            $old_devices=$normal_user->devices;
+            $old_devices=(array)$normal_user->devices;
         }else{
             $old_devices=[];
         }
