@@ -20,11 +20,11 @@ class ProviderCollection extends ResourceCollection
             $provider=Provider::where('user_id',$obj->id)->first();
             $arr['id'] = (int)$obj->id;
             $arr['rating'] = (double)$obj->averageRate();
-            $arr['type'] = $provider->id;
-            $arr['name'] = $provider->id;
-            $arr['location'] = $provider->id;
-            $arr['image'] = $provider->id;
-            $arr['online'] = $provider->id;
+            $arr['type'] = $provider->type;
+            $arr['name'] = $provider->name;
+            $arr['location'] = $provider->location;
+            $arr['image'] = $provider->image;
+            $arr['online'] = $provider->online;
             $data[] = $arr;
         }
         return $data;

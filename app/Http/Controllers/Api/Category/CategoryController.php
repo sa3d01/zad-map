@@ -65,6 +65,7 @@ class CategoryController extends MasterController
         if (request()->has('city_id')){
             $providers_q->where('city_id',request()->input('city_id'));
         }
+        $users_providers=$providers_q->pluck('user_id')->toArray();
         $providers=$providers_q->get();
         $providers_arr=[];
         if (request()->has('lat') && request()->has('lng')){
@@ -78,6 +79,8 @@ class CategoryController extends MasterController
                 }
             }
             $providers=User::whereIn('id',$providers_arr)->get();
+        }else{
+            $providers=User::whereIn('id',$users_providers)->get();
         }
         return $this->sendResponse(new ProviderCollection($providers));
     }
