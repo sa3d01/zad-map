@@ -9,6 +9,7 @@ use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResourse;
 use App\Models\CancelOrder;
 use App\Models\DeliveryRequest;
+use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderPay;
@@ -213,7 +214,9 @@ class OrderStatusController extends MasterController
         $notification['receiver_id'] = $order->user->id;
         $notification['order_id'] = $order->id;
         Notification::create($notification);
-        if (in_array('id',$order->user->device)){
+        $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+
+        if ($normal_user->devices != null){
             $push = new PushNotification('fcm');
             $msg = [
                 'notification' => array('title' => $title, 'sound' => 'default'),
