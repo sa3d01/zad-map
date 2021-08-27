@@ -42,6 +42,7 @@ class OrderStatusController extends MasterController
         if (!$provider_wallet){
             Wallet::create([
                'user_id'=>$order->provider_id,
+               'user_type'=>'PROVIDER',
                'profits'=>$order->price(),
                'debtors'=>($order->price()*$app_tax)/100
             ]);
@@ -53,7 +54,7 @@ class OrderStatusController extends MasterController
         }
         if ($order->delivery_id!=null)
         {
-            $delivery_price=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery->id,'status'=>'accepted'])->latest()->value('delivery_price');
+            $delivery_price=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery_id,'status'=>'accepted'])->latest()->value('delivery_price');
             if (!$delivery_price){
                 return $this->sendError('some thing error');
             }
@@ -61,6 +62,7 @@ class OrderStatusController extends MasterController
             if (!$delivery_wallet){
                 Wallet::create([
                     'user_id'=>$order->delivery_id,
+                    'user_type'=>'DELIVERY',
                     'profits'=>$delivery_price,
                     'debtors'=>($delivery_price*$app_tax)/100
                 ]);
@@ -87,9 +89,11 @@ class OrderStatusController extends MasterController
             $order->update([
                 'status'=>'delivered_to_delivery'
             ]);
-            $this->notify_user($order->user,'تم تأكيد الاستلام من قبل المندوب  '.auth('api')->user()->name, $order);
+            $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+
+            $this->notify_user($normal_user,'تم تأكيد الاستلام من قبل المندوب  '.$normal_user->name, $order);
             return $this->sendResponse([], 'تم استلام الطلب بنجاح');
-        }elseif (auth('api')->user()->type=='USER'){
+        }elseif (\request()->header('userType')=='USER'){
             if (($order->user_id != auth('api')->id()) || ($order->status == 'completed')) {
                 return $this->sendError("تم تأكيد الاستلام من قبل");
             }
@@ -118,16 +122,19 @@ class OrderStatusController extends MasterController
             'order_id' => $id,
             'reason' => $request['reason']
         ]);
+        $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+        $provider_model=Provider::where('user_id',$order->provider_id)->first();
+        $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
         if (auth('api')->user()->type=='USER'){
-            $title = sprintf('لقد تم الغاء الطلب من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
-            $this->notify_provider($order->provider,$title, $order);
+            $title = sprintf('لقد تم الغاء الطلب من قبل المستخدم  %s , طلب رقم %s ',$normal_user->name,$order->id);
+            $this->notify_provider($provider_model,$title, $order);
         }elseif (auth('api')->user()->type=='PROVIDER'){
-            $title = sprintf('لقد تم الغاء الطلب من قبل مزود الخدمة  %s , طلب رقم %s ',$order->provider->name,$order->id);
-            $this->notify_provider($order->user,$title, $order);
+            $title = sprintf('لقد تم الغاء الطلب من قبل مزود الخدمة  %s , طلب رقم %s ',$provider_model->name,$order->id);
+            $this->notify_provider($normal_user,$title, $order);
         }else{
-            $title = sprintf('لقد تم الغاء الطلب من قبل مندوب التوصيل  %s , طلب رقم %s ',$order->delivery->name,$order->id);
-            $this->notify_provider($order->provider,$title, $order);
-            $this->notify_provider($order->user,$title, $order);
+            $title = sprintf('لقد تم الغاء الطلب من قبل مندوب التوصيل  %s , طلب رقم %s ',$delivery_model->name,$order->id);
+            $this->notify_provider($provider_model,$title, $order);
+            $this->notify_provider($normal_user,$title, $order);
         }
         return $this->sendResponse([], 'تم الغاء الطلب بنجاح');
     }
@@ -144,7 +151,8 @@ class OrderStatusController extends MasterController
         $order->update([
             'status'=>'pre_paid'
         ]);
-        $this->notify_user($order->user,'تمت الموافقة على طلبك من قبل '.auth('api')->user()->name, $order);
+        $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+        $this->notify_user($normal_user,'تمت الموافقة على طلبك من قبل '.$normal_user->name, $order);
         return $this->sendResponse([], 'تم قبول الطلب بنجاح');
     }
 
@@ -155,7 +163,7 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (auth('api')->user()->type!='USER' || $order->status!='pre_paid'){
+        if (\request()->header('userType')!='USER' || $order->status!='pre_paid'){
             return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
         }else{
             if ($request['provider']){
@@ -173,7 +181,8 @@ class OrderStatusController extends MasterController
                     'image'=>$image,
                 ]);
                 $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
-                $this->notify_provider($order->provider,$title, $order);
+                $provider_model=Provider::where('user_id',$order->provider_id)->first();
+                $this->notify_provider($provider_model,$title, $order);
             }
             if ($request['delivery'] && $order->delivery_id!=null){
                 if (array_key_exists("image",$request['delivery']))
@@ -190,7 +199,8 @@ class OrderStatusController extends MasterController
                     'image'=> $image,
                 ]);
                 $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
-                $this->notify_provider($order->delivery,$title, $order);
+                $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
+                $this->notify_provider($delivery_model,$title, $order);
             }
             $order->update([
                 'status'=>'in_progress'
@@ -213,14 +223,14 @@ class OrderStatusController extends MasterController
             'delivery_price'=>$request['delivery_price'],
             'status'=>'accepted'
         ]);
-        $title = sprintf('يوجد لديك عرض سعر جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order->id);
+        $delivery_model=Delivery::where('user_id',auth('api')->id())->first();
+        $title = sprintf('يوجد لديك عرض سعر جديد من قبل %s , طلب رقم %s ',$delivery_model->name,$order->id);
         $notification['title'] = $title;
         $notification['note'] = $title;
-        $notification['receiver_id'] = $order->user->id;
+        $notification['receiver_id'] = $order->user_id;
         $notification['order_id'] = $order->id;
         Notification::create($notification);
         $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-
         if ($normal_user->devices != null){
             $push = new PushNotification('fcm');
             $msg = [
@@ -235,7 +245,7 @@ class OrderStatusController extends MasterController
                 'priority' => 'high',
             ];
             $push->setMessage($msg)
-                ->setDevicesToken($order->user->device['id'])
+                ->setDevicesToken($normal_user->devices)
                 ->send();
         }
         $orders_q = Order::where('delivery_id' , auth('api')->id())->where('status','new');
