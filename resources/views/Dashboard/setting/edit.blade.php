@@ -33,6 +33,14 @@
                                 <input type="number" min="1" name="verify_period" required class="form-control" id="verify_period" value="{{$setting->verify_period}}">
                             </div>
                             <div class="form-group">
+                                <label for="notify_paid_period">الفترة الزمنية لإعادة ارسال التذكير بدفع مستحقات طلب*</label>
+                                <input type="number" min="1" name="notify_paid_period" required class="form-control" id="notify_paid_period" value="{{$setting->notify_paid_period}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="period_to_delivery_approved">الفترة الزمنية لقبول مندوب للطلب قبل اعادة تغيير وسيلة التوصيل*</label>
+                                <input type="number" min="1" name="period_to_delivery_approved" required class="form-control" id="period_to_delivery_approved" value="{{$setting->period_to_delivery_approved}}">
+                            </div>
+                            <div class="form-group">
                                 <label for="app_tax">عمولة التطبيق*</label>
                                 <input type="number" min="0" name="app_tax" required class="form-control" id="app_tax" value="{{$setting->app_tax}}">
                             </div>

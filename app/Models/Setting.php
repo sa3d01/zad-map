@@ -13,6 +13,8 @@ class Setting extends Model
         'email',
         'socials',
         'verify_period',
+        'notify_paid_period',
+        'period_to_delivery_approved',
         'app_tax',
         'km_delivery_price',
         'slider_title',

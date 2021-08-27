@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResourse;
 use App\Models\CancelOrder;
+use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Order;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -31,13 +33,23 @@ abstract class MasterController extends Controller
                 ]);
             }
         }
+        $notify_paid_period=(int)Setting::value('notify_paid_period');
+        $orders=Order::where('status','pre_paid')->get();
+        foreach ($orders as $order){
+            if (Carbon::now()->gt(Carbon::parse($order->updated_at)->addMinutes($notify_paid_period))) {
+                $title='يرجي دفع المستحقات المعلقة بالطلب رقم #'.$order->id;
+                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+                $this->notify_user($title,$normal_user,$order);
+                $order->update();
+            }
+        }
     }
 
     public function sendResponse($result, $message = null)
     {
         $response = [
             'status' => 200,
-            'message' => $message ? $message : '',
+            'message' => $message ?? '',
             'data' => $result,
         ];
         return response()->json($response);

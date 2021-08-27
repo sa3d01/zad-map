@@ -44,11 +44,14 @@ class OrderResourse extends JsonResource
             $delivery['phone']=$delivery_model->user->phone;
             $delivery['rating']=(double)$delivery_model->user->averageRate();
             $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->user_id);
+
+            $delivery_price=$this->orderItems->first()->cartItem->product->user->provider->delivery_price;
+
         }
         if ($this['deliver_by']=='user')
         {
             $delivery_price=0;
-        }else{
+        }elseif($this['deliver_by']=='provider'){
             $delivery_price=$this->orderItems->first()->cartItem->product->user->provider->delivery_price;
         }
         $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
