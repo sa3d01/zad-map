@@ -57,8 +57,10 @@ class VerifyController extends MasterController
             return $this->sendResponse(new ProviderLoginResourse($user));
         }elseif (request()->header('userType')=='DELIVERY'){
             return $this->sendResponse(new DeliveryLoginResourse($user));
-        }else{
+        }elseif(request()->header('userType')=='USER'){
             return $this->sendResponse(new UserLoginResourse($user));
+        }else{
+            return $this->sendError("تأكد من اختيار نوع مستخدم صحيح");
         }
     }
 }
