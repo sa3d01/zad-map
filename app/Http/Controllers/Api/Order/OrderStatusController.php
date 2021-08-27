@@ -8,11 +8,13 @@ use App\Http\Requests\Api\Order\PaymentOrderRequest;
 use App\Http\Resources\OrderCollection;
 use App\Http\Resources\OrderResourse;
 use App\Models\CancelOrder;
+use App\Models\Delivery;
 use App\Models\DeliveryRequest;
 use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderPay;
+use App\Models\Provider;
 use App\Models\Setting;
 use App\Models\Wallet;
 use Edujugon\PushNotification\PushNotification;
@@ -280,9 +282,11 @@ class OrderStatusController extends MasterController
             $notification->delete();
         }
         $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
-        $this->notify_user($order->delivery,$title, $order);
+        $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
+        $provider_model=Provider::where('user_id',$order->provider_id)->first();
+        $this->notify_user($delivery_model,$title, $order);
         $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
-        $this->notify_provider($order->provider,$title, $order);
+        $this->notify_provider($provider_model,$title, $order);
         $orders_q = Order::where('user_id' , auth('api')->id())->where('status','new');
         $orders = new OrderCollection($orders_q->latest()->get());
         return $this->sendResponse($orders);

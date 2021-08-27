@@ -33,6 +33,7 @@ abstract class MasterController extends Controller
                 ]);
             }
         }
+
         $notify_paid_period=(int)Setting::value('notify_paid_period');
         $orders=Order::where('status','pre_paid')->get();
         foreach ($orders as $order){
@@ -43,6 +44,8 @@ abstract class MasterController extends Controller
                 $order->update();
             }
         }
+
+
     }
 
     public function sendResponse($result, $message = null)
