@@ -45,6 +45,20 @@ abstract class MasterController extends Controller
             }
         }
 
+        $period_to_delivery_approved=(int)Setting::value('period_to_delivery_approved');
+        $orders=Order::where(['deliver_by'=>'delivery','delivery_id'=>null])->get();
+        foreach ($orders as $order){
+            if (Carbon::now()->gt(Carbon::parse($order->created_at)->addMinutes($period_to_delivery_approved))) {
+                $title='لا يوجد مندوبين حاليا لتوصيل طلبك #'.$order->id;
+                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+                $order->update([
+                   'delivery_approved_expired'=>true
+                ]);
+                $this->notify_user($title,$normal_user,$order);
+            }
+        }
+
+
 
     }
 

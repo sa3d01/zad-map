@@ -15,6 +15,7 @@ class Order extends Model
         'delivery_id',
         'deliver_by',
         'deliver_at',
+        'delivery_approved_expired',
         'promo_code',
         'address',
         'status',

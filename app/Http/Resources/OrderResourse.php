@@ -136,6 +136,7 @@ class OrderResourse extends JsonResource
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,
             'deliver_at' => $this->deliver_at,
+            'delivery_approved_expired' =>(bool) $this->delivery_approved_expired,
             'address' => $this->address??"",
             'status' => $this->status,
             'products'=>new OrderItemCollection($this->orderItems),

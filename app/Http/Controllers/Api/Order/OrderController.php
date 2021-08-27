@@ -14,10 +14,12 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Delivery;
 use App\Models\DeliveryRequest;
+use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
+use App\Models\Provider;
 use App\Models\Rate;
 use App\Models\User;
 use Carbon\Carbon;
@@ -150,7 +152,8 @@ class OrderController extends MasterController
                 ]);
             }
         }
-        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ', $order->user->normal_user->name, $order->id);
+        $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+        $title = sprintf('لقد تم تعديل الطلب من قبل المستخدم  %s , طلب رقم %s ', $normal_user->name, $order->id);
         if ($order->deliver_by == 'delivery') {
             if ($order->delivery_id != null) {
                 $this->notify_provider($order->provider->provider, $title, $order);
@@ -205,7 +208,8 @@ class OrderController extends MasterController
             }
             //check deliver by
             if ($order->deliver_by != 'delivery') {
-                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ', $order->user->normal_user->name, $order->id);
+                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+                $title = sprintf('يوجد لديك طلب جديد من قبل المستخدم %s , طلب رقم %s ', $normal_user->name, $order->id);
                 $provider = User::find($provider_id);
                 $this->notify_provider($provider->provider, $title, $order);
             } else {
@@ -230,16 +234,19 @@ class OrderController extends MasterController
     public function notify_deliveries($order)
     {
         $user = auth('api')->user();
-        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ', $user->normal_user->name, $order->id);
+        $normal_user=NormalUser::where('user_id',$user->id)->first();
 
-        $deliveries = Delivery::where('online', 1)->where('devices', '!=', null)->where('city_id', $user->normal_user->city_id)->pluck('user_id')->toArray();
+        $title = sprintf('يوجد لديك طلب عرض توصيل من مستخدم %s , طلب رقم %s ', $normal_user->name, $order->id);
+
+        $deliveries = Delivery::where('online', 1)->where('devices', '!=', null)->where('city_id', $normal_user->city_id)->pluck('user_id')->toArray();
         $deliveries = User::whereIn('id', $deliveries)->get();
         foreach ($deliveries as $delivery) {
             $delivery_request = DeliveryRequest::create([
                 'order_id' => $order->id,
                 'delivery_id' => $delivery->id
             ]);
-            $this->fcmPush($title, $delivery->delivery, $order);
+            $delivery_model=Delivery::where('user_id',$delivery->id)->first();
+            $this->fcmPush($title, $delivery_model, $order);
             $notification['type'] = 'delivery_request';
             $notification['title'] = $title;
             $notification['note'] = $title;
@@ -259,7 +266,7 @@ class OrderController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (auth('api')->user()->type != 'USER' || $order->status != 'completed') {
+        if (request()->header('userType') != 'USER' || $order->status != 'completed') {
             return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
         } else {
             if ($request['provider']) {
@@ -270,8 +277,10 @@ class OrderController extends MasterController
                     'rate' => $request['provider']['rate'],
                     'feedback' => $request['provider']['feedback'],
                 ]);
-                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $order->user->name, $order->id);
-                $this->notify_provider($order->provider, $title, $order);
+                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+                $provider_model=Provider::where('user_id',$order->provider_id)->first();
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $normal_user->name, $order->id);
+                $this->notify_provider($provider_model, $title, $order);
             }
             if ($request['delivery']) {
                 Rate::Create([
@@ -281,8 +290,10 @@ class OrderController extends MasterController
                     'rate' => $request['delivery']['rate'],
                     'feedback' => $request['delivery']['feedback'],
                 ]);
-                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $order->user->name, $order->id);
-                $this->notify_provider($order->delivery, $title, $order);
+                $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
+                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+                $title = sprintf('تم تقييمك من قبل المستخدم  %s , طلب رقم %s ', $normal_user->name, $order->id);
+                $this->notify_provider($delivery_model, $title, $order);
             }
         }
         return $this->sendResponse([], 'تم التقييم بنجاح');
