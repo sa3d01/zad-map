@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Chat;
 use App\Models\Delivery;
+use App\Models\DeliveryRequest;
 use App\Models\OrderPay;
 use App\Models\PromoCode;
 use App\Models\Rate;
@@ -44,15 +45,21 @@ class OrderResourse extends JsonResource
             $delivery['phone']=$delivery_model->user->phone;
             $delivery['rating']=(double)$delivery_model->user->averageRate();
             $delivery['room'] = $provider_chat?$provider_chat->room:(int)($this['id'].$delivery_model->user_id);
-
-            $delivery_price=$this->orderItems->first()->cartItem->product->user->provider->delivery_price;
-
         }
         if ($this['deliver_by']=='user')
         {
             $delivery_price=0;
         }elseif($this['deliver_by']=='provider'){
             $delivery_price=$this->orderItems->first()->cartItem->product->user->provider->delivery_price;
+        }else{
+            $delivery_price=0;
+            if ($this['delivery_id']!=null)
+            {
+                $delivery_request=DeliveryRequest::where(['delivery_id'=>$delivery->user_id,'order_id'=>$this->id,'status'=>'accepted'])->latest()->first();
+                if ($delivery_request){
+                    $delivery_price=$delivery_request->delivery_price;
+                }
+            }
         }
         $delivery_payment=OrderPay::where(['order_id'=>$this['id'],'delivery_id'=>$this['delivery_id']])->latest()->first();
         $delivery_payment_model['type']=$delivery_payment->type??"";
@@ -81,7 +88,7 @@ class OrderResourse extends JsonResource
         $promo_code = PromoCode::where('code', $this->promo_code)->first();
         $discount=0;
         if ($promo_code){
-            $discount=$promo_code->discount_percent*($this->price()+($delivery_price))/100;
+            $discount=($promo_code->discount_percent*$this->price())/100;
         }
 
         $provider_chat = Chat::where('order_id',$this['id'])->latest()->first();
