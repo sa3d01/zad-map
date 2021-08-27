@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Notification;
+use App\Models\Provider;
 use App\Models\Story;
 use App\Models\Wallet;
 use App\Models\WalletPay;
@@ -60,11 +61,11 @@ class StoryController extends MasterController
         $push = new PushNotification('fcm');
         $message = 'تم قبول حالتك';
         $usersTokens = [];
-        if ($story->user->device['id'] != 'null') {
-            $usersTokens[] = $story->user->device['id'];
+        $provider=Provider::where('user_id',$story->user_id)->first();
+        if ($provider->devices != null) {
+            $usersTokens = $provider->devices;
         }
-
-        $feed = $push->setMessage([
+        $push->setMessage([
             'notification' => array('title' => $message, 'sound' => 'default'),
             'data' => [
                 'title' => $message,
