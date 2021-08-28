@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Contact;
+use App\Models\Delivery;
+use App\Models\NormalUser;
 use App\Models\Notification;
+use App\Models\Provider;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 
@@ -32,6 +35,15 @@ class ContactController extends MasterController
         $data['title'] = 'رسالة إدارية';
         $data['note'] = $request['note'];
         $contact = Contact::find($id);
+
+        if($contact->user_type=='USER'){
+            $user_model=NormalUser::where('user_id',$contact->user_id)->first();
+        }elseif($contact->user_type=='DELIVERY'){
+            $user_model=Delivery::where('user_id',$contact->user_id)->first();
+        }else{
+            $user_model=Provider::where('user_id',$contact->user_id)->first();
+        }
+
         $push = new PushNotification('fcm');
         $push->setMessage([
             'notification' => array('title' => $data['note'], 'sound' => 'default'),
@@ -43,7 +55,7 @@ class ContactController extends MasterController
             ],
             'priority' => 'high',
         ])
-            ->setDevicesToken((array)$contact->user->device['id'])
+            ->setDevicesToken($user_model->devices)
             ->send()
             ->getFeedback();
         Notification::create([
