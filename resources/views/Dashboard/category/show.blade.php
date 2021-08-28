@@ -41,11 +41,11 @@
                                 @foreach($category->products as $key=>$product)
                                     <tr>
                                         <td>{{$product->id}}</td>
-                                        <td><a href="{{route('admin.provider.show',$product->user_id)}}">{{$product->user->name}}</a></td>
+                                        <td><a href="{{route('admin.provider.show',$product->user->provider->id)}}">{{$product->user->provider->name}}</a></td>
                                         <td>{{$product->name}}</td>
                                         <td>{{\Illuminate\Support\Str::limit($product->note,20)}}</td>
                                         <td>{{$product->price}}</td>
-                                        <td>{{$product->user->delivery_price??'ﻻ يوجد توصيل'}}</td>
+                                        <td>{{$product->user->provider->delivery_price??'ﻻ يوجد توصيل'}}</td>
                                         <td>
                                             <img class="card-img-top img-fluid" style="max-height: 100px;max-width: 100px" src="{{$product->images[0]}}">
                                         </td>
