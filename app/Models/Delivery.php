@@ -25,6 +25,8 @@ class Delivery extends Model
         'marketer_id',
         'approved',
         'reject_reason',
+        'request_update',
+        'data_for_update',
     ];
     protected $casts = [
         'last_login_at' => 'datetime',
