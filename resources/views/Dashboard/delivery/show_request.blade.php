@@ -46,8 +46,8 @@
                                 @foreach($user->data_for_update['banks'] as $key=>$bank)
                                     <tr>
                                         <td>{{$key}}</td>
-                                        <td>{{$bank->name}}</td>
-                                        <td>{{$bank->account_number}}</td>
+                                        <td>{{$bank['name']}}</td>
+                                        <td>{{$bank['account_number']}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
