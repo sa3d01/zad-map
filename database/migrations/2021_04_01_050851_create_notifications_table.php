@@ -21,7 +21,7 @@ class CreateNotificationsTable extends Migration
             $table->string('title')->nullable();
             $table->string('note')->nullable();
             $table->enum('read',['true','false'])->default('false');
-            $table->enum('type',['admin','app','order','delivery_request'])->default('app');
+            $table->enum('type',['admin','app','order','delivery_request','end_insurance_date'])->default('app');
             $table->enum('admin_notify_type',['single','user','provider','family','delivery','all'])->default('single');
             $table->json('receivers')->nullable();
             $table->json('more_details')->nullable();

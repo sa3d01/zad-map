@@ -71,27 +71,30 @@ abstract class MasterController extends Controller
                 //soon
                 $title='لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
             }
-            if ($delivery->devices!=null){
-                $push = new PushNotification('fcm');
-                $msg = [
-                    'notification' => array('title' => $title, 'sound' => 'default'),
-                    'data' => [
-                        'title' => $title,
-                        'body' => $title,
-                        'status' => 'end_insurance_date',
-                        'type' => 'app',
-                    ],
-                    'priority' => 'high',
-                ];
-                $push->setMessage($msg)
-                    ->setDevicesToken($delivery->devices)
-                    ->send();
+            $last_notify=Notification::where(['receiver_id'=>$car->user_id,'type'=>'end_insurance_date'])->latest()->first();
+            if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0){
+                if ($delivery->devices!=null){
+                    $push = new PushNotification('fcm');
+                    $msg = [
+                        'notification' => array('title' => $title, 'sound' => 'default'),
+                        'data' => [
+                            'title' => $title,
+                            'body' => $title,
+                            'status' => 'end_insurance_date',
+                            'type' => 'app',
+                        ],
+                        'priority' => 'high',
+                    ];
+                    $push->setMessage($msg)
+                        ->setDevicesToken($delivery->devices)
+                        ->send();
+                }
+                $notification['type'] = 'end_insurance_date';
+                $notification['title'] = $title;
+                $notification['note'] = $title;
+                $notification['receiver_id'] = $car->user_id;
+                Notification::create($notification);
             }
-            $notification['type'] = 'end_insurance_date';
-            $notification['title'] = $title;
-            $notification['note'] = $title;
-            $notification['receiver_id'] = $car->user_id;
-            Notification::create($notification);
         }
 
 
