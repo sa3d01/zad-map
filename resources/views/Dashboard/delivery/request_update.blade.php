@@ -1,5 +1,5 @@
 @extends('Dashboard.layouts.master')
-@section('title', 'المندوبيين المعلقيين')
+@section('title', 'المندوبيين الطالبين لتعديل ملفاتهم الشخصية')
 @section('styles')
     <link href="{{asset('assets/libs/datatables/dataTables.bootstrap4.css')}}" rel="stylesheet" type="text/css" />
     <link href="{{asset('assets/libs/datatables/responsive.bootstrap4.css')}}" rel="stylesheet" type="text/css" />
@@ -29,14 +29,14 @@
                                     <td>{{$row->city?$row->city->name:''}}</td>
                                     <td>
                                         <div class="button-list">
-                                            <a href="{{route('admin.delivery.show',$row->id)}}">
+                                            <a href="{{route('admin.delivery.show_request',$row->id)}}">
                                                 <button class="btn btn-info waves-effect waves-light"> <i class="fa fa-eye mr-1"></i> <span>عرض</span> </button>
                                             </a>
-                                            <form class="reject" data-href="{{ route('admin.delivery.reject',[$row->id]) }}" data-id="{{$row->id}}">
+                                            <form class="reject" data-href="{{ route('admin.delivery.reject_request',[$row->id]) }}" data-id="{{$row->id}}">
                                                 @csrf
                                                 <button class="btn btn-danger waves-effect waves-light"> <i class="fa fa-archive mr-1"></i> <span>رفض</span> </button>
                                             </form>
-                                            <form class="accept" data-id="{{$row->id}}" data-href="{{ route('admin.delivery.accept',[$row->id]) }}">
+                                            <form class="accept" data-id="{{$row->id}}" data-href="{{ route('admin.delivery.accept_request',[$row->id]) }}">
                                                 @csrf
                                                 <button class="btn btn-success waves-effect waves-light"> <i class="fa fa-user-clock mr-1"></i> <span>قبول</span> </button>
                                             </form>
