@@ -121,6 +121,7 @@ Route::group([
                 Route::put('/{id}', 'OrderController@update');
                 Route::post('/{id}/cancel', 'OrderStatusController@cancelOrder');
                 Route::post('/{id}/accept', 'OrderStatusController@acceptOrder');
+                Route::post('/{id}/deliver_by_user', 'OrderStatusController@deliverByUser');
                 Route::post('/{id}/payment', 'OrderStatusController@payOrder');
                 Route::post('/{id}/delivered', 'OrderStatusController@delivered');
                 Route::post('/{id}/rate', 'OrderController@rate');

@@ -104,6 +104,24 @@ class OrderStatusController extends MasterController
         }
     }
 
+    public function deliverByUser($id): object
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->sendError("هذا الطلب غير موجود");
+        }
+        if ( ($order->user_id != auth('api')->id() ) || ($order->deliver_by == 'delivery') ) {
+            return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
+        }
+        $order->update([
+           'delivery_by'=>'user'
+        ]);
+        $normal_user=NormalUser::where('user_id',$order->user_id)->first();
+        $provider_model=Provider::where('user_id',$order->provider_id)->first();
+        $title = sprintf('سيتم استلام الطلب من قبل المستخدم  %s , طلب رقم %s ',$normal_user->name,$order->id);
+        $this->notify_provider($provider_model,$title, $order);
+        return $this->sendResponse([], 'تم تعديل الطلب بنجاح');
+    }
     public function cancelOrder($id, CancelOrderRequest $request): object
     {
         $request->validated();
