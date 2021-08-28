@@ -17,6 +17,7 @@ use App\Models\OrderPay;
 use App\Models\Provider;
 use App\Models\Setting;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -82,7 +83,7 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if (auth('api')->user()->type=='DELIVERY'){
+        if (\request()->header('userType')=='DELIVERY'){
             if (($order->delivery_id != auth('api')->id()) || $order->status != 'in_progress') {
                 return $this->sendError("ﻻ يمكنك تأكيد استلام هذا الطلب");
             }
@@ -98,6 +99,9 @@ class OrderStatusController extends MasterController
                 return $this->sendError("تم تأكيد الاستلام من قبل");
             }
             $this->completeOrder($order);
+            $order->update([
+               'completed_at'=>Carbon::now()
+            ]);
             return $this->sendResponse([], 'تم استلام الطلب بنجاح');
         }else{
             return $this->sendError("ﻻ يمكنك تأكيد استلام هذا الطلب");

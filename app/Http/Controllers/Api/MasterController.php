@@ -40,7 +40,7 @@ abstract class MasterController extends Controller
             if (Carbon::now()->gt(Carbon::parse($order->updated_at)->addMinutes($notify_paid_period))) {
                 $title='يرجي دفع المستحقات المعلقة بالطلب رقم #'.$order->id;
                 $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-                $this->notify_user($title,$normal_user,$order);
+                $this->notify_user($normal_user,$title,$order);
                 $order->update();
             }
         }
@@ -54,7 +54,7 @@ abstract class MasterController extends Controller
                 $order->update([
                    'delivery_approved_expired'=>true
                 ]);
-                $this->notify_user($title,$normal_user,$order);
+                $this->notify_user($normal_user,$title,$order);
             }
         }
 

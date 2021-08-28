@@ -21,7 +21,8 @@ class CreateOrdersTable extends Migration
             $table->enum('deliver_by',['user','provider','delivery'])->default('user');
             $table->unsignedBigInteger('delivery_id')->nullable();
             $table->boolean('delivery_approved_expired')->default(0);
-            $table->timestamp('deliver_at')->nullable();
+            $table->dateTime('deliver_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
             $table->char('promo_code')->nullable();
             $table->string('address')->nullable();
             $table->timestamps();
