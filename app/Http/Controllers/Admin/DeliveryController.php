@@ -29,6 +29,11 @@ class DeliveryController extends MasterController
         $rows = $this->model->where('approved', 0)->latest()->get();
         return view('Dashboard.delivery.binned', compact('rows'));
     }
+    public function request_update()
+    {
+        $rows = $this->model->where('request_update', 1)->latest()->get();
+        return view('Dashboard.delivery.request_update', compact('rows'));
+    }
 
     public function show($id): object
     {
@@ -74,6 +79,45 @@ class DeliveryController extends MasterController
         $user->refresh();
         return redirect()->back()->with('updated');
     }
+    public function reject_request($id, Request $request): object
+    {
+        $delivery = $this->model->find($id);
+        $user = User::find($delivery->user_id);
+        $delivery->update(
+            [
+                'request_update' => 0,
+                'data_for_update' => null,
+            ]
+        );
+        $delivery->refresh();
+        $push = new PushNotification('fcm');
+        $message = 'تم رفض تعديل بياناتك للسبب التالي :' . $request['reject_reason'];
+        $usersTokens = [];
+        if ($delivery->devices != null) {
+            $usersTokens = $delivery->devices;
+        }
+        $push->setMessage([
+            'notification' => array('title' => $message, 'sound' => 'default'),
+            'data' => [
+                'title' => $message,
+                'body' => $message,
+                'status' => 'admin',
+                'type' => 'admin',
+            ],
+            'priority' => 'high',
+        ])
+            ->setDevicesToken($usersTokens)
+            ->send()
+            ->getFeedback();
+        Notification::create([
+            'receiver_id' => $delivery->user_id,
+            'admin_notify_type' => 'single',
+            'title' => $message,
+            'note' => $message,
+        ]);
+        $user->refresh();
+        return redirect()->back()->with('updated');
+    }
 
     public function accept($id)
     {
@@ -107,6 +151,48 @@ class DeliveryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'admin_notify_type' => 'single',
+            'title' => $message,
+            'note' => $message,
+        ]);
+        $user->refresh();
+        return redirect()->back()->with('updated');
+    }
+    public function accept_request($id)
+    {
+        $delivery = $this->model->find($id);
+        $user = User::find($delivery->user_id);
+        $this->updateCarData($delivery->data_for_update['car'],$user);
+        $this->updateBankData($delivery->data_for_update['banks'], $user,'DELIVERY');
+        $delivery->update($delivery->data_for_update['data']);
+        $delivery->refresh();
+        $delivery->update(
+            [
+                'request_update' => 0,
+                'data_for_update' => null,
+            ]
+        );
+        $push = new PushNotification('fcm');
+        $message = 'تم قبول تعديل ملفك الشخصي بنجاح :)';
+        $usersTokens = [];
+        if ($delivery->devices != null) {
+            $usersTokens = $delivery->devices;
+        }
+        $push->setMessage([
+            'notification' => array('title' => $message, 'sound' => 'default'),
+            'data' => [
+                'title' => $message,
+                'body' => $message,
+                'status' => 'admin',
+                'type' => 'admin',
+            ],
+            'priority' => 'high',
+        ])
+            ->setDevicesToken($usersTokens)
+            ->send()
+            ->getFeedback();
+        Notification::create([
+            'receiver_id' => $user->id,
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,

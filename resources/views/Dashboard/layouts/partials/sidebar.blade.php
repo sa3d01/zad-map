@@ -45,6 +45,7 @@
             </a>
             <ul class="nav-second-level" aria-expanded="false">
                 <li><a href="{{route('admin.provider.binned')}}">طلبات الإنضمام</a></li>
+                <li><a href="{{route('admin.provider.request_update')}}">طلبات تعديل الملف الشخصي</a></li>
                 <li><a href="{{route('admin.provider.index')}}">مزودى الخدمات بالتطبيق</a></li>
                 <li><a href="{{route('admin.story.binned')}}">طلبات إضافة إستورى</a></li>
             </ul>
@@ -58,6 +59,7 @@
             </a>
             <ul class="nav-second-level" aria-expanded="false">
                 <li><a href="{{route('admin.delivery.binned')}}">طلبات الإنضمام</a></li>
+                <li><a href="{{route('admin.delivery.request_update')}}">طلبات تعديل الملف الشخصي</a></li>
                 <li><a href="{{route('admin.delivery.index')}}"> عرض الكل</a></li>
             </ul>
         </li>

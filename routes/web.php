@@ -48,16 +48,24 @@ Route::prefix('/admin')->name('admin.')->namespace('App\Http\Controllers\Admin')
 
 
     Route::get('provider/binned', 'ProviderController@binned')->name('provider.binned');
+    Route::get('provider/request_update', 'ProviderController@request_update')->name('provider.request_update');
     Route::get('provider/rejected', 'ProviderController@rejected')->name('provider.rejected');
+    Route::get('provider/{id}/show_request', 'ProviderController@show_request')->name('provider.show_request');
     Route::resource('provider', 'ProviderController');
     Route::get('provider/{id}/reject', 'ProviderController@reject')->name('provider.reject');
+    Route::get('provider/{id}/reject_request', 'ProviderController@reject_request')->name('provider.reject_request');
+    Route::get('provider/{id}/accept_request', 'ProviderController@accept_request')->name('provider.accept_request');
     Route::get('provider/{id}/accept', 'ProviderController@accept')->name('provider.accept');
 
 
     Route::get('delivery/binned', 'DeliveryController@binned')->name('delivery.binned');
+    Route::get('delivery/request_update', 'DeliveryController@request_update')->name('delivery.request_update');
+    Route::get('delivery/{id}/show_request', 'DeliveryController@show_request')->name('delivery.show_request');
     Route::resource('delivery', 'DeliveryController');
     Route::get('delivery/{id}/reject', 'DeliveryController@reject')->name('delivery.reject');
+    Route::get('delivery/{id}/reject_request', 'DeliveryController@reject_request')->name('delivery.reject_request');
     Route::get('delivery/{id}/accept', 'DeliveryController@accept')->name('delivery.accept');
+    Route::get('delivery/{id}/accept_request', 'DeliveryController@accept_request')->name('delivery.accept_request');
 
     Route::resource('category', 'CategoryController');
     Route::post('category/{id}/ban', 'CategoryController@ban')->name('category.ban');
