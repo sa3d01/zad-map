@@ -35,15 +35,22 @@ abstract class MasterController extends Controller
                 ]);
             }
         }
-
         $notify_paid_period=(int)Setting::value('notify_paid_period');
         $orders=Order::where('status','pre_paid')->get();
         foreach ($orders as $order){
             if (Carbon::now()->gt(Carbon::parse($order->updated_at)->addMinutes($notify_paid_period))) {
                 $title='يرجي دفع المستحقات المعلقة بالطلب رقم #'.$order->id;
                 $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-                $this->notify_user($normal_user,$title,$order);
-                $order->update();
+                $last_notify=Notification::where(['receiver_id'=>$order->user_id,'type'=>'order'])->where('title',$title)->latest()->first();
+                if ($last_notify){
+                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15){
+                        $this->notify_user($normal_user,$title,$order);
+                        $order->update();
+                    }
+                }else{
+                    $order->update();
+                    $this->notify_user($normal_user,$title,$order);
+                }
             }
         }
 
@@ -53,10 +60,17 @@ abstract class MasterController extends Controller
             if (Carbon::now()->gt(Carbon::parse($order->created_at)->addMinutes($period_to_delivery_approved))) {
                 $title='لا يوجد مندوبين حاليا لتوصيل طلبك #'.$order->id;
                 $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-                $order->update([
-                   'delivery_approved_expired'=>true
-                ]);
-                $this->notify_user($normal_user,$title,$order);
+                $last_notify=Notification::where(['receiver_id'=>$order->user_id,'type'=>'order'])->where('title',$title)->latest()->first();
+                if ($last_notify){
+                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15){
+                        $this->notify_user($normal_user,$title,$order);
+                    }
+                }else{
+                    $order->update([
+                        'delivery_approved_expired'=>true
+                    ]);
+                    $this->notify_user($normal_user,$title,$order);
+                }
             }
         }
 
@@ -72,7 +86,31 @@ abstract class MasterController extends Controller
                 $title='لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
             }
             $last_notify=Notification::where(['receiver_id'=>$car->user_id,'type'=>'end_insurance_date'])->latest()->first();
-            if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0){
+            if ($last_notify){
+                if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0){
+                    if ($delivery->devices!=null){
+                        $push = new PushNotification('fcm');
+                        $msg = [
+                            'notification' => array('title' => $title, 'sound' => 'default'),
+                            'data' => [
+                                'title' => $title,
+                                'body' => $title,
+                                'status' => 'end_insurance_date',
+                                'type' => 'app',
+                            ],
+                            'priority' => 'high',
+                        ];
+                        $push->setMessage($msg)
+                            ->setDevicesToken($delivery->devices)
+                            ->send();
+                    }
+                    $notification['type'] = 'end_insurance_date';
+                    $notification['title'] = $title;
+                    $notification['note'] = $title;
+                    $notification['receiver_id'] = $car->user_id;
+                    Notification::create($notification);
+                }
+            }else{
                 if ($delivery->devices!=null){
                     $push = new PushNotification('fcm');
                     $msg = [
@@ -95,6 +133,7 @@ abstract class MasterController extends Controller
                 $notification['receiver_id'] = $car->user_id;
                 Notification::create($notification);
             }
+
         }
 
 
