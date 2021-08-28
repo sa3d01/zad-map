@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\NormalUser;
 use App\Models\User;
 
 class UserController extends MasterController
 {
-    public function __construct(User $model)
+    public function __construct(NormalUser $model)
     {
         $this->model = $model;
 //        $this->middleware('permission:users');
@@ -15,7 +16,7 @@ class UserController extends MasterController
 
     public function index()
     {
-        $rows = $this->model->where('type','USER')->latest()->get();
+        $rows = $this->model->latest()->get();
         return view('Dashboard.user.index', compact('rows'));
     }
     public function show($id):object
