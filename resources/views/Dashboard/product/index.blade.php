@@ -28,8 +28,8 @@
                             <tbody>
                             @foreach($rows as $row)
                                 <tr>
-                                    <td><a href="{{route('admin.provider.show',$row->user_id)}}"> {{$row->user->name}}</a></td>
-                                    <td>{{$row->user->getTypeString()}}</td>
+                                    <td><a href="{{route('admin.provider.show',$row->user_id)}}"> {{$row->user->provider->name}}</a></td>
+                                    <td>{{$row->user->provider->getTypeString()}}</td>
                                     <td>{{$row->name}}</td>
                                     <td>
                                         <img class="card-img-top img-fluid" style="max-height: 100px;max-width: 100px" src="{{$row->images[0]}}">

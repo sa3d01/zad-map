@@ -37,7 +37,7 @@
                             <p class="card-text">الوصف : {{$product->note}}</p>
                         </div>
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>مزود الخدمة : </strong><span><a href="{{route('admin.provider.show',$product->user_id)}}"> {{$product->user->name}}</a></span></li>
+                            <li class="list-group-item"><strong>مزود الخدمة : </strong><span><a href="{{route('admin.provider.show',$product->user_id)}}"> {{$product->user->provider->name}}</a></span></li>
                             <li class="list-group-item"><strong>التصنيف : </strong><span>{{$product->category->name}}</span></li>
                             <li class="list-group-item"><strong>السعر : </strong><span>{{$product->price}}</span></li>
                             <li class="list-group-item"><strong>تاريخ الإضافة : </strong><span>{{$product->created_at}}</span></li>
