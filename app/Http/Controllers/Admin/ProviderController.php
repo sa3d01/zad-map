@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Bank;
+use App\Models\Car;
 use App\Models\Notification;
 use App\Models\Provider;
 use App\Models\User;
@@ -13,7 +14,6 @@ use Illuminate\Http\Request;
 
 class ProviderController extends MasterController
 {
-    use UserBanksAndCarsTrait;
     public function __construct(Provider $model)
     {
         $this->model = $model;
@@ -21,6 +21,24 @@ class ProviderController extends MasterController
         parent::__construct();
     }
 
+    private function updateBankData($banks_data,$user,$user_type)
+    {
+        $banks=$user->banks();
+        foreach ($banks as $bank){
+            $bank->delete();
+        }
+        foreach ($banks_data as $bank) {
+            $bank=Bank::create([
+                'user_id' =>$user->id,
+                'user_type' =>$user_type,
+                'name' => $bank['name'],
+                'account_number' => $bank['account_number'],
+                'account_name' => $bank['account_name'],
+            ]);
+            $bank->refresh();
+        }
+        $user->refresh();
+    }
     public function index()
     {
         $rows = Provider::where('approved', 1)->latest()->get();
@@ -179,7 +197,6 @@ class ProviderController extends MasterController
         $provider = $this->model->find($id);
         $user = User::find($provider->user_id);
         $this->updateBankData($provider->data_for_update['banks'], $user, $provider->type);
-
         $provider_data['name']=$provider->data_for_update['data']['name'];
         $provider_data['phone']=$provider->data_for_update['data']['phone'];
         $provider_data['city_id']=$provider->data_for_update['data']['city_id'];

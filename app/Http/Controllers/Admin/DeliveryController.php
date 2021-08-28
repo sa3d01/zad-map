@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Bank;
+use App\Models\Car;
 use App\Models\Delivery;
 use App\Models\Notification;
 use App\Models\User;
@@ -18,6 +20,44 @@ class DeliveryController extends MasterController
         parent::__construct();
     }
 
+    private function updateCarData($car_data,$user)
+    {
+        $car = Car::where('user_id', $user->id)->latest()->first();
+        if (!$car) {
+            $car = Car::create([
+                'user_id' => $user->id
+            ]);
+        }
+        $car->update([
+            'brand' => $car_data['brand'],
+            'note' => $car_data['note'],
+            'color' => $car_data['color'],
+            'year' => $car_data['year'],
+            'identity' => $car_data['identity'],
+            'end_insurance_date' => $car_data['end_insurance_date'],
+            'insurance_image' => $car_data['insurance_image'],
+            'identity_image' => $car_data['identity_image'],
+            'drive_image' => $car_data['drive_image'],
+        ]);
+    }
+    private function updateBankData($banks_data,$user)
+    {
+        $banks=$user->banks();
+        foreach ($banks as $bank){
+            $bank->delete();
+        }
+        foreach ($banks_data as $bank) {
+            $bank=Bank::create([
+                'user_id' =>$user->id,
+                'user_type' =>'DELIVERY',
+                'name' => $bank['name'],
+                'account_number' => $bank['account_number'],
+                'account_name' => $bank['account_name'],
+            ]);
+            $bank->refresh();
+        }
+        $user->refresh();
+    }
     public function index()
     {
         $rows = $this->model->where('approved', 1)->latest()->get();
@@ -163,7 +203,7 @@ class DeliveryController extends MasterController
         $delivery = $this->model->find($id);
         $user = User::find($delivery->user_id);
         $this->updateCarData($delivery->data_for_update['car'],$user);
-        $this->updateBankData($delivery->data_for_update['banks'], $user,'DELIVERY');
+        $this->updateBankData($delivery->data_for_update['banks'], $user);
         $delivery_data['name']=$delivery->data_for_update['data']['name'];
         $delivery_data['phone']=$delivery->data_for_update['data']['phone'];
         $delivery_data['city_id']=$delivery->data_for_update['data']['city_id'];
