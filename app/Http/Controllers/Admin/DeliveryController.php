@@ -164,7 +164,12 @@ class DeliveryController extends MasterController
         $user = User::find($delivery->user_id);
         $this->updateCarData($delivery->data_for_update['car'],$user);
         $this->updateBankData($delivery->data_for_update['banks'], $user,'DELIVERY');
-        $delivery->update($delivery->data_for_update['data']);
+        $delivery_data['name']=$delivery->data_for_update['data']['name'];
+        $delivery_data['phone']=$delivery->data_for_update['data']['phone'];
+        $delivery_data['city_id']=$delivery->data_for_update['data']['city_id'];
+        $delivery_data['district_id']=$delivery->data_for_update['data']['district_id'];
+        $delivery_data['last_ip']=$delivery->data_for_update['data']['last_ip'];
+        $delivery->update($delivery_data);
         $delivery->refresh();
         $delivery->update(
             [
