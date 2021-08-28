@@ -55,7 +55,8 @@ class SettingController extends MasterController
             }
             $data_for_update['data']=$data;
             $provider->update([
-                'request_update'=>1
+                'request_update'=>1,
+                'data_for_update'=>$data_for_update
             ]);
             return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         } elseif (request()->header('userType') == 'DELIVERY') {
@@ -71,7 +72,8 @@ class SettingController extends MasterController
             }
             $data_for_update['data']=$data;
             $delivery->update([
-                'request_update'=>1
+                'request_update'=>1,
+                'data_for_update'=>$data_for_update
             ]);
             return $this->sendResponse(new DeliveryLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         } else {
