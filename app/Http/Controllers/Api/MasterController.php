@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResourse;
 use App\Models\CancelOrder;
+use App\Models\Car;
+use App\Models\Delivery;
 use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Order;
@@ -56,6 +58,40 @@ abstract class MasterController extends Controller
                 ]);
                 $this->notify_user($normal_user,$title,$order);
             }
+        }
+
+        $cars=Car::all();
+        foreach ($cars as $car)
+        {
+            $delivery=Delivery::where('user_id',$car->user_id)->first();
+            if (Carbon::parse($car->end_insurance_date)->format('Y-m-d') > Carbon::now()->format('Y-m-d')){
+                //expired
+                $title='لقد انتهي ميعاد التأمين الخاص بسيارتك ';
+            }elseif (Carbon::now()->diffInDays(Carbon::parse($car->end_insurance_date)) < 15){
+                //soon
+                $title='لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
+            }
+            if ($delivery->devices!=null){
+                $push = new PushNotification('fcm');
+                $msg = [
+                    'notification' => array('title' => $title, 'sound' => 'default'),
+                    'data' => [
+                        'title' => $title,
+                        'body' => $title,
+                        'status' => 'end_insurance_date',
+                        'type' => 'app',
+                    ],
+                    'priority' => 'high',
+                ];
+                $push->setMessage($msg)
+                    ->setDevicesToken($delivery->devices)
+                    ->send();
+            }
+            $notification['type'] = 'end_insurance_date';
+            $notification['title'] = $title;
+            $notification['note'] = $title;
+            $notification['receiver_id'] = $car->user_id;
+            Notification::create($notification);
         }
 
 
