@@ -39,29 +39,40 @@ class SettingController extends MasterController
         $user = auth('api')->user();
         $data=$request->validated();
         $data['district_id'] = $this->getDistrictId($request['district']);
-        $data['user_id'] = $user->id;
+        $data['user_id'] = auth('api')->id();
         $data['last_ip'] = $request->ip();
         $data['devices'] = $request['device.id'];
         if (request()->header('userType') == 'USER') {
-            $user->normal_user->update($data);
+            $normal_user=NormalUser::where('user_id',auth('api')->id())->first();
+            $normal_user->update($data);
             return $this->sendResponse(new UserLoginResourse($user),'تم التعديل بنجاح :)');
         } elseif (request()->header('userType') == 'PROVIDER' || request()->header('userType') == 'FAMILY') {
+            $provider=Provider::where('user_id',auth('api')->id())->first();
+            $data_for_update=$provider->data_for_update;
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->header('userType'));
+                $data_for_update['banks']=$request['banks'];
+//                $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
-            if ($request['car']){
-                $this->updateCarData($request->validated(),$user);
-            }
-            $user->provider->update($data);
+            $data_for_update['data']=$data;
+            $provider->update([
+                'request_update'=>1
+            ]);
             return $this->sendResponse(new ProviderLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         } elseif (request()->header('userType') == 'DELIVERY') {
+            $delivery=Delivery::where('user_id',auth('api')->id())->first();
+            $data_for_update=$delivery->data_for_update;
             if ($request['banks']) {
-                $this->updateBankData($request->validated(), $user, request()->header('userType'));
+                $data_for_update['banks']=$request['banks'];
+//                $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             if ($request['car']){
-                $this->updateCarData($request->validated(),$user);
+                $data_for_update['car']=$request['car'];
+//                $this->updateCarData($request->validated(),$user);
             }
-            $user->delivery->update($data);
+            $data_for_update['data']=$data;
+            $delivery->update([
+                'request_update'=>1
+            ]);
             return $this->sendResponse(new DeliveryLoginResourse($user),'سيتم مراجعة التعديلات من قبل الإدارة أولا :)');
         } else {
             return $this->sendError('تأكد من اختيار نوع المستخدم');
