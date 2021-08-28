@@ -80,6 +80,11 @@ class DeliveryController extends MasterController
         $user = $this->model->find($id);
         return view('Dashboard.delivery.show', compact('user'));
     }
+    public function show_request($id): object
+    {
+        $user = $this->model->find($id);
+        return view('Dashboard.delivery.show_request', compact('user'));
+    }
 
     public function reject($id, Request $request): object
     {
