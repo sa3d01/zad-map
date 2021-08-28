@@ -21,7 +21,7 @@ class ContactController extends MasterController
 
     public function contactTypes(): object
     {
-        $data = ContactType::all();
+        $data = ContactType::whereStatus(1)->get();
         $results = [];
         foreach ($data as $datum) {
             $result['id'] = $datum->id;
@@ -35,6 +35,7 @@ class ContactController extends MasterController
     {
         $data = $request->validated();
         $data['user_id'] = auth('api')->id();
+        $data['user_type'] = request()->header('userType');
         $contact=Contact::create($data);
         $this->notifyAdmin($contact);
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار رد الإدارة");

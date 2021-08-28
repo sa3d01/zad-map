@@ -19,6 +19,7 @@
                                 <th>صاحب الطلب</th>
                                 <th>تاريخ الطلب</th>
                                 <th>تاريخ الإستلام</th>
+                                <th>تاريخ الانتهاء</th>
                                 <th>مزود الخدمة</th>
                                 <th>سعر الطلب</th>
                                 <th>العمليات المتاحة</th>
@@ -28,10 +29,11 @@
                             @foreach($rows as $row)
                                 <tr>
                                     <td>{{$row->id}}</td>
-                                    <td><a href="{{route('admin.user.show',$row->user_id)}}">{{$row->user->name}}</a></td>
+                                    <td><a href="{{route('admin.user.show',$row->user->normal_user->id)}}">{{$row->user->normal_user->name}}</a></td>
                                     <td>{{\Carbon\Carbon::parse($row->created_at)->format('Y-M-d')}}</td>
                                     <td>{{\Carbon\Carbon::parse($row->deliver_at)->format('Y-M-d')}}</td>
-                                    <td><a href="{{route('admin.provider.show',$row->provider_id)}}">{{$row->provider->name}}</a></td>
+                                    <td>{{\Carbon\Carbon::parse($row->completed_at)->format('Y-M-d H:i')}}</td>
+                                    <td><a href="{{route('admin.provider.show',$row->provider->provider->id)}}">{{$row->provider->provider->name}}</a></td>
                                     <td>{{$row->price()}}</td>
                                     <td>
                                         <div class="button-list">

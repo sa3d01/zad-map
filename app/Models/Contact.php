@@ -11,6 +11,7 @@ class Contact extends Model
     use HasFactory,ModelBaseFunctions;
     protected $fillable = [
         'user_id',
+        'user_type',
         'contact_type_id',
         'message',
         'read',

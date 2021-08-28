@@ -32,13 +32,22 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{route('admin.user.show',$row->user_id)}}">
-                                            {{$row->user->name}}
+                                        <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">
+                                            {{$row->user->normal_user->name}}
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="{{route('admin.provider.show',$row->rated_id)}}">
-                                            {{$row->rated->name}}
+                                        @php
+                                            if (\App\Models\Provider::where('user_id',$row->rated_id)->first()){
+                                                $rated_model=\App\Models\Provider::where('user_id',$row->rated_id)->first();
+                                                $rated_show=route('admin.provider.show',$rated_model->id);
+                                            }else{
+                                                $rated_model=\App\Models\Delivery::where('user_id',$row->rated_id)->first();
+                                                $rated_show=route('admin.delivery.show',$rated_model->id);
+                                            }
+                                        @endphp
+                                        <a href="{{$rated_show}}">
+                                            {{$rated_model->name}}
                                         </a>
                                     </td>
                                     <td>

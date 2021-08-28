@@ -27,8 +27,8 @@
                             @foreach($rows as $row)
                                 <tr>
                                     <td>
-                                        <a href="{{route('admin.user.show',$row->user_id)}}">
-                                            {{$row->user->name}}
+                                        <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">
+                                            {{$row->user->normal_user->name}}
                                         </a>
                                     </td>
                                     <td>{{$row->bank->name}}</td>

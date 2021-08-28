@@ -26,17 +26,17 @@
                             @foreach($rows as $row)
                                 <tr>
                                     <td>
-                                        @if($row->user->type=='USER')
-                                            <a href="{{route('admin.user.show',$row->user_id)}}">
-                                                {{$row->user->name}}
+                                        @if($row->user_type=='USER')
+                                            <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">
+                                                {{$row->user->normal_user->name}}
                                             </a>
-                                        @elseif($row->user->type=='PROVIDER')
-                                            <a href="{{route('admin.provider.show',$row->user_id)}}">
-                                                {{$row->user->name}}
+                                        @elseif($row->user_type=='DELIVERY')
+                                            <a href="{{route('admin.delivery.show',$row->user->delivery->id)}}">
+                                                {{$row->user->delivery->name}}
                                             </a>
                                         @else
-                                            <a href="{{route('admin.delivery.show',$row->user_id)}}">
-                                                {{$row->user->name}}
+                                            <a href="{{route('admin.provider.show',$row->user->provider->id)}}">
+                                                {{$row->user->provider->name}}
                                             </a>
                                         @endif
                                     </td>

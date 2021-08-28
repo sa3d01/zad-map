@@ -23,16 +23,16 @@
                                     <div class="float-left mt-3">
                                         <strong> صاحب الطلب: </strong>
                                         <p>
-                                            <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                            <a href="{{route('admin.user.show',$order->user->normal_user->id)}}">{{$order->user->normal_user->name}}</a>
                                         </p>
                                         <strong> مزود الخدمة: </strong>
                                         <p>
-                                            <a href="{{route('admin.provider.show',$order->provider_id)}}">{{$order->provider->name}}</a>
+                                            <a href="{{route('admin.provider.show',$order->provider->provider->id)}}">{{$order->provider->provider->name}}</a>
                                         </p>
                                         @if($order->delivery_id!=null)
                                             <strong> مندوب التوصيل : </strong>
                                             <p>
-                                                <a href="{{route('admin.delivery.show',$order->delivery_id)}}">{{$order->delivery->name}}</a>
+                                                <a href="{{route('admin.delivery.show',$order->delivery->delivery->id)}}">{{$order->delivery->delivery->name}}</a>
                                             </p>
                                         @endif
                                     </div>
@@ -44,6 +44,10 @@
                                         <strong> تاريخ الاستلام: </strong>
                                         <p>
                                             {{\Carbon\Carbon::parse($order->deliver_at)->format('Y-M-d')}}
+                                        </p>
+                                        <strong> تاريخ الانتهاء: </strong>
+                                        <p>
+                                            {{\Carbon\Carbon::parse($order->completed_at)->format('Y-M-d H:i')}}
                                         </p>
                                         <p class="m-t-10"><strong>حالة الطلب: </strong>
                                             <span class="badge @if($order->status=='rejected') badge-danger @elseif($order->status=='completed') badge-success @elseif($order->status=='new') badge-primary @elseif($order->status=='in_progress') badge-purple @else badge-warning @endif">{{$order->getStatusArabic()}}</span>
@@ -94,16 +98,19 @@
                                         @php
                                             $canceller_id=\App\Models\CancelOrder::where('order_id',$order->id)->latest()->value('user_id');
                                             $canceller=\App\Models\User::find($canceller_id);
-                                            if ($canceller->type=='PROVIDER'){
-                                                $canceller_show=route('admin.provider.show',$canceller_id);
-                                            }elseif ($canceller->type=='USER'){
-                                                $canceller_show=route('admin.user.show',$canceller_id);
+                                            if (\App\Models\Provider::where('user_id',$canceller_id)->first()){
+                                                $canceller_model=\App\Models\Provider::where('user_id',$canceller_id)->first();
+                                                $canceller_show=route('admin.provider.show',$canceller_model->id);
+                                            }elseif (\App\Models\NormalUser::where('user_id',$canceller_id)->first()){
+                                                $canceller_model=\App\Models\NormalUser::where('user_id',$canceller_id)->first();
+                                                $canceller_show=route('admin.user.show',$canceller_model->id);
                                             }else{
-                                                $canceller_show=route('admin.delivery.show',$canceller_id);
+                                                $canceller_model=\App\Models\Delivery::where('user_id',$canceller_id)->first();
+                                                $canceller_show=route('admin.delivery.show',$canceller_model->id);
                                             }
                                         @endphp
                                         <small>
-                                            <a href="{{$canceller_show}}">{{$canceller->name}}</a>
+                                            <a href="{{$canceller_show}}">{{$canceller_model->name}}</a>
                                         </small>
                                     </div>
                                 </div>
@@ -116,12 +123,12 @@
                                     {
                                         $delivery_price=\App\Models\DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery_id])->value('delivery_price');
                                     }else{
-                                        $delivery_price=$order->orderItems->first()->cartItem->product->user->delivery_price;
+                                        $delivery_price=$order->orderItems->first()->cartItem->product->user->provider->delivery_price;
                                     }
                                     $promo_code = \App\Models\PromoCode::where('code', $order->promo_code)->first();
                                     $discount=0;
                                     if ($promo_code){
-                                        $discount=$promo_code->discount_percent*($order->price()+($delivery_price))/100;
+                                        $discount=($promo_code->discount_percent*$order->price())/100;
                                     }
                                 @endphp
                                 <div class="col-xl-3 col-6 offset-xl-3">
