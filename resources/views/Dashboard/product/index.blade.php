@@ -28,7 +28,7 @@
                             <tbody>
                             @foreach($rows as $row)
                                 <tr>
-                                    <td><a href="{{route('admin.provider.show',$row->user_id)}}"> {{$row->user->provider->name}}</a></td>
+                                    <td><a href="{{route('admin.provider.show',$row->user->provider->id)}}"> {{$row->user->provider->name}}</a></td>
                                     <td>{{$row->user->provider->getTypeString()}}</td>
                                     <td>{{$row->name}}</td>
                                     <td>
