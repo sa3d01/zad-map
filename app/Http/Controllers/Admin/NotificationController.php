@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Category;
+use App\Models\Delivery;
+use App\Models\NormalUser;
 use App\Models\Notification;
+use App\Models\Provider;
 use App\Models\User;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
@@ -46,17 +49,23 @@ class NotificationController extends MasterController
         $data['title']='رسالة إدارية';
         $data['note']=$request['note'];
         foreach ($request['types'] as $type){
-            $users=User::where('type',$type)->get();
+            if ($type=='USER'){
+                $users=NormalUser::all();
+            }elseif ($type=='DELIVERY'){
+                $users=Delivery::all();
+            }else{
+                $users=Provider::all();
+            }
             $usersTokens=[];
             $usersIds=[];
             foreach ($users as $user){
-                if ($user->device['id'] !='null'){
-                    $usersTokens[]=$user->device['id'];
-                    $usersIds[]=$user->id;
+                if ($user->devices !=null){
+                    $usersTokens[]=$user->devices;
+                    $usersIds[]=$user->user->id;
                 }
             }
             $push = new PushNotification('fcm');
-            $feed=$push->setMessage([
+            $push->setMessage([
                 'notification' => array('title'=>$data['note'], 'sound' => 'default'),
                 'data' => [
                     'title' => $data['note'],
