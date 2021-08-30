@@ -28,7 +28,11 @@ class UserLoginResourse extends JsonResource
         }else{
             $old_devices=[];
         }
-        $devices=array_merge($devices,$old_devices);
+        if (!in_array($request['device.id'],$old_devices)){
+            $devices=array_merge($devices,$old_devices);
+        }else{
+            $devices=$old_devices;
+        }
 
         $normal_user->update([
             'devices' => $devices,
