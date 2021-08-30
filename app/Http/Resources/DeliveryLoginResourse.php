@@ -29,7 +29,7 @@ class DeliveryLoginResourse extends JsonResource
         } else {
             $car_model = new CarResourse($car);
         }
-        $devices[]=$request['device.id'];
+        $new_device=$request['device.id'];
         if ($delivery->devices!=null && is_array($delivery->devices)){
             $old_devices=$delivery->devices;
         }elseif ($delivery->devices!=null){
@@ -38,7 +38,7 @@ class DeliveryLoginResourse extends JsonResource
             $old_devices=[];
         }
         if (!in_array($request['device.id'],$old_devices)){
-            $devices=array_merge($devices,$old_devices);
+            $devices=array_merge((array)$new_device,$old_devices);
         }else{
             $devices=$old_devices;
         }

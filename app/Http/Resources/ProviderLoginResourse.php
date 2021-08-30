@@ -24,7 +24,7 @@ class ProviderLoginResourse extends JsonResource
         $provider=Provider::where('user_id',$this->id)->first();
         $token = auth('api')->login(User::find($this->id));
 
-        $devices[]=$request['device.id'];
+        $new_device=$request['device.id'];
         if ($provider->devices!=null && is_array($provider->devices)){
             $old_devices=$provider->devices;
         }elseif ($provider->devices!=null){
@@ -33,7 +33,7 @@ class ProviderLoginResourse extends JsonResource
             $old_devices=[];
         }
         if (!in_array($request['device.id'],$old_devices)){
-            $devices=array_merge($devices,$old_devices);
+            $devices=array_merge((array)$new_device,$old_devices);
         }else{
             $devices=$old_devices;
         }
