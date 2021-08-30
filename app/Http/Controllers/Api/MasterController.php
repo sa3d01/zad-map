@@ -13,8 +13,6 @@ use App\Models\Order;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
-use Illuminate\Http\Resources\Json\JsonResource;
-use phpDocumentor\Reflection\Types\Object_;
 
 abstract class MasterController extends Controller
 {
@@ -22,11 +20,11 @@ abstract class MasterController extends Controller
 
     public function __construct()
     {
-        $orders=Order::whereIn('status',['new','pre_paid','in_progress','delivered_to_delivery'])->get();
-        foreach ($orders as $order){
-            if (Carbon::parse($order->deliver_at)->format('Y-m-d') < Carbon::now()->format('Y-m-d')){
+        $orders = Order::whereIn('status', ['new', 'pre_paid', 'in_progress', 'delivered_to_delivery'])->get();
+        foreach ($orders as $order) {
+            if (Carbon::parse($order->deliver_at)->format('Y-m-d') < Carbon::now()->format('Y-m-d')) {
                 $order->update([
-                   'status'=>'rejected'
+                    'status' => 'rejected'
                 ]);
                 CancelOrder::create([
                     'user_id' => $order->user_id,
@@ -35,60 +33,59 @@ abstract class MasterController extends Controller
                 ]);
             }
         }
-        $notify_paid_period=(int)Setting::value('notify_paid_period');
-        $orders=Order::where('status','pre_paid')->get();
-        foreach ($orders as $order){
+        $notify_paid_period = (int)Setting::value('notify_paid_period');
+        $orders = Order::where('status', 'pre_paid')->get();
+        foreach ($orders as $order) {
             if (Carbon::now()->gt(Carbon::parse($order->updated_at)->addMinutes($notify_paid_period))) {
-                $title='يرجي دفع المستحقات المعلقة بالطلب رقم #'.$order->id;
-                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-                $last_notify=Notification::where(['receiver_id'=>$order->user_id,'type'=>'order'])->where('title',$title)->latest()->first();
-                if ($last_notify){
-                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15){
-                        $this->notify_user($normal_user,$title,$order);
+                $title = 'يرجي دفع المستحقات المعلقة بالطلب رقم #' . $order->id;
+                $normal_user = NormalUser::where('user_id', $order->user_id)->first();
+                $last_notify = Notification::where(['receiver_id' => $order->user_id, 'type' => 'order'])->where('title', $title)->latest()->first();
+                if ($last_notify) {
+                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
+                        $this->notify_user($normal_user, $title, $order);
                         $order->update();
                     }
-                }else{
+                } else {
                     $order->update();
-                    $this->notify_user($normal_user,$title,$order);
+                    $this->notify_user($normal_user, $title, $order);
                 }
             }
         }
 
-        $period_to_delivery_approved=(int)Setting::value('period_to_delivery_approved');
-        $orders=Order::where(['deliver_by'=>'delivery','delivery_id'=>null])->get();
-        foreach ($orders as $order){
+        $period_to_delivery_approved = (int)Setting::value('period_to_delivery_approved');
+        $orders = Order::where(['deliver_by' => 'delivery', 'delivery_id' => null])->get();
+        foreach ($orders as $order) {
             if (Carbon::now()->gt(Carbon::parse($order->created_at)->addMinutes($period_to_delivery_approved))) {
-                $title='لا يوجد مندوبين حاليا لتوصيل طلبك #'.$order->id;
-                $normal_user=NormalUser::where('user_id',$order->user_id)->first();
-                $last_notify=Notification::where(['receiver_id'=>$order->user_id,'type'=>'order'])->where('title',$title)->latest()->first();
-                if ($last_notify){
-                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15){
-                        $this->notify_user($normal_user,$title,$order);
+                $title = 'لا يوجد مندوبين حاليا لتوصيل طلبك #' . $order->id;
+                $normal_user = NormalUser::where('user_id', $order->user_id)->first();
+                $last_notify = Notification::where(['receiver_id' => $order->user_id, 'type' => 'order'])->where('title', $title)->latest()->first();
+                if ($last_notify) {
+                    if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
+                        $this->notify_user($normal_user, $title, $order);
                     }
-                }else{
+                } else {
                     $order->update([
-                        'delivery_approved_expired'=>true
+                        'delivery_approved_expired' => true
                     ]);
-                    $this->notify_user($normal_user,$title,$order);
+                    $this->notify_user($normal_user, $title, $order);
                 }
             }
         }
 
-        $cars=Car::all();
-        foreach ($cars as $car)
-        {
-            $delivery=Delivery::where('user_id',$car->user_id)->first();
-            if (Carbon::parse($car->end_insurance_date)->format('Y-m-d') > Carbon::now()->format('Y-m-d')){
+        $cars = Car::all();
+        foreach ($cars as $car) {
+            $delivery = Delivery::where('user_id', $car->user_id)->first();
+            if (Carbon::parse($car->end_insurance_date)->format('Y-m-d') > Carbon::now()->format('Y-m-d')) {
                 //expired
-                $title='لقد انتهي ميعاد التأمين الخاص بسيارتك ';
-            }elseif (Carbon::now()->diffInDays(Carbon::parse($car->end_insurance_date)) < 15){
+                $title = 'لقد انتهي ميعاد التأمين الخاص بسيارتك ';
+            } elseif (Carbon::now()->diffInDays(Carbon::parse($car->end_insurance_date)) < 15) {
                 //soon
-                $title='لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
+                $title = 'لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
             }
-            $last_notify=Notification::where(['receiver_id'=>$car->user_id,'type'=>'end_insurance_date'])->latest()->first();
-            if ($last_notify){
-                if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0){
-                    if ($delivery->devices!=null){
+            $last_notify = Notification::where(['receiver_id' => $car->user_id, 'type' => 'end_insurance_date'])->latest()->first();
+            if ($last_notify) {
+                if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0) {
+                    if ($delivery->devices != null) {
                         $push = new PushNotification('fcm');
                         $msg = [
                             'notification' => array('title' => $title, 'sound' => 'default'),
@@ -110,8 +107,8 @@ abstract class MasterController extends Controller
                     $notification['receiver_id'] = $car->user_id;
                     Notification::create($notification);
                 }
-            }else{
-                if ($delivery->devices!=null){
+            } else {
+                if ($delivery->devices != null) {
                     $push = new PushNotification('fcm');
                     $msg = [
                         'notification' => array('title' => $title, 'sound' => 'default'),
@@ -137,7 +134,6 @@ abstract class MasterController extends Controller
         }
 
 
-
     }
 
     public function sendResponse($result, $message = null)
@@ -150,7 +146,7 @@ abstract class MasterController extends Controller
         return response()->json($response);
     }
 
-    public function sendError($error,$data=[], $code = 400)
+    public function sendError($error, $data = [], $code = 400)
     {
         $response = [
             'status' => $code,
@@ -160,9 +156,9 @@ abstract class MasterController extends Controller
         return response()->json($response, $code);
     }
 
-    function fcmPush($title,$user,$order)
+    function fcmPush($title, $user, $order)
     {
-        if ($user->devices!=null){
+        if ($user->devices != null) {
             $push = new PushNotification('fcm');
             $msg = [
                 'notification' => array('title' => $title, 'sound' => 'default'),
@@ -180,9 +176,10 @@ abstract class MasterController extends Controller
                 ->send();
         }
     }
-    public function notify_provider($provider,$title, $order)
+
+    public function notify_provider($provider, $title, $order)
     {
-        $this->fcmPush($title,$provider,$order);
+        $this->fcmPush($title, $provider, $order);
         $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;
@@ -190,9 +187,10 @@ abstract class MasterController extends Controller
         $notification['order_id'] = $order->id;
         Notification::create($notification);
     }
-    public function notify_user($user,$title, $order)
+
+    public function notify_user($user, $title, $order)
     {
-        $this->fcmPush($title,$user,$order);
+        $this->fcmPush($title, $user, $order);
         $notification['type'] = 'order';
         $notification['title'] = $title;
         $notification['note'] = $title;

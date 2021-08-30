@@ -27,9 +27,22 @@
                             @foreach($rows as $row)
                                 <tr>
                                     <td>
-                                        <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">
-                                            {{$row->user->normal_user->name}}
-                                        </a>
+                                        @if($row->user_type=='USER')
+                                            <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">
+                                                {{$row->user->normal_user->name}}
+                                            </a>
+                                        @elseif($row->user_type=='DELIVERY')
+                                            <a href="{{route('admin.delivery.show',$row->user->delivery->id)}}">
+                                                {{$row->user->delivery->name}}
+                                            </a>
+                                        @else
+                                            <a href="{{route('admin.provider.show',$row->user->provider->id)}}">
+                                                {{$row->user->provider->name}}
+                                            </a>
+                                        @endif
+{{--                                        <a href="{{route('admin.user.show',$row->user->normal_user->id)}}">--}}
+{{--                                            {{$row->user->normal_user->name}}--}}
+{{--                                        </a>--}}
                                     </td>
                                     <td>{{$row->bank->name}}</td>
                                     <td>{{$row->amount}}</td>

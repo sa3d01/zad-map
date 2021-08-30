@@ -61,7 +61,7 @@ class RegisterController extends MasterController
             }
             $user->update($request->validated());
         } else {
-            return $this->sendError('تأكد من اختيار نوع المستخدم');
+            return $this->sendError('تأكد من اختيار نوع المستخدم--'.request()->header('userType'));
         }
         return $this->sendResponse([
             "phone" => $request["phone"]
