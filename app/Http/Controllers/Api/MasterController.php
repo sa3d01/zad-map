@@ -67,7 +67,7 @@ abstract class MasterController extends Controller
                     $order->update([
                         'delivery_approved_expired' => true
                     ]);
-                    $this->notify_user($normal_user, $title, $order);
+                    //$this->notify_user($normal_user, $title, $order);
                 }
             }
         }
