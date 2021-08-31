@@ -48,25 +48,11 @@ class StoryController extends MasterController
             }
 
 
-            if (request()->header('userType')=='USER'){
-                $arr['user']=[
-                    'id'=>$user_id,
-                    'name'=>$user->normal_user->name,
-                    'image'=>$user->normal_user->image,
-                ];
-            }elseif (request()->header('userType')=='DELIVERY'){
-                $arr['user']=[
-                    'id'=>$user_id,
-                    'name'=>$user->delivery->name,
-                    'image'=>$user->delivery->image,
-                ];
-            }else{
-                $arr['user']=[
-                    'id'=>$user_id,
-                    'name'=>$user->provider->name,
-                    'image'=>$user->provider->image,
-                ];
-            }
+            $arr['user']=[
+                'id'=>$user_id,
+                'name'=>$user->provider->name,
+                'image'=>$user->provider->image,
+            ];
 
             $stories_data=$stories_of_user->filter(function($story) {
                 $approved=Carbon::parse($story->approved_at)->format('Y-M-d');
