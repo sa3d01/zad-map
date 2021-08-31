@@ -32,7 +32,7 @@ class ProviderController extends MasterController
 
     public function wallet()
     {
-        $wallet = Wallet::where('user_id', auth('api')->id())->latest()->first();
+        $wallet = Wallet::where(['user_id'=> auth('api')->id(),'user_type'=>request()->header('userType')])->latest()->first();
         if (!$wallet) {
             $wallet = Wallet::create([
                 'user_id' => auth('api')->id(),
