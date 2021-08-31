@@ -118,7 +118,8 @@ class OrderStatusController extends MasterController
             return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
         }
         $order->update([
-           'deliver_by'=>'user'
+           'deliver_by'=>'user',
+            'delivery_approved_expired'=>0
         ]);
         $normal_user=NormalUser::where('user_id',$order->user_id)->first();
         $provider_model=Provider::where('user_id',$order->provider_id)->first();
