@@ -39,7 +39,7 @@ abstract class MasterController extends Controller
             if (Carbon::now()->gt(Carbon::parse($order->updated_at)->addMinutes($notify_paid_period))) {
                 $title = 'يرجي دفع المستحقات المعلقة بالطلب رقم #' . $order->id;
                 $normal_user = NormalUser::where('user_id', $order->user_id)->first();
-                $last_notify = Notification::where(['receiver_id' => $order->user_id, 'type' => 'order'])->where('title', $title)->latest()->first();
+                $last_notify = Notification::where(['receiver_id' => $order->user_id,'receiver_type'=>'USER', 'type' => 'order'])->where('title', $title)->latest()->first();
                 if ($last_notify) {
                     if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
                         $this->notify_user($normal_user, $title, $order);
@@ -58,7 +58,7 @@ abstract class MasterController extends Controller
             if (Carbon::now()->gt(Carbon::parse($order->created_at)->addMinutes($period_to_delivery_approved))) {
                 $title = 'لا يوجد مندوبين حاليا لتوصيل طلبك #' . $order->id;
                 $normal_user = NormalUser::where('user_id', $order->user_id)->first();
-                $last_notify = Notification::where(['receiver_id' => $order->user_id, 'type' => 'order'])->where('title', $title)->latest()->first();
+                $last_notify = Notification::where(['receiver_id' => $order->user_id,'receiver_type'=>'USER', 'type' => 'order'])->where('title', $title)->latest()->first();
                 if ($last_notify) {
                     if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
                         $this->notify_user($normal_user, $title, $order);
@@ -82,7 +82,7 @@ abstract class MasterController extends Controller
                 //soon
                 $title = 'لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
             }
-            $last_notify = Notification::where(['receiver_id' => $car->user_id, 'type' => 'end_insurance_date'])->latest()->first();
+            $last_notify = Notification::where(['receiver_id' => $car->user_id,'receiver_type'=>'DELIVERY', 'type' => 'end_insurance_date'])->latest()->first();
             if ($last_notify) {
                 if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0) {
                     if ($delivery->devices != null) {
@@ -105,6 +105,7 @@ abstract class MasterController extends Controller
                     $notification['title'] = $title;
                     $notification['note'] = $title;
                     $notification['receiver_id'] = $car->user_id;
+                    $notification['receiver_type'] = 'DELIVERY';
                     Notification::create($notification);
                 }
             } else {
@@ -128,6 +129,7 @@ abstract class MasterController extends Controller
                 $notification['title'] = $title;
                 $notification['note'] = $title;
                 $notification['receiver_id'] = $car->user_id;
+                $notification['receiver_type'] = 'DELIVERY';
                 Notification::create($notification);
             }
 
@@ -184,6 +186,7 @@ abstract class MasterController extends Controller
         $notification['title'] = $title;
         $notification['note'] = $title;
         $notification['receiver_id'] = $provider->user_id;
+        $notification['receiver_type'] = 'PROVIDER';
         $notification['order_id'] = $order->id;
         Notification::create($notification);
     }
@@ -196,6 +199,13 @@ abstract class MasterController extends Controller
         $notification['note'] = $title;
         $notification['receiver_id'] = $user->user_id;
         $notification['order_id'] = $order->id;
+        if ($order->user_id==$user->user_id){
+            $notification['receiver_type'] = 'USER';
+        }elseif ($order->delivery_id==$user->user_id){
+            $notification['receiver_type'] = 'DELIVERY';
+        }else{
+            $notification['receiver_type'] = 'PROVIDER';
+        }
         Notification::create($notification);
     }
 }

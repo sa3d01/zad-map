@@ -20,7 +20,7 @@ class NotificationController extends MasterController
 
     public function index():object
     {
-        $notifies_q=$this->model->where('receiver_id', request()->user()->id)->orWhereJsonContains('receivers', request()->user()->id);
+        $notifies_q=$this->model->where(['receiver_id'=> request()->id(),'receiver_type'=>request()->header('userType')])->orWhereJsonContains('receivers', request()->user()->id);
         $unread = $notifies_q->where('read', 'false')->count();
         $notifies = new NotificationCollection($notifies_q->latest()->get());
         return $this->sendResponse(['data' => $notifies, 'unread' => $unread]);
@@ -28,7 +28,7 @@ class NotificationController extends MasterController
 
     public function readAll():object
     {
-        $notifies = new NotificationCollection($this->model->where('receiver_id', request()->user()->id)->latest()->get());
+        $notifies = new NotificationCollection($this->model->where(['receiver_id'=> request()->id(),'receiver_type'=>request()->header('userType')])->latest()->get());
         foreach ($notifies as $single){
             $single->update([
                 'read' => 'true'

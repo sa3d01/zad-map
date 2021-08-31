@@ -49,6 +49,7 @@ class StoryController extends MasterController
             ]
         );
         $data['user_id'] = $story->user_id;
+        $data['user_type'] = 'PROVIDER';
         $data['type'] = 'story';
         $data['amount'] = $story->storyPeriod ? $story->storyPeriod->story_price : 10;
         $data['status'] = 'accepted';
@@ -80,6 +81,7 @@ class StoryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $story->user_id,
+            'receiver_type' => 'PROVIDER',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,

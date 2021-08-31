@@ -43,7 +43,6 @@ class ContactController extends MasterController
         }else{
             $user_model=Provider::where('user_id',$contact->user_id)->first();
         }
-
         $push = new PushNotification('fcm');
         $push->setMessage([
             'notification' => array('title' => $data['note'], 'sound' => 'default'),
@@ -60,6 +59,7 @@ class ContactController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $contact->user_id,
+            'receiver_type'=>$contact->user_type,
             'admin_notify_type' => 'single',
             'type' => 'app',
             'title' => $data['title'],

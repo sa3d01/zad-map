@@ -117,6 +117,7 @@ class DeliveryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'receiver_type' => 'DELIVERY',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -156,6 +157,7 @@ class DeliveryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $delivery->user_id,
+            'receiver_type' => 'DELIVERY',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -196,6 +198,7 @@ class DeliveryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'receiver_type' => 'DELIVERY',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -243,6 +246,7 @@ class DeliveryController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $user->id,
+            'receiver_type' => 'DELIVERY',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,

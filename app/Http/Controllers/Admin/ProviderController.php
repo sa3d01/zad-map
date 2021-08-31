@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Bank;
-use App\Models\Car;
 use App\Models\Notification;
 use App\Models\Provider;
 use App\Models\User;
-use App\Traits\UserBanksAndCarsTrait;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
@@ -21,16 +19,16 @@ class ProviderController extends MasterController
         parent::__construct();
     }
 
-    private function updateBankData($banks_data,$user,$user_type)
+    private function updateBankData($banks_data, $user, $user_type)
     {
-        $banks=$user->banks();
-        foreach ($banks as $bank){
+        $banks = $user->banks();
+        foreach ($banks as $bank) {
             $bank->delete();
         }
         foreach ($banks_data as $bank) {
-            $bank=Bank::create([
-                'user_id' =>$user->id,
-                'user_type' =>$user_type,
+            $bank = Bank::create([
+                'user_id' => $user->id,
+                'user_type' => $user_type,
                 'name' => $bank['name'],
                 'account_number' => $bank['account_number'],
                 'account_name' => $bank['account_name'],
@@ -39,6 +37,7 @@ class ProviderController extends MasterController
         }
         $user->refresh();
     }
+
     public function index()
     {
         $rows = Provider::where('approved', 1)->latest()->get();
@@ -107,6 +106,7 @@ class ProviderController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'receiver_type' => 'PROVIDER',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -114,6 +114,7 @@ class ProviderController extends MasterController
         $provider->refresh();
         return redirect()->back()->with('updated');
     }
+
     public function reject_request($id, Request $request): object
     {
         $provider = $this->model->find($id);
@@ -145,6 +146,7 @@ class ProviderController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'receiver_type' => 'PROVIDER',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -185,6 +187,7 @@ class ProviderController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $id,
+            'receiver_type' => 'PROVIDER',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,
@@ -192,18 +195,19 @@ class ProviderController extends MasterController
         $provider->refresh();
         return redirect()->back()->with('updated');
     }
+
     public function accept_request($id)
     {
         $provider = $this->model->find($id);
         $user = User::find($provider->user_id);
         $this->updateBankData($provider->data_for_update['banks'], $user, $provider->type);
-        $provider_data['name']=$provider->data_for_update['data']['name'];
-        $provider_data['phone']=$provider->data_for_update['data']['phone'];
-        $provider_data['city_id']=$provider->data_for_update['data']['city_id'];
-        $provider_data['district_id']=$provider->data_for_update['data']['district_id'];
-        $provider_data['last_ip']=$provider->data_for_update['data']['last_ip'];
-        $provider_data['has_delivery']=$provider->data_for_update['data']['has_delivery'];
-        $provider_data['delivery_price']=$provider->data_for_update['data']['delivery_price'];
+        $provider_data['name'] = $provider->data_for_update['data']['name'];
+        $provider_data['phone'] = $provider->data_for_update['data']['phone'];
+        $provider_data['city_id'] = $provider->data_for_update['data']['city_id'];
+        $provider_data['district_id'] = $provider->data_for_update['data']['district_id'];
+        $provider_data['last_ip'] = $provider->data_for_update['data']['last_ip'];
+        $provider_data['has_delivery'] = $provider->data_for_update['data']['has_delivery'];
+        $provider_data['delivery_price'] = $provider->data_for_update['data']['delivery_price'];
         $provider->update($provider_data);
 
         $provider->refresh();
@@ -235,6 +239,7 @@ class ProviderController extends MasterController
             ->getFeedback();
         Notification::create([
             'receiver_id' => $user->id,
+            'receiver_type' => 'PROVIDER',
             'admin_notify_type' => 'single',
             'title' => $message,
             'note' => $message,

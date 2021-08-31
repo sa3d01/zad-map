@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
 use App\Models\Delivery;
 use App\Models\NormalUser;
 use App\Models\Notification;
 use App\Models\Provider;
-use App\Models\User;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
 
@@ -22,22 +20,24 @@ class NotificationController extends MasterController
 
     public function clearAdminNotifications()
     {
-        $unread_notifications=Notification::where(['type'=>'admin','read'=>'false'])->get();
-        foreach ($unread_notifications as $unread_notification){
+        $unread_notifications = Notification::where(['type' => 'admin', 'read' => 'false'])->get();
+        foreach ($unread_notifications as $unread_notification) {
             $unread_notification->update([
-               'read'=>'true'
+                'read' => 'true'
             ]);
         }
         return redirect()->back();
     }
+
     public function readNotification($id)
     {
-        $unread_notification=Notification::find($id);
+        $unread_notification = Notification::find($id);
         $unread_notification->update([
-            'read'=>'true'
+            'read' => 'true'
         ]);
         return redirect()->back();
     }
+
     public function index()
     {
         $rows = $this->model->latest()->get();
@@ -46,32 +46,32 @@ class NotificationController extends MasterController
 
     public function store(Request $request)
     {
-        $data['title']='رسالة إدارية';
-        $data['note']=$request['note'];
-        foreach ($request['types'] as $type){
-            if ($type=='USER'){
-                $users=NormalUser::all();
-            }elseif ($type=='DELIVERY'){
-                $users=Delivery::all();
-            }else{
-                $users=Provider::all();
+        $data['title'] = 'رسالة إدارية';
+        $data['note'] = $request['note'];
+        foreach ($request['types'] as $type) {
+            if ($type == 'USER') {
+                $users = NormalUser::all();
+            } elseif ($type == 'DELIVERY') {
+                $users = Delivery::all();
+            } else {
+                $users = Provider::all();
             }
-            $usersTokens=[];
-            $usersIds=[];
-            foreach ($users as $user){
-                if ($user->devices !=null){
-                    $usersTokens[]=$user->devices;
-                    $usersIds[]=$user->user->id;
+            $usersTokens = [];
+            $usersIds = [];
+            foreach ($users as $user) {
+                if ($user->devices != null) {
+                    $usersTokens[] = $user->devices;
+                    $usersIds[] = $user->user->id;
                 }
             }
             $push = new PushNotification('fcm');
             $push->setMessage([
-                'notification' => array('title'=>$data['note'], 'sound' => 'default'),
+                'notification' => array('title' => $data['note'], 'sound' => 'default'),
                 'data' => [
                     'title' => $data['note'],
                     'body' => $data['note'],
                     'status' => 'admin',
-                    'type'=>'admin',
+                    'type' => 'admin',
                 ],
                 'priority' => 'high',
             ])
@@ -79,13 +79,14 @@ class NotificationController extends MasterController
                 ->send()
                 ->getFeedback();
             $this->model->create([
-                'receivers'=>$usersIds,
-                'admin_notify_type'=>$type,
-                'title'=>$data['title'],
-                'note'=>$data['note'],
+                'receivers' => $usersIds,
+                'receiver_type'=>$request['types'],
+                'admin_notify_type' => $type,
+                'title' => $data['title'],
+                'note' => $data['note'],
             ]);
         }
-        return redirect()->back()->with('success','تم الارسال بنجاح');
+        return redirect()->back()->with('success', 'تم الارسال بنجاح');
     }
 
 }

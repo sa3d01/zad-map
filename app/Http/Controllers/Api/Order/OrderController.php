@@ -251,6 +251,7 @@ class OrderController extends MasterController
             $notification['title'] = $title;
             $notification['note'] = $title;
             $notification['receiver_id'] = $delivery->id;
+            $notification['receiver_type'] = 'DELIVERY';
             $notification['order_id'] = $order->id;
             $notification['more_details'] = [
                 'delivery_request_id' => $delivery_request->id

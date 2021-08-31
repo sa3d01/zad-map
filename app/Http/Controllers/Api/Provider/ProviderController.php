@@ -65,6 +65,7 @@ class ProviderController extends MasterController
         ]);
         Notification::create([
             'receiver_id' => 1,
+            'receiver_type' => 'ADMIN',
             'type' => 'admin',
             'title' => 'حوالة بنكية جديدة',
             'note' => 'حوالة بنكية جديدة',

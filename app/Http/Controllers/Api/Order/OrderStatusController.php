@@ -250,6 +250,7 @@ class OrderStatusController extends MasterController
         $notification['title'] = $title;
         $notification['note'] = $title;
         $notification['receiver_id'] = $order->user_id;
+        $notification['receiver_type'] = 'USER';
         $notification['order_id'] = $order->id;
         Notification::create($notification);
         $normal_user=NormalUser::where('user_id',$order->user_id)->first();
