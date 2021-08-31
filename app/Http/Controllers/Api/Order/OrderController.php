@@ -195,6 +195,11 @@ class OrderController extends MasterController
         //loop in providers to create multi orders
         foreach ($provider_arr as $key => $provider_id) {
             $data['provider_id'] = $provider_id;
+
+            $provider_model=Provider::where('user_id',$provider_id)->first();
+            if ($provider_model->online==0){
+                return $this->sendError("لا يمكنك اتمام العملية لان مقدم الخدمه غير متاح الآن");
+            }
             $order = Order::create($data);
             //cart items of specific provider
             foreach ($cart_items as $cart_item) {
