@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\Home;
 
 use App\Http\Controllers\Api\MasterController;
+use App\Models\Delivery;
+use App\Models\NormalUser;
+use App\Models\Provider;
 use App\Models\Slider;
 use App\Models\Story;
 use App\Models\User;
@@ -25,15 +28,18 @@ class StoryController extends MasterController
             $user=User::find($user_id);
             if (auth('api')->check()){
                 if (request()->header('userType')=='USER'){
-                    if (auth('api')->user()->normal_user->city_id != $user->normal_user->city_id){
+                    $normal_user=NormalUser::where('user_id',auth('api')->id())->first();
+                    if ($normal_user->city_id != $user->normal_user->city_id){
                         continue;
                     }
                 }elseif (request()->header('userType')=='DELIVERY'){
-                    if (auth('api')->user()->delivery->city_id != $user->delivery->city_id){
+                    $delivery=Delivery::where('user_id',auth('api')->id())->first();
+                    if ($delivery->city_id != $user->delivery->city_id){
                         continue;
                     }
                 }else{
-                    if (auth('api')->user()->provider->city_id != $user->provider->city_id){
+                    $provider=Provider::where('user_id',auth('api')->id())->first();
+                    if ($provider->city_id != $user->provider->city_id){
                         continue;
                     }
                 }
