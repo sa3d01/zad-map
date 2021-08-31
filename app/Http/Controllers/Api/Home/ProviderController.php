@@ -21,7 +21,7 @@ class ProviderController extends MasterController
     }
     public function providersMap():object
     {
-        $providers=Provider::where(['approved'=>1,'online'=>1,'banned'=>0])->pluck('user_id')->toArray();
+        $providers=Provider::where(['approved'=>1,'banned'=>0])->pluck('user_id')->toArray();
         $data=User::whereIn('id',$providers)->get();
         return $this->sendResponse(new ProviderCollection($data));
     }
