@@ -42,12 +42,12 @@ abstract class MasterController extends Controller
                 $last_notify = Notification::where(['receiver_id' => $order->user_id,'receiver_type'=>'USER', 'type' => 'order'])->where('title', $title)->latest()->first();
                 if ($last_notify) {
                     if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
-                        $this->notify_user($normal_user, $title, $order);
+                        $this->notify_user($normal_user, $title, $order,'USER');
                         $order->update();
                     }
                 } else {
                     $order->update();
-                    $this->notify_user($normal_user, $title, $order);
+                    $this->notify_user($normal_user, $title, $order,'USER');
                 }
             }
         }
@@ -61,7 +61,7 @@ abstract class MasterController extends Controller
                 $last_notify = Notification::where(['receiver_id' => $order->user_id,'receiver_type'=>'USER', 'type' => 'order'])->where('title', $title)->latest()->first();
                 if ($last_notify) {
                     if (Carbon::now()->diffInMinutes(Carbon::parse($last_notify->created_at)) > 15) {
-                        $this->notify_user($normal_user, $title, $order);
+                        $this->notify_user($normal_user, $title, $order,'USER');
                     }
                 } else {
                     $order->update([
@@ -191,7 +191,7 @@ abstract class MasterController extends Controller
         Notification::create($notification);
     }
 
-    public function notify_user($user, $title, $order)
+    public function notify_user($user, $title, $order,$receiver_type)
     {
         $this->fcmPush($title, $user, $order);
         $notification['type'] = 'order';
@@ -199,13 +199,7 @@ abstract class MasterController extends Controller
         $notification['note'] = $title;
         $notification['receiver_id'] = $user->user_id;
         $notification['order_id'] = $order->id;
-        if ($order->user_id==$user->user_id){
-            $notification['receiver_type'] = 'USER';
-        }elseif ($order->delivery_id==$user->user_id){
-            $notification['receiver_type'] = 'DELIVERY';
-        }else{
-            $notification['receiver_type'] = 'PROVIDER';
-        }
+        $notification['receiver_type'] = $receiver_type;
         Notification::create($notification);
     }
 }
