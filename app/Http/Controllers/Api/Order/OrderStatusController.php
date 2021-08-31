@@ -114,7 +114,7 @@ class OrderStatusController extends MasterController
         if (!$order) {
             return $this->sendError("هذا الطلب غير موجود");
         }
-        if ( ($order->user_id != auth('api')->id() ) || ($order->deliver_by == 'delivery') ) {
+        if ( ($order->user_id != auth('api')->id() ) || ($order->deliver_by != 'delivery') ) {
             return $this->sendError("ﻻ يمكنك اجراء هذه العملية");
         }
         $order->update([
