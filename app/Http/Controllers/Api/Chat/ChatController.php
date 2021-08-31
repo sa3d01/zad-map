@@ -69,24 +69,21 @@ class ChatController extends MasterController
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
         $data['sender_type'] = request()->header('userType');
-
-        if (NormalUser::where('user_id', $data['sender_id'])->first()) {
+        $receiver_model = NormalUser::where('user_id', $request['receiver_id'])->first();
+        $data['receiver_type'] = 'USER';
+        if (request()->header('userType')=='USER') {
             $sender_model = NormalUser::where('user_id', $data['sender_id'])->first();
-        } elseif (Delivery::where('user_id', $data['sender_id'])->first()) {
+            if (Delivery::where('user_id', $request['receiver_id'])->first()) {
+                $receiver_model = Delivery::where('user_id', $request['receiver_id'])->first();
+                $data['receiver_type'] = 'DELIVERY';
+            } else {
+                $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
+                $data['receiver_type'] = $receiver_model->type;
+            }
+        } elseif (request()->header('userType')=='DELIVERY') {
             $sender_model = Delivery::where('user_id', $data['sender_id'])->first();
         } else {
             $sender_model = Provider::where('user_id', $data['sender_id'])->first();
-        }
-
-        if (NormalUser::where('user_id', $request['receiver_id'])->first()) {
-            $receiver_model = NormalUser::where('user_id', $request['receiver_id'])->first();
-            $data['receiver_type'] = 'USER';
-        } elseif (Delivery::where('user_id', $request['receiver_id'])->first()) {
-            $receiver_model = Delivery::where('user_id', $request['receiver_id'])->first();
-            $data['receiver_type'] = 'DELIVERY';
-        } else {
-            $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
-            $data['receiver_type'] = $receiver_model->type;
         }
 
         if ($request['order_id']) {
@@ -106,10 +103,7 @@ class ChatController extends MasterController
             $data['room'] = $pre_msg->room;
         }
         $message = Chat::create($data);
-
-
         $this->notify_receiver($receiver_model, 'تم إرسال رسالة جديدة من قبل ' . $sender_model->name, $message);
-
         $messages = Chat::where('room', $message->room)->latest()->get();
         return $this->sendResponse(MessageResource::collection($messages));
     }
