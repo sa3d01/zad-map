@@ -20,20 +20,20 @@ class NotificationController extends MasterController
 
     public function index():object
     {
-        $notifies_q=$this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->orWhereJsonContains('receivers', request()->user()->id);
-        $unread = $notifies_q->where('read', 'false')->count();
-        $notifies = new NotificationCollection($notifies_q->latest()->get());
+        $unread = $this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->where('read', 'false')->count();
+        $notifies = new NotificationCollection($this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->orWhereJsonContains('receivers', request()->user()->id)->latest()->get());
         return $this->sendResponse(['data' => $notifies, 'unread' => $unread]);
     }
 
     public function readAll():object
     {
-        $notifies = new NotificationCollection($this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->latest()->get());
-        foreach ($notifies as $single){
+        foreach ($this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType'),'read'=>'false'])->latest()->get() as $single){
             $single->update([
                 'read' => 'true'
             ]);
         }
+        $notifies = new NotificationCollection($this->model->where(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->latest()->get());
+
         return $this->sendResponse(['data' => $notifies, 'unread' => 0]);
     }
 
