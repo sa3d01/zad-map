@@ -203,7 +203,8 @@ class OrderStatusController extends MasterController
                     'type'=>$request['provider']['type'],
                     'image'=>$image,
                 ]);
-                $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+                $normal_model=NormalUser::where('user_id',$order->user_id)->first();
+                $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$normal_model->name,$order->id);
                 $provider_model=Provider::where('user_id',$order->provider_id)->first();
                 $this->notify_provider($provider_model,$title, $order);
             }
@@ -221,7 +222,8 @@ class OrderStatusController extends MasterController
                     'type'=>$request['delivery']['type'],
                     'image'=> $image,
                 ]);
-                $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$order->user->name,$order->id);
+                $normal_model=NormalUser::where('user_id',$order->user_id)->first();
+                $title = sprintf('تم تحديد أسلوب الدفع من قبل المستخدم  %s , طلب رقم %s ',$normal_model->name,$order->id);
                 $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
                 $this->notify_provider($delivery_model,$title, $order);
             }
@@ -315,11 +317,12 @@ class OrderStatusController extends MasterController
         foreach ($notifications as $notification){
             $notification->delete();
         }
-        $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
+        $sender_model=NormalUser::where('user_id',auth('api')->id())->first();
+        $title = sprintf('تم قبول عرض سعرك من قبل %s , طلب رقم %s ',$sender_model->name,$order_id);
         $delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
         $provider_model=Provider::where('user_id',$order->provider_id)->first();
         $this->notify_user($delivery_model,$title, $order,'DELIVERY');
-        $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',auth('api')->user()->name,$order_id);
+        $title = sprintf('يوجد طلب جديد من قبل %s , طلب رقم %s ',$sender_model->name,$order_id);
         $this->notify_provider($provider_model,$title, $order);
         $orders_q = Order::where('user_id' , auth('api')->id())->where('status','new');
         $orders = new OrderCollection($orders_q->latest()->get());
