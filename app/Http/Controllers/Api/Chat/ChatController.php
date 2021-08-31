@@ -69,21 +69,24 @@ class ChatController extends MasterController
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
         $data['sender_type'] = request()->header('userType');
-        $receiver_model = NormalUser::where('user_id', $request['receiver_id'])->first();
-        $data['receiver_type'] = 'USER';
+
         if (request()->header('userType')=='USER') {
             $sender_model = NormalUser::where('user_id', $data['sender_id'])->first();
-            if (Delivery::where('user_id', $request['receiver_id'])->first()) {
-                $receiver_model = Delivery::where('user_id', $request['receiver_id'])->first();
-                $data['receiver_type'] = 'DELIVERY';
-            } else {
-                $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
-                $data['receiver_type'] = $receiver_model->type;
-            }
         } elseif (request()->header('userType')=='DELIVERY') {
             $sender_model = Delivery::where('user_id', $data['sender_id'])->first();
         } else {
             $sender_model = Provider::where('user_id', $data['sender_id'])->first();
+        }
+
+        if ($request['receiver_type']=='USER'){
+            $receiver_model = NormalUser::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = 'USER';
+        }elseif ($request['receiver_type']=='DELIVERY'){
+            $receiver_model = Delivery::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = 'DELIVERY';
+        }else{
+            $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = 'PROVIDER';
         }
 
         if ($request['order_id']) {
