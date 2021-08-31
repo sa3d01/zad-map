@@ -17,6 +17,7 @@ use App\Models\OrderPay;
 use App\Models\Provider;
 use App\Models\Setting;
 use App\Models\Wallet;
+use App\Models\WalletPay;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 use Illuminate\Http\Request;
@@ -33,46 +34,64 @@ class OrderStatusController extends MasterController
         parent::__construct();
     }
 
+    function editWallet($wallet,$debtors,$user_id,$user_type)
+    {
+        $new_profits=$wallet->profits ;
+        $new_debtors=$wallet->debtors + $debtors;
+        if ($new_debtors > $new_profits){
+            $new_debtors=$new_debtors - $new_profits;
+            $wallet_pay_amount=$new_profits;
+            $new_profits=0;
+        }else{
+            $new_profits=$new_profits - $new_debtors;
+            $wallet_pay_amount=$new_debtors;
+            $new_debtors=0;
+        }
+        $wallet->update([
+            'profits'=>$new_profits,
+            'debtors'=>$new_debtors
+        ]);
+        if ($wallet_pay_amount>0){
+            $wallet_pay['user_id'] = $user_id;
+            $wallet_pay['user_type'] = $user_type;
+            $wallet_pay['type'] = 'order';
+            $wallet_pay['amount'] = $wallet_pay_amount;
+            $wallet_pay['status'] = 'accept';
+            WalletPay::create($wallet_pay);
+        }
+    }
     function completeOrder($order)
     {
         $order->update([
             'status'=>'completed'
         ]);
         $app_tax=Setting::value('app_tax');
-        $provider_wallet=Wallet::where('user_id',$order->provider_id)->latest()->first();
+        $provider_wallet=Wallet::where(['user_id'=>$order->provider_id,'user_type'=>'PROVIDER'])->latest()->first();
         if (!$provider_wallet){
             Wallet::create([
                'user_id'=>$order->provider_id,
                'user_type'=>'PROVIDER',
-               'profits'=>$order->price(),
-               'debtors'=>($order->price()*$app_tax)/100
-            ]);
-        }else{
-            $provider_wallet->update([
-                'profits'=>$provider_wallet->profits+$order->price(),
-                'debtors'=>($provider_wallet->debtors)+(($order->price()*$app_tax)/100)
+               'profits'=>0,
+               'debtors'=>0
             ]);
         }
+        $this->editWallet($provider_wallet,(($order->price()*$app_tax)/100),$order->provider_id,'PROVIDER');
         if ($order->delivery_id!=null)
         {
             $delivery_price=DeliveryRequest::where(['order_id'=>$order->id,'delivery_id'=>$order->delivery_id,'status'=>'accepted'])->latest()->value('delivery_price');
             if (!$delivery_price){
                 return $this->sendError('some thing error');
             }
-            $delivery_wallet=Wallet::where('user_id',$order->delivery_id)->latest()->first();
+            $delivery_wallet=Wallet::where(['user_id'=>$order->delivery_id,'user_type'=>'DELIVERY'])->latest()->first();
             if (!$delivery_wallet){
                 Wallet::create([
                     'user_id'=>$order->delivery_id,
                     'user_type'=>'DELIVERY',
-                    'profits'=>$delivery_price,
-                    'debtors'=>($delivery_price*$app_tax)/100
-                ]);
-            }else{
-                $delivery_wallet->update([
-                    'profits'=>$delivery_wallet->profits+$delivery_price,
-                    'debtors'=>($delivery_wallet->debtors)+(($delivery_price*$app_tax)/100)
+                    'profits'=>0,
+                    'debtors'=>0
                 ]);
             }
+            $this->editWallet($delivery_wallet,(($delivery_price*$app_tax)/100),$order->delivery_id,'DELIVERY');
         }
         return true;
     }

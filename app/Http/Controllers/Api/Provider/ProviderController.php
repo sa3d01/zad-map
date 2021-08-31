@@ -60,9 +60,9 @@ class ProviderController extends MasterController
                 'debtors' => 0
             ]);
         }
-        $wallet->update([
-            'profits' => $wallet->profits + $request['amount'],
-        ]);
+//        $wallet->update([
+//            'profits' => $wallet->profits + $request['amount'],
+//        ]);
         Notification::create([
             'receiver_id' => 1,
             'receiver_type' => 'ADMIN',

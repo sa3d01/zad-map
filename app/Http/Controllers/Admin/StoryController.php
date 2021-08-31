@@ -48,17 +48,17 @@ class StoryController extends MasterController
                 'approved_at' => Carbon::now()
             ]
         );
-        $data['user_id'] = $story->user_id;
-        $data['user_type'] = 'PROVIDER';
-        $data['type'] = 'story';
-        $data['amount'] = $story->storyPeriod ? $story->storyPeriod->story_price : 10;
-        $data['status'] = 'accepted';
-        WalletPay::create($data);
-        $wallet = Wallet::where('user_id', $story->user_id)->latest()->first();
-        $wallet->update([
-            'profits' => $wallet->profits - $story->storyPeriod->story_price,
-            'debtors' => $wallet->debtors + $story->storyPeriod->story_price,
-        ]);
+//        $data['user_id'] = $story->user_id;
+//        $data['user_type'] = 'PROVIDER';
+//        $data['type'] = 'story';
+//        $data['amount'] = $story->storyPeriod ? $story->storyPeriod->story_price : 10;
+//        $data['status'] = 'accepted';
+//        WalletPay::create($data);
+//        $wallet = Wallet::where(['user_id'=> $story->user_id,'user_type'=>'PROVIDER'])->latest()->first();
+//        $wallet->update([
+//            'profits' => $wallet->profits - $story->storyPeriod->story_price,
+//            'debtors' => $wallet->debtors + $story->storyPeriod->story_price,
+//        ]);
         $push = new PushNotification('fcm');
         $message = 'تم قبول حالتك';
         $usersTokens = [];

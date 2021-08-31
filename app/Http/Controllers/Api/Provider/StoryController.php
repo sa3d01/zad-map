@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Provider\Story\storeStoryRequest;
 use App\Models\Story;
 use App\Models\StoryPeriod;
 use App\Models\Wallet;
+use App\Models\WalletPay;
 
 class StoryController extends MasterController
 {
@@ -36,18 +37,27 @@ class StoryController extends MasterController
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         $story_period=StoryPeriod::find($request['story_period_id']);
-        $wallet=Wallet::where('user_id',auth('api')->id())->latest()->first();
+        $wallet=Wallet::where(['user_id'=>auth('api')->id(),'user_type'=>request()->header('userType')])->latest()->first();
         if (!$wallet){
             $wallet=Wallet::create([
                 'user_id'=>auth('api')->id(),
+                'user_type'=>request()->header('userType'),
                 'profits'=>0,
                 'debtors'=>0
             ]);
         }
         if ($wallet->profits < $story_period->story_price){
             return $this->sendError('يرجي شحن المحفظه بقيمة الاستوري المطلوب اضافتها آولا: '.$story_period->story_price.' ريال ');
+        }else{
+            $story=Story::create($data);
+            $WalletPay['user_id'] = auth('api')->id();
+            $WalletPay['user_type'] = 'PROVIDER';
+            $WalletPay['type'] = 'story';
+            $WalletPay['amount'] = $story->storyPeriod ? $story->storyPeriod->story_price : 10;
+            $WalletPay['status'] = 'accepted';
+            WalletPay::create($WalletPay);
         }
-        Story::create($data);
+
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة الإدارة");
     }
 }
