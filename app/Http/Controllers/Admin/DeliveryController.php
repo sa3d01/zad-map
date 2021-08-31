@@ -210,8 +210,12 @@ class DeliveryController extends MasterController
     {
         $delivery = $this->model->find($id);
         $user = User::find($delivery->user_id);
-        $this->updateCarData($delivery->data_for_update['car'],$user);
-        $this->updateBankData($delivery->data_for_update['banks'], $user);
+        if (isset($delivery->data_for_update['car'])){
+            $this->updateCarData($delivery->data_for_update['car'],$user);
+        }
+        if (isset($delivery->data_for_update['banks'])){
+            $this->updateBankData($delivery->data_for_update['banks'], $user);
+        }
         $delivery_data['name']=$delivery->data_for_update['data']['name'];
         $delivery_data['phone']=$delivery->data_for_update['data']['phone'];
         $delivery_data['city_id']=$delivery->data_for_update['data']['city_id'];

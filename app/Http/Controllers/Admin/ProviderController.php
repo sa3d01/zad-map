@@ -200,7 +200,9 @@ class ProviderController extends MasterController
     {
         $provider = $this->model->find($id);
         $user = User::find($provider->user_id);
-        $this->updateBankData($provider->data_for_update['banks'], $user, $provider->type);
+        if (isset($provider->data_for_update['banks'])){
+            $this->updateBankData($provider->data_for_update['banks'], $user, $provider->type);
+        }
         $provider_data['name'] = $provider->data_for_update['data']['name'];
         $provider_data['phone'] = $provider->data_for_update['data']['phone'];
         $provider_data['city_id'] = $provider->data_for_update['data']['city_id'];
