@@ -6,8 +6,10 @@ use App\Http\Controllers\Api\MasterController;
 use App\Http\Requests\Api\Chat\ChatRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Chat;
+use App\Models\Delivery;
+use App\Models\NormalUser;
 use App\Models\Order;
-use App\Models\User;
+use App\Models\Provider;
 use Carbon\Carbon;
 use Edujugon\PushNotification\PushNotification;
 
@@ -23,41 +25,42 @@ class ChatController extends MasterController
 
     function paginateRes($data)
     {
-        $res['current_page']= collect($data)['current_page'];
-        $res['first_page_url']= collect($data)['first_page_url'];
-        $res['from']= collect($data)['from'];
-        $res['next_page_url']= collect($data)['next_page_url'];
-        $res['path']= collect($data)['path'];
-        $res['per_page']= collect($data)['per_page'];
-        $res['prev_page_url']= collect($data)['prev_page_url'];
-        $res['to']= collect($data)['to'];
+        $res['current_page'] = collect($data)['current_page'];
+        $res['first_page_url'] = collect($data)['first_page_url'];
+        $res['from'] = collect($data)['from'];
+        $res['next_page_url'] = collect($data)['next_page_url'];
+        $res['path'] = collect($data)['path'];
+        $res['per_page'] = collect($data)['per_page'];
+        $res['prev_page_url'] = collect($data)['prev_page_url'];
+        $res['to'] = collect($data)['to'];
         return $res;
     }
+
     public function getConversations()
     {
-        $chat_ids = Chat::where(['sender_id'=> auth('api')->id(),'sender_type'=>request()->header('userType')])->orWhere(['receiver_id'=> auth('api')->id(),'receiver_type'=>request()->header('userType')])->pluck('room')->unique();
+        $chat_ids = Chat::where(['sender_id' => auth('api')->id(), 'sender_type' => request()->header('userType')])->orWhere(['receiver_id' => auth('api')->id(), 'receiver_type' => request()->header('userType')])->pluck('room')->unique();
         $all_chats = Chat::whereIn('room', $chat_ids)->latest()->get();
-        $rooms=[];
-        $unique_chat_ids=[];
+        $rooms = [];
+        $unique_chat_ids = [];
         foreach ($all_chats as $conversation) {
-            if (in_array($conversation->room,$rooms)){
+            if (in_array($conversation->room, $rooms)) {
                 continue;
             }
-            $rooms[]=$conversation->room;
-            $unique_chat_ids[]=$conversation->id;
+            $rooms[] = $conversation->room;
+            $unique_chat_ids[] = $conversation->id;
         }
-        $chats = Chat::whereIn('id',$unique_chat_ids)->latest()->simplepaginate(10);
+        $chats = Chat::whereIn('id', $unique_chat_ids)->latest()->simplepaginate(10);
         $data['chats'] = [];
         foreach ($chats as $chat) {
-            $unread_count=Chat::where(['read'=>false,'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
+            $unread_count = Chat::where(['read' => false, 'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
             $arr['unread_count'] = $unread_count;
             $arr['order_id'] = $chat->order_id;
             $arr['room'] = $chat->room;
-            $arr['active']=$chat->order->status!='completed';
+            $arr['active'] = $chat->order->status != 'completed';
             $arr['latest_message'] = new MessageResource($chat);
-            $data['chats'][]= $arr;
+            $data['chats'][] = $arr;
         }
-        $data['paginate']=$this->paginateRes($chats);
+        $data['paginate'] = $this->paginateRes($chats);
         return $this->sendResponse($data);
     }
 
@@ -66,42 +69,47 @@ class ChatController extends MasterController
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
         $data['sender_type'] = request()->header('userType');
-        $sender=auth('api')->user();
-        $receiver=User::find($request['receiver_id']);
 
-        if ($receiver->normal_user){
-            $data['receiver_type']='USER';
-        }elseif ($receiver->delivery){
-            $data['receiver_type']='DELIVERY';
-        }else{
-            $data['receiver_type']=$receiver->provider->type;
+        if (NormalUser::where('user_id', $data['sender_id'])->first()) {
+            $sender_model = NormalUser::where('user_id', $data['sender_id'])->first();
+        } elseif (Delivery::where('user_id', $data['sender_id'])->first()) {
+            $sender_model = Delivery::where('user_id', $data['sender_id'])->first();
+        } else {
+            $sender_model = Provider::where('user_id', $data['sender_id'])->first();
         }
 
-        if ($request['order_id']){
-            $order=Order::find($request['order_id']);
-            if ($data['sender_type']=='PROVIDER' || $data['receiver_type']=='PROVIDER'){
-                $data['room']=$request['order_id'].$order->provider_id;
-            }else{
-                $data['room']=$request['order_id'].$order->delivery_id;
+        if (NormalUser::where('user_id', $request['receiver_id'])->first()) {
+            $receiver_model = NormalUser::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = 'USER';
+        } elseif (Delivery::where('user_id', $request['receiver_id'])->first()) {
+            $receiver_model = Delivery::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = 'DELIVERY';
+        } else {
+            $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
+            $data['receiver_type'] = $receiver_model->type;
+        }
+
+        if ($request['order_id']) {
+            $order = Order::find($request['order_id']);
+            if ($data['sender_type'] == 'PROVIDER' || $data['receiver_type'] == 'PROVIDER') {
+                $data['room'] = $request['order_id'] . $order->provider_id;
+            } else {
+                $data['room'] = $request['order_id'] . $order->delivery_id;
             }
-        }elseif($request['room']){
-            $data['room']=$request['room'];
-        }else{
+        } elseif ($request['room']) {
+            $data['room'] = $request['room'];
+        } else {
             $pre_msg = Chat::where(['sender_id' => $data['sender_id'], 'receiver_id' => $data['receiver_id']])->orWhere(['sender_id' => $data['receiver_id'], 'receiver_id' => $data['sender_id']])->first();
-            if (!$pre_msg){
+            if (!$pre_msg) {
                 return $this->sendError('حدثت مشكلة');
             }
-            $data['room']=$pre_msg->room;
+            $data['room'] = $pre_msg->room;
         }
         $message = Chat::create($data);
 
-        if ($receiver->normal_user){
-            $this->notify_receiver($message->receiver->normal_user,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->normal_user->name, $message);
-        }elseif ($receiver->delivery){
-            $this->notify_receiver($message->receiver->delivery,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->delivery->name, $message);
-        }else{
-            $this->notify_receiver($message->receiver->provider,'تم إرسال رسالة جديدة من قبل '.auth('api')->user()->provider->name, $message);
-        }
+
+        $this->notify_receiver($receiver_model, 'تم إرسال رسالة جديدة من قبل ' . $sender_model->name, $message);
+
         $messages = Chat::where('room', $message->room)->latest()->get();
         return $this->sendResponse(MessageResource::collection($messages));
     }
@@ -110,63 +118,63 @@ class ChatController extends MasterController
     {
         $messages = Chat::where('room', $room_id)->latest()->simplepaginate(10);
         $data['chats'] = [];
-        foreach ($messages as $message){
-            if ($message->receiver_id==auth('api')->id()){
+        foreach ($messages as $message) {
+            if ($message->receiver_id == auth('api')->id()) {
                 $message->update([
-                    'read'=>true
+                    'read' => true
                 ]);
             }
             $arr['id'] = (int)$message->id;
             $arr['message'] = $message->message;
 
-            if ($message->sender->normal_user){
-                $arr['sender'] =[
-                    'id'=>$message->sender_id,
-                    'name'=>$message->sender->normal_user->name,
-                    'image'=>$message->sender->normal_user->image,
+            if ($message->sender->normal_user) {
+                $arr['sender'] = [
+                    'id' => $message->sender_id,
+                    'name' => $message->sender->normal_user->name,
+                    'image' => $message->sender->normal_user->image,
                 ];
-            }elseif ($message->sender->delivery){
-                $arr['sender'] =[
-                    'id'=>$message->sender_id,
-                    'name'=>$message->sender->delivery->name,
-                    'image'=>$message->sender->delivery->image,
+            } elseif ($message->sender->delivery) {
+                $arr['sender'] = [
+                    'id' => $message->sender_id,
+                    'name' => $message->sender->delivery->name,
+                    'image' => $message->sender->delivery->image,
                 ];
-            }else{
-                $arr['sender'] =[
-                    'id'=>$message->sender_id,
-                    'name'=>$message->sender->provider->name,
-                    'image'=>$message->sender->provider->image,
+            } else {
+                $arr['sender'] = [
+                    'id' => $message->sender_id,
+                    'name' => $message->sender->provider->name,
+                    'image' => $message->sender->provider->image,
                 ];
             }
 
-            if ($message->receiver->normal_user){
-                $arr['receiver'] =[
-                    'id'=>$message->receiver_id,
-                    'name'=>$message->receiver->normal_user->name,
-                    'image'=>$message->receiver->normal_user->image,
+            if ($message->receiver->normal_user) {
+                $arr['receiver'] = [
+                    'id' => $message->receiver_id,
+                    'name' => $message->receiver->normal_user->name,
+                    'image' => $message->receiver->normal_user->image,
                 ];
-            }elseif ($message->receiver->delivery){
-                $arr['receiver'] =[
-                    'id'=>$message->receiver_id,
-                    'name'=>$message->receiver->delivery->name,
-                    'image'=>$message->receiver->delivery->image,
+            } elseif ($message->receiver->delivery) {
+                $arr['receiver'] = [
+                    'id' => $message->receiver_id,
+                    'name' => $message->receiver->delivery->name,
+                    'image' => $message->receiver->delivery->image,
                 ];
-            }else{
-                $arr['receiver'] =[
-                    'id'=>$message->receiver_id,
-                    'name'=>$message->receiver->provider->name,
-                    'image'=>$message->receiver->provider->image,
+            } else {
+                $arr['receiver'] = [
+                    'id' => $message->receiver_id,
+                    'name' => $message->receiver->provider->name,
+                    'image' => $message->receiver->provider->image,
                 ];
             }
-            $arr['by_me'] = $message->sender_id==auth('api')->id();
+            $arr['by_me'] = $message->sender_id == auth('api')->id();
             $arr['send_from'] = Carbon::parse($message->created_at)->diffForHumans();
             $data['chats'][] = $arr;
         }
-        $data['paginate']=$this->paginateRes($messages);
+        $data['paginate'] = $this->paginateRes($messages);
         return $this->sendResponse($data);
     }
 
-    public function notify_receiver($user,$title, $message)
+    public function notify_receiver($user, $title, $message)
     {
         $push = new PushNotification('fcm');
         $msg = [
