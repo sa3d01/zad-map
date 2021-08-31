@@ -29,12 +29,12 @@ class StoryController extends MasterController
             if (auth('api')->check()){
                 if (request()->header('userType')=='USER'){
                     $normal_user=NormalUser::where('user_id',auth('api')->id())->first();
-                    if ($normal_user->city_id != $user->normal_user->city_id){
+                    if ($normal_user->city_id != $user->provider->city_id){
                         continue;
                     }
                 }elseif (request()->header('userType')=='DELIVERY'){
                     $delivery=Delivery::where('user_id',auth('api')->id())->first();
-                    if ($delivery->city_id != $user->delivery->city_id){
+                    if ($delivery->city_id != $user->provider->city_id){
                         continue;
                     }
                 }else{
