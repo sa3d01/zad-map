@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Delivery;
+use App\Models\NormalUser;
+use App\Models\Provider;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,41 +12,39 @@ class MessageResource extends JsonResource
 {
     public function toArray($request): array
     {
-        if ($this->sender_type=='normal_user'){
-            $sender_name=$this->sender->normal_user->name;
-            $sender_image=$this->sender->normal_user->image;
-        }elseif ($this->sender_type=='delivery'){
-            $sender_name=$this->sender->delivery->name;
-            $sender_image=$this->sender->delivery->image;
+        if ($this->sender_type=='USER'){
+            $sender_model=NormalUser::where('user_id',$this->sender_id)->first();
+        }elseif ($this->sender_type=='DELIVERY'){
+            $sender_model=Delivery::where('user_id',$this->sender_id)->first();
         }else{
-            $sender_name=$this->sender->provider->name;
-            $sender_image=$this->sender->provider->image;
+            $sender_model=Provider::where('user_id',$this->sender_id)->first();
         }
-
-        if ($this->receiver_type=='normal_user'){
-            $receiver_name=$this->receiver->normal_user->name;
-            $receiver_image=$this->receiver->normal_user->image;
-        }elseif ($this->receiver_type=='delivery'){
-            $receiver_name=$this->receiver->delivery->name;
-            $receiver_image=$this->receiver->delivery->image;
+        if ($this->receiver_type=='USER'){
+            $receiver_model=NormalUser::where('user_id',$this->receiver_id)->first();
+        }elseif ($this->receiver_type=='DELIVERY'){
+            $receiver_model=Delivery::where('user_id',$this->receiver_id)->first();
         }else{
-            $receiver_name=$this->receiver->provider->name;
-            $receiver_image=$this->receiver->provider->image;
+            $receiver_model=Provider::where('user_id',$this->receiver_id)->first();
+        }
+        if ($this->sender_id == auth('api')->id() && $this->sender_type == request()->header('userType')){
+            $by_me = true;
+        }else{
+            $by_me = false;
         }
         return [
             'id' => (int)$this->id,
             'message' => $this->message,
             'sender' =>[
                 'id'=>$this->sender_id,
-                'name'=>$sender_name,
-                'image'=>$sender_image,
+                'name'=>$sender_model->name,
+                'image'=>$sender_model->image,
             ],
             'receiver' =>[
                 'id'=>$this->receiver_id,
-                'name'=>$receiver_name,
-                'image'=>$receiver_image,
+                'name'=>$receiver_model->name,
+                'image'=>$receiver_model->image,
             ],
-            'by_me' => $this->sender_id==auth('api')->id(),
+            'by_me' => $by_me,
             'send_from' => Carbon::parse($this->created_at)->format('H:i A'),
         ];
     }
