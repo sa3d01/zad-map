@@ -52,7 +52,7 @@ class ChatController extends MasterController
         $chats = Chat::whereIn('id', $unique_chat_ids)->latest()->simplepaginate(10);
         $data['chats'] = [];
         foreach ($chats as $chat) {
-            $unread_count = Chat::where(['read' => false, 'room' => $chat->room, 'receiver_id' => auth('api')->id()])->count();
+            $unread_count = Chat::where(['read' => false, 'room' => $chat->room, 'receiver_id' => auth('api')->id(), 'receiver_type' => request()->header('userType')])->count();
             $arr['unread_count'] = $unread_count;
             $arr['order_id'] = $chat->order_id;
             $arr['room'] = $chat->room;
@@ -122,45 +122,31 @@ class ChatController extends MasterController
             $arr['id'] = (int)$message->id;
             $arr['message'] = $message->message;
 
-            if ($message->sender->normal_user) {
-                $arr['sender'] = [
-                    'id' => $message->sender_id,
-                    'name' => $message->sender->normal_user->name,
-                    'image' => $message->sender->normal_user->image,
-                ];
-            } elseif ($message->sender->delivery) {
-                $arr['sender'] = [
-                    'id' => $message->sender_id,
-                    'name' => $message->sender->delivery->name,
-                    'image' => $message->sender->delivery->image,
-                ];
+            if ($message->sender_type=='USER') {
+                $sender_model=NormalUser::where('user_id',$message->sender_id)->first();
+            } elseif ($message->sender_type=='DELIVERY') {
+                $sender_model=Delivery::where('user_id',$message->sender_id)->first();
             } else {
-                $arr['sender'] = [
-                    'id' => $message->sender_id,
-                    'name' => $message->sender->provider->name,
-                    'image' => $message->sender->provider->image,
-                ];
+                $sender_model=Provider::where('user_id',$message->sender_id)->first();
             }
+            $arr['sender'] = [
+                'id' => $message->sender_id,
+                'name' => $sender_model->name,
+                'image' => $sender_model->image,
+            ];
 
-            if ($message->receiver->normal_user) {
-                $arr['receiver'] = [
-                    'id' => $message->receiver_id,
-                    'name' => $message->receiver->normal_user->name,
-                    'image' => $message->receiver->normal_user->image,
-                ];
-            } elseif ($message->receiver->delivery) {
-                $arr['receiver'] = [
-                    'id' => $message->receiver_id,
-                    'name' => $message->receiver->delivery->name,
-                    'image' => $message->receiver->delivery->image,
-                ];
+            if ($message->receiver_type=='USER') {
+                $receiver_model=NormalUser::where('user_id',$message->receiver_id)->first();
+            } elseif ($message->receiver_type=='DELIVERY') {
+                $receiver_model=Delivery::where('user_id',$message->receiver_id)->first();
             } else {
-                $arr['receiver'] = [
-                    'id' => $message->receiver_id,
-                    'name' => $message->receiver->provider->name,
-                    'image' => $message->receiver->provider->image,
-                ];
+                $receiver_model=Provider::where('user_id',$message->receiver_id)->first();
             }
+            $arr['receiver'] = [
+                'id' => $message->receiver_id,
+                'name' => $receiver_model->name,
+                'image' => $receiver_model->image,
+            ];
             $arr['by_me'] = $message->sender_id == auth('api')->id();
             $arr['send_from'] = Carbon::parse($message->created_at)->diffForHumans();
             $data['chats'][] = $arr;
