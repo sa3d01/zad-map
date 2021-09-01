@@ -77,12 +77,6 @@ class ProductController extends MasterController
                     return $this->sendError('يرجي شحن المحفظه بقيمة السلعة المطلوب اضافتها آولا: '.$category->product_price.' ريال ');
                 }
             }else{
-                $WalletPay['user_id'] = auth('api')->id();
-                $WalletPay['user_type'] = 'PROVIDER';
-                $WalletPay['type'] = 'product';
-                $WalletPay['amount'] = $category->product_price;
-                $WalletPay['status'] = 'accepted';
-                WalletPay::create($WalletPay);
                 $this->editWallet($wallet,$category->product_price);
             }
         }
