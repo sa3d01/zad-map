@@ -28,7 +28,7 @@ class ChatRequest extends ApiMasterRequest
             'receiver_id' => 'required|exists:users,id',
             'receiver_type' => 'required',
             'user_type' => 'nullable',
-            'order_id' => 'nullable|exists:orders,id',
+            'order_id' => 'required|exists:orders,id',
         ];
     }
 }
