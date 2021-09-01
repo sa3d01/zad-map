@@ -92,9 +92,11 @@ class ChatController extends MasterController
         if ($request['order_id']) {
             $order = Order::find($request['order_id']);
             if ($data['sender_type'] == 'PROVIDER' || $data['receiver_type'] == 'PROVIDER') {
-                $data['room'] = $request['order_id'] . $order->provider_id;
+                $order_provider_model=Provider::where('user_id',$order->provider_id)->first();
+                $data['room'] = $request['order_id'] . $order_provider_model->id;
             } else {
-                $data['room'] = $request['order_id'] . $order->delivery_id;
+                $order_delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
+                $data['room'] = $request['order_id'] . $order_delivery_model->id;
             }
         } elseif ($request['room']) {
             $data['room'] = $request['room'];
