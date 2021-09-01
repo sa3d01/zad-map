@@ -65,7 +65,17 @@ class ProductController extends MasterController
         }
         if ($user_category_products+1 > $category->free_products ){
             if ($wallet->profits < $category->product_price){
-                return $this->sendError('يرجي شحن المحفظه بقيمة السلعة المطلوب اضافتها آولا: '.$category->product_price.' ريال ');
+                $wallet_pay=WalletPay::where([
+                    'user_id'=>auth('api')->id(),
+                    'user_type'=>'PROVIDER',
+                    'status'=>'pending',
+                    'type'=>'transfer'
+                ])->latest()->first();
+                if ($wallet_pay){
+                    return $this->sendError('يرجي انتظار موافقة الإدارة علي حوالتك السابقة. ');
+                }else{
+                    return $this->sendError('يرجي شحن المحفظه بقيمة السلعة المطلوب اضافتها آولا: '.$category->product_price.' ريال ');
+                }
             }else{
                 $WalletPay['user_id'] = auth('api')->id();
                 $WalletPay['user_type'] = 'PROVIDER';
@@ -73,12 +83,26 @@ class ProductController extends MasterController
                 $WalletPay['amount'] = $category->product_price;
                 $WalletPay['status'] = 'accepted';
                 WalletPay::create($WalletPay);
+                $this->editWallet($wallet,$category->product_price);
             }
         }
         $data = $request->validated();
         $data['user_id'] = auth()->id();
         Product::create($data);
         return $this->sendResponse([]," تمت الإضافة بنجاح ..");
+    }
+
+    function editWallet($wallet,$debtors)
+    {
+        $wallet->update([
+            'profits'=>$wallet->profits-$debtors,
+        ]);
+        $WalletPay['user_id'] = auth('api')->id();
+        $WalletPay['user_type'] = 'PROVIDER';
+        $WalletPay['type'] = 'product';
+        $WalletPay['amount'] = $debtors;
+        $WalletPay['status'] = 'accepted';
+        WalletPay::create($WalletPay);
     }
 
     public function list($provider_id):object

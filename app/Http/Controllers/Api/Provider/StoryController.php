@@ -47,17 +47,34 @@ class StoryController extends MasterController
             ]);
         }
         if ($wallet->profits < $story_period->story_price){
-            return $this->sendError('يرجي شحن المحفظه بقيمة الاستوري المطلوب اضافتها آولا: '.$story_period->story_price.' ريال ');
+            $wallet_pay=WalletPay::where([
+                'user_id'=>auth('api')->id(),
+                'user_type'=>'PROVIDER',
+                'status'=>'pending',
+                'type'=>'transfer'
+            ])->latest()->first();
+            if ($wallet_pay){
+                return $this->sendError('يرجي انتظار موافقة الإدارة علي حوالتك السابقة. ');
+            }else{
+                return $this->sendError('يرجي شحن المحفظه بقيمة الاستوري المطلوب اضافتها آولا: '.$story_period->story_price.' ريال ');
+            }
         }else{
             $story=Story::create($data);
-            $WalletPay['user_id'] = auth('api')->id();
-            $WalletPay['user_type'] = 'PROVIDER';
-            $WalletPay['type'] = 'story';
-            $WalletPay['amount'] = $story->storyPeriod ? $story->storyPeriod->story_price : 10;
-            $WalletPay['status'] = 'accepted';
-            WalletPay::create($WalletPay);
+            $debtors=$story->storyPeriod ? $story->storyPeriod->story_price : 10;
+            $this->editWallet($wallet,$debtors);
         }
-
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة الإدارة");
+    }
+    function editWallet($wallet,$debtors)
+    {
+        $wallet->update([
+            'profits'=>$wallet->profits-$debtors,
+        ]);
+        $WalletPay['user_id'] = auth('api')->id();
+        $WalletPay['user_type'] = 'PROVIDER';
+        $WalletPay['type'] = 'story';
+        $WalletPay['amount'] = $debtors;
+        $WalletPay['status'] = 'accepted';
+        WalletPay::create($WalletPay);
     }
 }

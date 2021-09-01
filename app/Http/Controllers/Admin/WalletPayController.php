@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Delivery;
+use App\Models\Notification;
+use App\Models\Provider;
 use App\Models\Wallet;
 use App\Models\WalletPay;
+use Edujugon\PushNotification\PushNotification;
 
 class WalletPayController extends MasterController
 {
@@ -28,6 +32,41 @@ class WalletPayController extends MasterController
                 'status' => 'rejected',
             ]
         );
+
+        if ($pay->user_type=='DELIVERY'){
+            $receiver_model=Delivery::where('user_id',$pay->user_id)->first();
+            $receiver_type='DELIVERY';
+        }else{
+            $receiver_model=Provider::where('user_id',$pay->user_id)->first();
+            $receiver_type='PROVIDER';
+        }
+        $push = new PushNotification('fcm');
+        $message = 'تم رفض حوالتك البنكية';
+        $usersTokens = [];
+        if ($receiver_model->devices != null) {
+            $usersTokens = $receiver_model->devices;
+        }
+        $push->setMessage([
+            'notification' => array('title' => $message, 'sound' => 'default'),
+            'data' => [
+                'title' => $message,
+                'body' => $message,
+                'status' => 'admin',
+                'type' => 'admin',
+            ],
+            'priority' => 'high',
+        ])
+            ->setDevicesToken($usersTokens)
+            ->send()
+            ->getFeedback();
+        Notification::create([
+            'receiver_id' => $receiver_model->user_id,
+            'receiver_type' =>$receiver_type,
+            'admin_notify_type' => 'single',
+            'title' => $message,
+            'note' => $message,
+        ]);
+
         $pay->refresh();
         return redirect()->back()->with('updated');
     }
@@ -40,6 +79,39 @@ class WalletPayController extends MasterController
                 'status' => 'accepted',
             ]
         );
+        if ($wallet_pay->user_type=='DELIVERY'){
+            $receiver_model=Delivery::where('user_id',$wallet_pay->user_id)->first();
+            $receiver_type='DELIVERY';
+        }else{
+            $receiver_model=Provider::where('user_id',$wallet_pay->user_id)->first();
+            $receiver_type='PROVIDER';
+        }
+        $push = new PushNotification('fcm');
+        $message = 'تم قبول حوالتك البنكية';
+        $usersTokens = [];
+        if ($receiver_model->devices != null) {
+            $usersTokens = $receiver_model->devices;
+        }
+        $push->setMessage([
+            'notification' => array('title' => $message, 'sound' => 'default'),
+            'data' => [
+                'title' => $message,
+                'body' => $message,
+                'status' => 'admin',
+                'type' => 'admin',
+            ],
+            'priority' => 'high',
+        ])
+            ->setDevicesToken($usersTokens)
+            ->send()
+            ->getFeedback();
+        Notification::create([
+            'receiver_id' => $receiver_model->user_id,
+            'receiver_type' =>$receiver_type,
+            'admin_notify_type' => 'single',
+            'title' => $message,
+            'note' => $message,
+        ]);
 
         $wallet = Wallet::where(['user_id'=> $wallet_pay->user_id,'user_type'=>$wallet_pay->user_type])->latest()->first();
         $new_profits=$wallet->profits + $wallet_pay->amount;
