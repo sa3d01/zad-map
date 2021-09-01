@@ -55,7 +55,7 @@ class OrderResourse extends JsonResource
             $delivery_price=0;
             if ($this['delivery_id']!=null)
             {
-                $delivery_request=DeliveryRequest::where(['delivery_id'=>$delivery->user_id,'order_id'=>$this->id,'status'=>'accepted'])->latest()->first();
+                $delivery_request=DeliveryRequest::where(['delivery_id'=>$this['delivery_id'],'order_id'=>$this->id,'status'=>'accepted'])->latest()->first();
                 if ($delivery_request){
                     $delivery_price=$delivery_request->delivery_price;
                 }

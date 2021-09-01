@@ -274,6 +274,7 @@ class OrderStatusController extends MasterController
         $notification['receiver_id'] = $order->user_id;
         $notification['receiver_type'] = 'USER';
         $notification['order_id'] = $order->id;
+        $notification['type'] ='delivery_request';
         Notification::create($notification);
         $normal_user=NormalUser::where('user_id',$order->user_id)->first();
         if ($normal_user->devices != null){
