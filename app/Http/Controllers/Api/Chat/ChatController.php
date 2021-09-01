@@ -69,7 +69,6 @@ class ChatController extends MasterController
         $data = $request->validated();
         $data['sender_id'] = auth('api')->id();
         $data['sender_type'] = request()->header('userType');
-
         if (request()->header('userType')=='USER') {
             $sender_model = NormalUser::where('user_id', $data['sender_id'])->first();
         } elseif (request()->header('userType')=='DELIVERY') {
@@ -88,15 +87,12 @@ class ChatController extends MasterController
             $receiver_model = Provider::where('user_id', $request['receiver_id'])->first();
             $data['receiver_type'] = 'PROVIDER';
         }
-
         if ($request['order_id']) {
             $order = Order::find($request['order_id']);
             if ($data['sender_type'] == 'PROVIDER' || $data['receiver_type'] == 'PROVIDER') {
-                $order_provider_model=Provider::where('user_id',$order->provider_id)->first();
-                $data['room'] = $request['order_id'] .'7'. $order_provider_model->id;
+                $data['room'] = $request['order_id'] .'7'. $order->provider_id;
             } else {
-                $order_delivery_model=Delivery::where('user_id',$order->delivery_id)->first();
-                $data['room'] = $request['order_id'] .'5'. $order_delivery_model->id;
+                $data['room'] = $request['order_id'] .'5'. $order->delivery_id;
             }
         } elseif ($request['room']) {
             $data['room'] = $request['room'];
