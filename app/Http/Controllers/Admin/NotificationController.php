@@ -80,7 +80,7 @@ class NotificationController extends MasterController
                 ->getFeedback();
             $this->model->create([
                 'receivers' => $usersIds,
-                'receiver_type'=>$request['types'],
+                'receiver_type'=>$type,
                 'admin_notify_type' => $type,
                 'title' => $data['title'],
                 'note' => $data['note'],
