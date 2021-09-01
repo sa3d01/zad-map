@@ -121,7 +121,7 @@ class ChatController extends MasterController
             }
             $arr['id'] = (int)$message->id;
             $arr['message'] = $message->message;
-
+            $arr['order_id'] = $message->order_id;
             if ($message->sender_type=='USER') {
                 $sender_model=NormalUser::where('user_id',$message->sender_id)->first();
             } elseif ($message->sender_type=='DELIVERY') {

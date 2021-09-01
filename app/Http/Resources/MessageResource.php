@@ -34,6 +34,8 @@ class MessageResource extends JsonResource
         return [
             'id' => (int)$this->id,
             'message' => $this->message,
+            'order_id' => $this->order_id,
+            'room' => $this->room,
             'sender' =>[
                 'id'=>$this->sender_id,
                 'name'=>$sender_model->name,
