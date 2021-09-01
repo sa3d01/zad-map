@@ -112,6 +112,11 @@ class OrderResourse extends JsonResource
         }
         $provider_chat = Chat::where(['order_id'=>$this['id'],'sender_type'=>'PROVIDER'])->orWhere(['order_id'=>$this['id'],'receiver_type'=>'PROVIDER'])->latest()->first();
 
+        if (request()->header('userType')=='USER' && $this->status=='delivered_to_delivery'){
+            $status='in_progress';
+        }else{
+            $status=$this->status;
+        }
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -140,7 +145,7 @@ class OrderResourse extends JsonResource
             'completed_at' => $this->completed_at??"",
             'delivery_approved_expired' =>(bool) $this->delivery_approved_expired,
             'address' => $this->address??"",
-            'status' => $this->status,
+            'status' => $status,
             'products'=>new OrderItemCollection($this->orderItems),
             'price' => $this->price(),
             'delivery_price' => $delivery_price,

@@ -61,7 +61,7 @@ class NotificationController extends MasterController
             foreach ($users as $user) {
                 if ($user->devices != null) {
                     $usersTokens[] = $user->devices;
-                    $usersIds[] = $user->user->id;
+                    $usersIds[] = $user->user_id;
                 }
             }
             $push = new PushNotification('fcm');

@@ -38,11 +38,13 @@ class MessageResource extends JsonResource
                 'id'=>$this->sender_id,
                 'name'=>$sender_model->name,
                 'image'=>$sender_model->image,
+                'user_type'=>$this->sender_type,
             ],
             'receiver' =>[
                 'id'=>$this->receiver_id,
                 'name'=>$receiver_model->name,
                 'image'=>$receiver_model->image,
+                'user_type'=>$this->receiver_type,
             ],
             'by_me' => $by_me,
             'send_from' => Carbon::parse($this->created_at)->format('H:i A'),

@@ -133,6 +133,7 @@ class ChatController extends MasterController
                 'id' => $message->sender_id,
                 'name' => $sender_model->name,
                 'image' => $sender_model->image,
+                'user_type' => $message->sender_type,
             ];
 
             if ($message->receiver_type=='USER') {
@@ -146,6 +147,7 @@ class ChatController extends MasterController
                 'id' => $message->receiver_id,
                 'name' => $receiver_model->name,
                 'image' => $receiver_model->image,
+                'user_type' => $message->receiver_type,
             ];
             if ($message->sender_id == auth('api')->id() && $message->sender_type == request()->header('userType')){
                 $arr['by_me'] = true;
