@@ -44,7 +44,7 @@ class OrderResourse extends JsonResource
             $delivery['district']=$this->getDistrictData($delivery_model);
             $delivery['phone']=$delivery_model->user->phone;
             $delivery['rating']=(double)$delivery_model->user->averageRate();
-            $delivery['room'] = $delivery_chat?$delivery_chat->room:(int)($this['id'].'5'.$delivery_model->user_id);
+            $delivery['room'] = (int)($this['id'].'5'.$delivery_model->user_id);
         }
         if ($this['deliver_by']=='user')
         {
@@ -91,7 +91,6 @@ class OrderResourse extends JsonResource
             $discount=($promo_code->discount_percent*$this->price())/100;
         }
 
-        $provider_chat = Chat::where(['order_id'=>$this['id'],'sender_type'=>'PROVIDER'])->orWhere(['order_id'=>$this['id'],'receiver_type'=>'PROVIDER'])->latest()->first();
         $can_confirm=false;
 
         if (request()->header('userType')=='USER')
@@ -111,6 +110,8 @@ class OrderResourse extends JsonResource
                 $can_confirm=true;
             }
         }
+        $provider_chat = Chat::where(['order_id'=>$this['id'],'sender_type'=>'PROVIDER'])->orWhere(['order_id'=>$this['id'],'receiver_type'=>'PROVIDER'])->latest()->first();
+
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -131,7 +132,7 @@ class OrderResourse extends JsonResource
                 'district'=>$this->getDistrictData($this->provider->provider),
                 'phone' => $this->provider->phone,
                 'rating' => (double)$this->provider->averageRate(),
-                'room' => $provider_chat?$provider_chat->room:(int)($this['id'].'7'.$this['provider_id']),
+                'room' => (int)($this['id'].'7'.$this['provider_id']),
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,
