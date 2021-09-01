@@ -117,6 +117,12 @@ class OrderResourse extends JsonResource
         }else{
             $status=$this->status;
         }
+        if ($this->status=='completed')
+        {
+            $deliver_at=$this->completed_at??"";
+        }else{
+            $deliver_at=$this->deliver_at??"";
+        }
         return [
             'id' => (int)$this['id'],
             'user' => [
@@ -141,7 +147,7 @@ class OrderResourse extends JsonResource
             ],
             'delivery' => $delivery,
             'deliver_by' => $this->deliver_by,
-            'deliver_at' => $this->status=='completed'?$this->completed_at:$this->deliver_at,
+            'deliver_at' => $deliver_at,
             'completed_at' => $this->completed_at??"",
             'delivery_approved_expired' =>(bool) $this->delivery_approved_expired,
             'address' => $this->address??"",
