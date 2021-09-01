@@ -147,7 +147,11 @@ class ChatController extends MasterController
                 'name' => $receiver_model->name,
                 'image' => $receiver_model->image,
             ];
-            $arr['by_me'] = $message->sender_id == auth('api')->id();
+            if ($message->sender_id == auth('api')->id() && $message->sender_type == request()->header('userType')){
+                $arr['by_me'] = true;
+            }else{
+                $arr['by_me'] = false;
+            }
             $arr['send_from'] = Carbon::parse($message->created_at)->diffForHumans();
             $data['chats'][] = $arr;
         }
