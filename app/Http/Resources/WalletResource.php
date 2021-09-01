@@ -14,7 +14,7 @@ class WalletResource extends JsonResource
             'id' => (int)$this->id,
             'profits' => (double)$this->profits,
             'debtors' => (double)$this->debtors,
-            'history'=>new WalletPayCollection(WalletPay::where('user_id',$this->user_id)->latest()->get())
+            'history'=>new WalletPayCollection(WalletPay::where(['user_id'=>$this->user_id,'user_type'=>$this->user_type])->latest()->get())
         ];
     }
 }

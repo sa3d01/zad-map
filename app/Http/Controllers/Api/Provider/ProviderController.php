@@ -51,7 +51,7 @@ class ProviderController extends MasterController
         $data['user_type'] = \request()->header('userType');
         $data['type'] = 'transfer';
         WalletPay::create($data);
-        $wallet = Wallet::where('user_id', auth('api')->id())->latest()->first();
+        $wallet = Wallet::where(['user_id'=> auth('api')->id(),'user_type'=>request()->header('userType')])->latest()->first();
         if (!$wallet) {
             $wallet = Wallet::create([
                 'user_id' => auth('api')->id(),
