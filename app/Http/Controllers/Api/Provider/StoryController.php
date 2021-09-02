@@ -8,6 +8,8 @@ use App\Models\Story;
 use App\Models\StoryPeriod;
 use App\Models\Wallet;
 use App\Models\WalletPay;
+use App\Models\Notification;
+use Illuminate\Support\Str;
 
 class StoryController extends MasterController
 {
@@ -63,6 +65,19 @@ class StoryController extends MasterController
             $debtors=$story->storyPeriod ? $story->storyPeriod->story_price : 10;
             $this->editWallet($wallet,$debtors);
         }
+
+        Notification::create([
+            'receiver_id'=>1,
+            'receiver_type' => 'ADMIN',
+            'type'=>'admin',
+            'title'=>'طلب اضافة استوري',
+            'note'=>'طلب اضافة استوري',
+            'more_details'=>[
+                'type'=>'story',
+                'story_id'=>$story->id
+            ]
+        ]);
+
         return $this->sendResponse([], " تم الارسال بنجاح .. يرجى انتظار موافقة الإدارة");
     }
     function editWallet($wallet,$debtors)

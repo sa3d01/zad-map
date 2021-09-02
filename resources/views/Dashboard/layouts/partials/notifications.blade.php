@@ -32,6 +32,45 @@
                             <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
                         </p>
                     </a>
+                @elseif($notification->more_details['type']=='story')
+                    <a href="{{route('admin.story.binned')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
+                        <div class="notify-icon bg-primary">
+                            @php
+                                $story=\App\Models\Story::find($notification->more_details['story_id']);
+                            @endphp
+                            <i class="mdi mdi-mailbox"></i>
+                        </div>
+                        <p class="notify-details">{{$notification->title}}</p>
+                        <p class="text-muted mb-0 user-msg">
+                            <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
+                        </p>
+                    </a>
+                @elseif($notification->more_details['type']=='provider')
+                    <a href="{{route('admin.provider.binned')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
+                        <div class="notify-icon bg-primary">
+                            @php
+                                $story=\App\Models\Provider::find($notification->more_details['provider_id']);
+                            @endphp
+                            <i class="mdi mdi-mailbox"></i>
+                        </div>
+                        <p class="notify-details">{{$notification->title}}</p>
+                        <p class="text-muted mb-0 user-msg">
+                            <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
+                        </p>
+                    </a>
+                @elseif($notification->more_details['type']=='delivery')
+                    <a href="{{route('admin.delivery.binned')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
+                        <div class="notify-icon bg-primary">
+                            @php
+                                $story=\App\Models\Delivery::find($notification->more_details['delivery_id']);
+                            @endphp
+                            <i class="mdi mdi-mailbox"></i>
+                        </div>
+                        <p class="notify-details">{{$notification->title}}</p>
+                        <p class="text-muted mb-0 user-msg">
+                            <small>{{\Carbon\Carbon::parse($notification->created_at)->diffForHumans()}}</small>
+                        </p>
+                    </a>
                 @else
                     <a href="{{route('admin.wallet-pay.index')}}" class="dropdown-item notify-item @if($notification->read=='true') active @endif">
                         <div class="notify-icon bg-primary">

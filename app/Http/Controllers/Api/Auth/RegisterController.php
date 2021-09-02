@@ -11,6 +11,8 @@ use App\Models\Provider;
 use App\Models\User;
 use App\Traits\UserBanksAndCarsTrait;
 use App\Traits\UserPhoneVerificationTrait;
+use App\Models\Notification;
+use Illuminate\Support\Str;
 
 class RegisterController extends MasterController
 {
@@ -42,17 +44,30 @@ class RegisterController extends MasterController
             if ($normalUser){
                 return $this->sendError('هذا الحساب موجود بالفعل');
             }
-            Provider::create($data);
+            $normalUser=Provider::create($data);
             if ($request['banks']) {
                 $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             $user->update($request->validated());
+
+            Notification::create([
+                'receiver_id'=>1,
+                'receiver_type' => 'ADMIN',
+                'type'=>'admin',
+                'title'=>'طلب انضمام مقدم خدمة',
+                'note'=>'طلب انضمام مقدم خدمة',
+                'more_details'=>[
+                    'type'=>'provider',
+                    'provider_id'=>$normalUser->id
+                ]
+            ]);
+
         } elseif (request()->header('userType') == 'DELIVERY') {
             $normalUser=Delivery::where('user_id',$user->id)->first();
             if ($normalUser){
                 return $this->sendError('هذا الحساب موجود بالفعل');
             }
-            Delivery::create($data);
+            $normalUser=Delivery::create($data);
             if ($request['car']) {
                 $this->updateCarData($request->validated(), $user);
             }
@@ -60,6 +75,18 @@ class RegisterController extends MasterController
                 $this->updateBankData($request->validated(), $user, request()->header('userType'));
             }
             $user->update($request->validated());
+
+            Notification::create([
+                'receiver_id'=>1,
+                'receiver_type' => 'ADMIN',
+                'type'=>'admin',
+                'title'=>'طلب انضمام مندوب',
+                'note'=>'طلب انضمام مندوب',
+                'more_details'=>[
+                    'type'=>'delivery',
+                    'delivery_id'=>$normalUser->id
+                ]
+            ]);
         } else {
             return $this->sendError('تأكد من اختيار نوع المستخدم--'.request()->header('userType'));
         }

@@ -60,6 +60,7 @@ class OrderStatusController extends MasterController
             WalletPay::create($wallet_pay);
         }
     }
+    
     function completeOrder($order)
     {
         $order->update([
@@ -146,6 +147,7 @@ class OrderStatusController extends MasterController
         $this->notify_provider($provider_model,$title, $order);
         return $this->sendResponse([], 'تم تعديل الطلب بنجاح');
     }
+
     public function cancelOrder($id, CancelOrderRequest $request): object
     {
         $request->validated();
