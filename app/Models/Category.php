@@ -15,6 +15,8 @@ class Category extends Model
         'name',
         'image',
         'status',
+        'free_products',
+        'product_price'
     ];
     public function products():object
     {
