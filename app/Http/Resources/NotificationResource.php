@@ -15,14 +15,15 @@ class NotificationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id'=> (int)$this->id,
-            'type'=> $this->type,
-            'read'=> $this->read == 'true',
-            'title'=> $this->title,
-            'note'=> $this->note,
-            'order_id'=>(int) $this->order_id??0,
-            'published_from'=> Carbon::parse($this->created_at)->diffForHumans()
-        ];
+        $arr['id']=(int)$this->id;
+        $arr['type']=$this->type;
+        $arr['read']=$this->read == 'true';
+        $arr['title']=$this->title;
+        $arr['note']=$this->note;
+        if($this->order_id){
+            $arr['order_id']=(int)$this->order_id;
+        }
+        $arr['published_from']=Carbon::parse($this->created_at)->diffForHumans();
+        return $arr;
     }
 }

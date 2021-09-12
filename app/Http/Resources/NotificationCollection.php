@@ -22,7 +22,9 @@ class NotificationCollection extends ResourceCollection
             $arr['read']=$obj->read == 'true';
             $arr['title']=$obj->title;
             $arr['note']=$obj->note;
-            $arr['order_id']=(int)$obj->order_id??0;
+            if($obj->order_id){
+                $arr['order_id']=(int)$obj->order_id;
+            }
             $arr['published_from']=Carbon::parse($obj->created_at)->diffForHumans();
             $data[]=$arr;
         }

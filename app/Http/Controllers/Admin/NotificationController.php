@@ -66,7 +66,7 @@ class NotificationController extends MasterController
             }
             $push = new PushNotification('fcm');
             $push->setMessage([
-                'notification' => array('title' => $data['note'], 'sound' => 'default'),
+                'notification' => array('title' => $data['title'],'body' => $data['note'], 'sound' => 'default'),
                 'data' => [
                     'title' => $data['note'],
                     'body' => $data['note'],
