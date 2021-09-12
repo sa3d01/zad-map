@@ -25,7 +25,7 @@ class NotificationCollection extends ResourceCollection
             if($obj->order_id){
                 $arr['order_id']=(int)$obj->order_id;
             }else{
-                $arr['order_id']=null;
+                unset($arr['order_id']);
             }
             $arr['published_from']=Carbon::parse($obj->created_at)->diffForHumans();
             $data[]=$arr;
