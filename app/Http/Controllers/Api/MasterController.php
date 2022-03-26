@@ -82,6 +82,9 @@ abstract class MasterController extends Controller
                 //soon
                 $title = 'لقد قارب ميعاد انتهاء التأمين الخاص بسيارتك ';
             }
+            if (!isset($title)){
+                continue;
+            }
             $last_notify = Notification::where(['receiver_id' => $car->user_id,'receiver_type'=>'DELIVERY', 'type' => 'end_insurance_date'])->latest()->first();
             if ($last_notify) {
                 if (Carbon::now()->diffInDays(Carbon::parse($last_notify->created_at)) > 0) {
